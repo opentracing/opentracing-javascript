@@ -1,0 +1,35 @@
+{
+  "name": "opentracing",
+  "version": "0.9.0",
+  "main": "dist/opentracing-node-debug.js",
+  "scripts": {
+    "webpack": "npm run webpack-node-debug && npm run webpack-node-prod && npm run webpack-browser-debug && npm run webpack-browser-prod",
+    "webpack-node-debug": "BUILD_PLATFORM=node BUILD_CONFIG=debug webpack --display-error-details",
+    "webpack-node-prod": "BUILD_PLATFORM=node BUILD_CONFIG=prod webpack --display-error-details",
+    "webpack-browser-debug": "BUILD_PLATFORM=browser BUILD_CONFIG=debug webpack --display-error-details",
+    "webpack-browser-prod": "BUILD_PLATFORM=browser BUILD_CONFIG=prod webpack --display-error-details",
+    "test": "node node_modules/mocha/bin/mocha -c test/unittest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opentracing/opentracing-javascript"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-core": "^6.3.26",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-polyfill": "^6.3.14",
+    "babel-preset-es2015": "^6.3.13",
+    "chai": "^3.4.1",
+    "clone": "^1.0.2",
+    "colors": "^1.1.2",
+    "json-loader": "^0.5.4",
+    "mocha": "^2.3.4",
+    "shelljs": "^0.5.3",
+    "source-map-support": "^0.3.3",
+    "underscore": "^1.8.3",
+    "webpack": "^1.12.9"
+  }
+}
