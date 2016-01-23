@@ -12,8 +12,8 @@ export default class Tracer {
      * [constructor description]
      * @return {[type]} [description]
      */
-    constructor() {
-        this._imp = null;
+    constructor(imp) {
+        this._imp = imp || null;
     }
 
     /**

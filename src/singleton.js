@@ -16,25 +16,23 @@ export default class Singleton extends Tracer {
     }
 
     /**
-     * [initialize description]
-     * @return {[type]} [description]
+     * Set the global Tracer's underlying implementation.
+     *
+     * The behavior is undefined if this function is called more than once.
      */
     initGlobalTracer(tracingImp) {
         this._imp = tracingImp.newTracer();
     }
 
     /**
-     * Create a new Tracer object using the global implementation registered
-     * with initGlobalTracer. To reduce complexity, it is currently intentionally
-     * not possible to create a new Tracer with a different underlying
-     * implementation than the globally registered implementation.
+     * Create a new Tracer object with the given underlying implementation.
      *
-     * @return {[type]} [description]
+     * @return {Tracer} a new Tracer object
      */
-    initNewTracer() {
+    initNewTracer(tracingImp) {
         if (!this._imp) {
             return null;
         }
-        return this._imp.newTracer();
+        return new Tracer(tracingImp);
     }
 }
