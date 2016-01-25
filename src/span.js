@@ -1,6 +1,5 @@
 'use strict';
 
-import * as Constants from './constants';
 import TraceContext from './trace_context';
 
 /**
@@ -28,7 +27,7 @@ export default class Span {
     // ---------------------------------------------------------------------- //
 
     traceContext() {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 0) {
                 throw new Error('Invalid arguments');
             }
@@ -46,7 +45,7 @@ export default class Span {
      * @return {[type]} [description]
      */
     setTag(key, value) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments');
             }
@@ -72,7 +71,7 @@ export default class Span {
      * @return {[type]}         [description]
      */
     info(message, payload) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length < 1 || arguments.length > 2) {
                 throw new Error('Invalid arguments.');
             }
@@ -94,7 +93,7 @@ export default class Span {
      * @return {[type]}         [description]
      */
     error(message, payload) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length < 1 || arguments.length > 2) {
                 throw new Error('Invalid arguments.');
             }
@@ -110,7 +109,7 @@ export default class Span {
     }
 
     startChild(operationName) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 1) {
                 throw new Error('Invalid arguments');
             }
@@ -130,7 +129,7 @@ export default class Span {
      * [finish description]
      */
     finish() {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 0) {
                 throw new Error('Invalid arguments');
             }
