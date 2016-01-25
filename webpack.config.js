@@ -10,6 +10,7 @@ var defines = {
     DEBUG            : false,
     PLATFORM_NODE    : false,
     PLATFORM_BROWSER : false,
+    API_CONFORMANCE_CHECKS : false,
 };
 
 var bundlePlatform = "";
@@ -21,6 +22,7 @@ var devtool = undefined;
 switch (CONFIG) {
     case "debug":
         defines.DEBUG = true;
+        defines.API_CONFORMANCE_CHECKS = true;
         bundleSuffix = "-debug";
         devtool = "source-map";
         break;

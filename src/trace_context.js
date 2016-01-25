@@ -1,7 +1,5 @@
 'use strict';
 
-import * as Constants from './constants';
-
 const kKeyRegExp = new RegExp(/^[a-z0-9][-a-z0-9]*/);
 
 /**
@@ -26,7 +24,7 @@ export default class TraceContext {
      * @param {[type]} value [description]
      */
     setTraceAttribute(key, value) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 2) {
                 throw new Error('Expected 2 arguments');
             }
@@ -58,7 +56,7 @@ export default class TraceContext {
      * @return {[type]}     [description]
      */
     traceAttribute(key) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 1) {
                 throw new Error('Expected 1 arguments');
             }

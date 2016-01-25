@@ -1,6 +1,5 @@
 'use strict';
 
-import * as Constants from './constants';
 import Span from './span';
 
 /**
@@ -34,7 +33,7 @@ export default class Tracer {
      * @return {[type]}              [description]
      */
     encodeTraceContext(traceContext) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 1) {
                 throw new Error('Invalid arguments.');
             }
@@ -56,7 +55,7 @@ export default class Tracer {
      * @return {[type]}      [description]
      */
     decodeTraceContext(obj) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 1) {
                 throw new Error('Invalid arguments.');
             }
@@ -74,7 +73,7 @@ export default class Tracer {
      * @return {[type]} [description]
      */
     newRootTraceContext() {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 0) {
                 throw new Error('Invalid arguments.');
             }
@@ -92,7 +91,7 @@ export default class Tracer {
      * @return {[type]} [description]
      */
     newChildTraceContext(parentContext) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 1) {
                 throw new Error('Invalid arguments.');
             }
@@ -114,7 +113,7 @@ export default class Tracer {
      * @return {[type]}           [description]
      */
     startTrace(operationName) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 1) {
                 throw new Error('Invalid arguments.');
             }
@@ -140,7 +139,7 @@ export default class Tracer {
      * @return {[type]}               [description]
      */
     joinTrace(operationName, parentContext) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 2) {
                 throw new Error('Invalid arguments.');
             }
@@ -166,7 +165,7 @@ export default class Tracer {
      * @return {[type]}               [description]
      */
     startSpanWithContext(operationName, traceContext) {
-        if (Constants.API_CONFORMANCE_CHECKS) {
+        if (API_CONFORMANCE_CHECKS) {
             if (arguments.length  !== 2) {
                 throw new Error('Invalid arguments.');
             }
