@@ -67,7 +67,7 @@ Coming soon!
 
 ## JavaScript OpenTracing Implementations
 
-**I.e. information for developers wanting to create an OpenTracing-compatible JavaScript implementation.**
+*I.e. information for developers wanting to create an OpenTracing-compatible JavaScript implementation.*
 
 The API layer uses a [bridge pattern](https://en.wikipedia.org/wiki/Bridge_pattern) to pass work to the specific tracing implementation. The indirection allows the API layer to enforce greater API conformance and standardization across implementations (especially in debug builds), which helps keep instrumented code more portable across OpenTracing implementations.
 
@@ -77,7 +77,7 @@ For truly implementation-dependent methods, the JavaScript API layer does expose
 
 ## Development Information
 
-**I.e. information for developers working on this package.**
+*I.e. information for developers working on this package.*
 
 #### Building the library
 
