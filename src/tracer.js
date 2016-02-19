@@ -18,7 +18,7 @@ export default class Tracer {
      * Starts and returns a new Span representing a logical unit of work.
      *
      * @param  {string|object} nameOrFields
-     * 		   If the given argument is a `string`, it is the name of the
+     *         If the given argument is a `string`, it is the name of the
      *         the operation from the perpsective of the current service.
      *
      *         If the given argument is a object, it is treated as a set of
@@ -27,15 +27,15 @@ export default class Tracer {
      *         - `operationName` {string} Required. This is the name to use for
      *              the newly created span.
      *         - `parent` {Span}  Optional. The newly created Span will be created
-     *         		as a child of `parent`.
+     *              as a child of `parent`.
      *         - `tags` {object} Optional set of key-value pairs which will be set as
-     *          	tags on the newly created Span. Ownership of the object is
-     *         		passed to the created span and the caller for efficiency
-     *         		reasons.
+     *              tags on the newly created Span. Ownership of the object is
+     *              passed to the created span and the caller for efficiency
+     *              reasons.
      *         - `startTime` {Number} Optional manually specified start time for the
-     *         		created Span object. The time should be specified in
-     *         		milliseconds as Unix timestamp. Decimal value are supported
-     *         		to represent time values with sub-millisecond accuracy.
+     *              created Span object. The time should be specified in
+     *              milliseconds as Unix timestamp. Decimal value are supported
+     *              to represent time values with sub-millisecond accuracy.
      *
      * @return {Span}
      *         A new Span object.

@@ -135,7 +135,7 @@ export default class Span {
         if (!this._imp) {
             return undefined;
         }
-        return this._imp.traceAttribute(key);
+        return this._imp.getTraceAttribute(key);
     }
 
     /**
@@ -186,7 +186,7 @@ export default class Span {
      *         		in milliseconds as a Unix timestamp. Fractional values are
      *         		allowed so that timestamps with sub-millisecond accuracy
      *         		can be represented. If not specified, the implementation
-     *         		is expected to use it's notion of the current time of the
+     *              is expected to use it's notion of the current time of the
      *         		call.
      *         - `event` {string}
      *         		The event name.
