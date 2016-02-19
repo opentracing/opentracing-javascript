@@ -1,14 +1,11 @@
 # OpenTracing API for JavaScript
 
-This library is a JavaScript implementation of Open Tracing API intended for use both on the server and in the browser.
+This library is a JavaScript implementation of Open Tracing API. It is intended for use both on the server and in the browser.
 
-**STATUS**: this library is still in development but should be ready shortly.
+## Required Reading
 
-## Objectives
-
-Distributed tracing and context propagation have become important analysis tools for today's multi-layer distributed systems comprised of numerous micro-services implemented in different languages.  The success of these tools is dependent on pervasive instrumentation of applications and libraries with trace context propagation support.
-
-The OpenTracing project (http://opentracing.github.io) provides a multi-lingual standard for application-level instrumentation that's loosely coupled to any particular downstream tracing or monitoring system. In this way, adding or switching tracing implementations becomes a single-step code change.
+In order to fully understand this platform API, one must must first be familiar with the [OpenTracing project](http://opentracing.io) and
+[terminology](http://opentracing.io/spec/) more generally.
 
 ## Quick Start
 
