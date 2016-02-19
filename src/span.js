@@ -183,16 +183,16 @@ export default class Span {
      * @param  {object} fields
      *         Optional associative array of fields.
      *         - `timestamp` {Number} Optional field specifying the timestamp
-     *         		in milliseconds as a Unix timestamp. Fractional values are
-     *         		allowed so that timestamps with sub-millisecond accuracy
-     *         		can be represented. If not specified, the implementation
+     *              in milliseconds as a Unix timestamp. Fractional values are
+     *              allowed so that timestamps with sub-millisecond accuracy
+     *              can be represented. If not specified, the implementation
      *              is expected to use it's notion of the current time of the
-     *         		call.
+     *              call.
      *         - `event` {string}
-     *         		The event name.
+     *              The event name.
      *         - `payload` {object}
-     *         		An arbitrary structured payload. It is implementation-dependent
-     *         		how this will be processed.
+     *              An arbitrary structured payload. It is implementation-dependent
+     *              how this will be processed.
      */
     log(fields) {
         if (API_CONFORMANCE_CHECKS) {
