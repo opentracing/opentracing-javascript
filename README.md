@@ -21,7 +21,7 @@ In the JS code, add instrumentation to the operations to be tracked. This is com
 var http = require('http');
 var Tracer = require('opentracing');
 
-var span = Tracer.startTrace('http_request');
+var span = Tracer.startSpan('http_request');
 var opts = {
     host : 'example.com',
     method: 'GET',
@@ -31,20 +31,22 @@ var opts = {
 http.request(opts, function (res) {
     res.setEncoding('utf8');
     res.on('error', function (err) {
-        span.info('Request error', err);
+        span.logEvent('request_error', err);
         span.finish();
     });
     res.on('data', function (chunk) {
-        span.info('Data chunk received', chunk);
+        span.logEvent('data_received', chunk);
     });
     res.on('end', function(err) {
-        span.info('Request finished', err);
+        span.logEvent('request_end', err);
         span.finish();
     });
 }).end();
 ```
 
-To capture and make the tracing data actionable, simply update the `initialize` call to specify a backend of your choosing to pipe the data to.  Note: the underlying implementation object is shared with between all inclusions of the `opentracing` package, so only the initialization code needs to concern itself with the implementation package.
+The default behavior of the `opentracing` package is to act as a "no-op" implementation.
+
+To capture and make the tracing data actionable, the `Tracer` object should be initialized with the OpenTracing implementation of your choice as in the pseudo-code below:
 
 ```js
 var Tracer = require('opentracing');
@@ -53,9 +55,7 @@ var TracingBackend = require('tracing-implementation-of-your-choice');
 Tracer.initGlobalTracer(TracingBackend.create());
 ```
 
-## Concepts
-
-The main OpenTracing project (http://opentracing.github.io) provides the most up to date documentation on concepts, semantics, and best practices around effectively using OpenTracing.
+*Note: the underlying implementation object is shared with between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
 ## API
 
@@ -65,14 +65,30 @@ Coming soon!
 
 Coming soon!
 
-## Development
+## JavaScript OpenTracing Implementations
+
+**I.e. information for developers wanting to create an OpenTracing-compatible JavaScript implementation.**
+
+The API layer uses a [bridge pattern](https://en.wikipedia.org/wiki/Bridge_pattern) to pass work to the specific tracing implementation. The indirection allows the API layer to enforce greater API conformance and standardization across implementations (especially in debug builds), which helps keep instrumented code more portable across OpenTracing implementations.
+
+The "implementation API" - i.e. the interface the API layer expects to be able to call on the implementation - is a proper subset of the API layer itself. The surface area of the implementation API has been reduced in the case where the an API layer method (usually a convenience method of some form) can be expressed in terms of another more general method. For example, `logEvent` can be expressed as a `log` call, therefore the implementation only needs to implement `log`.
+
+For truly implementation-dependent methods, the JavaScript API layer does expose `imp()` methods on each major type to allow the implementations to be accessed directly. Use of implementation-dependent methods is discouraged as it immediately makes instrumented code no longer portable.  However, the `imp()` call does at least call attention to deviations from the standard API without making implementation-dependent calls impossible.
+
+## Development Information
+
+**I.e. information for developers working on this package.**
+
+#### Building the library
+
+```
+npm run webpack
+```
+
+This builds both a production and debug version of the library. The production version is intended to introduce minimal overhead, whereas the debug version does more aggressive checks for correct API usage.
 
 #### Unit tests
-
-To run the unit tests:
 
 ```
 npm test
 ```
-
-*See [DEV.md](DEV.md) for additional detail.*
