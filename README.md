@@ -55,7 +55,7 @@ var TracingBackend = require('tracing-implementation-of-your-choice');
 Tracer.initGlobalTracer(TracingBackend.create());
 ```
 
-*Note: the underlying implementation object is shared with between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
+*Note: the underlying implementation object is shared between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
 ## API
 
