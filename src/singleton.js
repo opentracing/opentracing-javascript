@@ -3,17 +3,15 @@
 import Tracer from './tracer';
 
 /**
- *
+ * The Singleton object extends the standard Tracer object so that the default
+ * exported object of the package can be conveniently be used both as the
+ * default tracer and an interface to the library.
  */
 export default class Singleton extends Tracer {
 
-    /**
-     * Creates the Singleton with no underlying implementation (i.e. defaults
-     * to no-op behavior for all functions).
-     */
-    constructor() {
-        super();
-    }
+    // ---------------------------------------------------------------------- //
+    // OpenTracing API methods
+    // ---------------------------------------------------------------------- //
 
     /**
      * Set the global Tracer's underlying implementation.
@@ -30,9 +28,20 @@ export default class Singleton extends Tracer {
      * @return {Tracer} a new Tracer object
      */
     initNewTracer(tracingImp) {
-        if (!this._imp) {
-            return null;
-        }
         return new Tracer(tracingImp);
+    }
+
+    // ---------------------------------------------------------------------- //
+    // Private and non-standard methods
+    // ---------------------------------------------------------------------- //
+
+    /**
+     * Creates the Singleton with no underlying implementation (i.e. defaults
+     * to no-op behavior for all functions).
+     *
+     * Note: this should never be called directly by consumers of the library.
+     */
+    constructor() {
+        super();
     }
 }
