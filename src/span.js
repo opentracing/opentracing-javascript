@@ -170,8 +170,7 @@ export default class Span {
                     operationName: operationNameOrFields,
                 };
             }
-
-            spanImp = this._imp.startChild(operationNameOrFields);
+            spanImp = this._imp.startChildSpan(operationNameOrFields);
         }
         return new Span(spanImp);
     }
