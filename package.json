@@ -1,6 +1,6 @@
 {
   "name": "opentracing",
-  "version": "0.9.3",
+  "version": "0.9.5",
   "main": "dist/opentracing-node-debug.js",
   "scripts": {
     "webpack": "npm run webpack-node-debug && npm run webpack-node-prod && npm run webpack-browser-debug && npm run webpack-browser-prod",
