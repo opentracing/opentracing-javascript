@@ -20,20 +20,24 @@ describe('OpenTracing API', function() {
                 expect(Tracer.initNewTracer).to.be.a('function');
             });
 
+            it('should have the required constants', function() {
+                expect(Tracer.FORMAT_SPLIT_TEXT).to.be.a('string');
+                expect(Tracer.FORMAT_SPLIT_BINARY).to.be.a('string');
+            });
+
             it('should have the required Tracer functions', function() {
                 expect(Tracer.startSpan).to.be.a('function');
-                expect(Tracer.injector).to.be.a('function');
-                expect(Tracer.extractor).to.be.a('function');
+                expect(Tracer.inject).to.be.a('function');
+                expect(Tracer.join).to.be.a('function');
                 expect(Tracer.flush).to.be.a('function');
             });
 
             it('should have the required Span functions', function() {
                 var span = Tracer.startSpan('test_operation');
-
                 expect(span.setTag).to.be.a('function');
                 expect(span.addTags).to.be.a('function');
-                expect(span.setTraceAttribute).to.be.a('function');
-                expect(span.getTraceAttribute).to.be.a('function');
+                expect(span.setBaggageItem).to.be.a('function');
+                expect(span.getBaggageItem).to.be.a('function');
                 expect(span.startChildSpan).to.be.a('function');
                 expect(span.log).to.be.a('function');
                 expect(span.logEvent).to.be.a('function');
