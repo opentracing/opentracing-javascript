@@ -1,6 +1,9 @@
 'use strict';
 
 import Span from './span';
+import Constants from './constants';
+import SplitTextCarrier from './carriers/split_text_carrier';
+import BinaryCarrier from './carriers/binary_carrier';
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -97,6 +100,12 @@ export default class Tracer {
             if (typeof format !== 'string') {
                 throw new Error('format expected to be a string');
             }
+            if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
+                throw new Error('Unexpected carrier object for "split_text" format');
+            }
+            if (format === Constants.FORMAT_BINARY && !(carrier instanceof BinaryCarrier)) {
+                throw new Error('Unexpected carrier object for "binary" format');
+            }
         }
 
         let imp = null;
@@ -108,7 +117,7 @@ export default class Tracer {
     /**
      * Returns a new Span object with the given operation name using the trace
      * information from the carrier.
-     * 
+     *
      * @param  {string} operationName
      *         Operation name to use on the newly created span.
      * @param  {string} format
@@ -127,6 +136,12 @@ export default class Tracer {
             }
             if (typeof format !== 'string' || !format.length) {
                 throw new Error('format is expected to be a string of non-zero length');
+            }
+            if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
+                throw new Error('Unexpected carrier object for "split_text" format');
+            }
+            if (format === Constants.FORMAT_BINARY && !(carrier instanceof BinaryCarrier)) {
+                throw new Error('Unexpected carrier object for "binary" format');
             }
         }
         let spanImp = null;

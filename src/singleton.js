@@ -1,6 +1,9 @@
 'use strict';
 
 import Tracer from './tracer';
+import BinaryCarrier from './carriers/binary_carrier';
+import SplitTextCarrier from './carriers/split_text_carrier';
+import * as Constants from './constants';
 
 /**
  * The Singleton object extends the standard Tracer object so that the default
@@ -39,9 +42,23 @@ export default class Singleton extends Tracer {
      * Creates the Singleton with no underlying implementation (i.e. defaults
      * to no-op behavior for all functions).
      *
+     * The OpenTracing package-level object acts both at the singleton and the
+     * package interface itself, so this Singleton is both a the Tracer and
+     * also includes all the global library symbols.
+     *
      * Note: this should never be called directly by consumers of the library.
      */
     constructor() {
         super();
+
+        // Merge the constants into the singleton object so they are accessible at the
+        // package level.
+        for (let key in Constants) {
+            this[key] = Constants[key];
+        }
+
+        // Include the carriers objects
+        this.SplitTextCarrier = SplitTextCarrier;
+        this.BinaryCarrier = BinaryCarrier;
     }
 }
