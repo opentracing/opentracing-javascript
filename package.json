@@ -1,14 +1,16 @@
 {
   "name": "opentracing",
-  "version": "0.9.5",
+  "version": "0.9.7",
   "main": "dist/opentracing-node-debug.js",
   "scripts": {
+    "prepublish": "npm run webpack",
+    "test": "node node_modules/mocha/bin/mocha -c test/unittest.js",
+
     "webpack": "npm run webpack-node-debug && npm run webpack-node-prod && npm run webpack-browser-debug && npm run webpack-browser-prod",
     "webpack-node-debug": "BUILD_PLATFORM=node BUILD_CONFIG=debug webpack --display-error-details",
     "webpack-node-prod": "BUILD_PLATFORM=node BUILD_CONFIG=prod webpack --display-error-details",
     "webpack-browser-debug": "BUILD_PLATFORM=browser BUILD_CONFIG=debug webpack --display-error-details",
-    "webpack-browser-prod": "BUILD_PLATFORM=browser BUILD_CONFIG=prod webpack --display-error-details",
-    "test": "node node_modules/mocha/bin/mocha -c test/unittest.js"
+    "webpack-browser-prod": "BUILD_PLATFORM=browser BUILD_CONFIG=prod webpack --display-error-details"
   },
   "repository": {
     "type": "git",
