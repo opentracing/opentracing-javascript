@@ -1,6 +1,9 @@
 'use strict';
 
 import Span from './span';
+import Constants from './constants';
+import SplitTextCarrier from './carriers/split_text_carrier';
+import BinaryCarrier from './carriers/binary_carrier';
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -76,50 +79,76 @@ export default class Tracer {
     }
 
     /**
-     * Returns an Injector object that handles the given `format`.
+     * Injects the information about the given span into the carrier
+     * so that the span can propogate across inter-process barriers.
      *
+     * @param  {Span} span
+     *         The span whose information should be injected into the carrier.
      * @param  {string} format
-     *         See the Injector documentation for valid formats.
-     * @return {Injector}
+     *         The format of the carrier.
+     * @param  {any} carrier
+     *         The type of the carrier object is determined by the format.
      */
-    injector(format) {
+    inject(span, format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 1) {
+            if (arguments.length !== 3) {
                 throw new Error('Invalid number of arguments.');
+            }
+            if (!(span instanceof Span)) {
+                throw new Error('Expected span object as first argument');
             }
             if (typeof format !== 'string') {
                 throw new Error('format expected to be a string');
+            }
+            if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
+                throw new Error('Unexpected carrier object for "split_text" format');
+            }
+            if (format === Constants.FORMAT_BINARY && !(carrier instanceof BinaryCarrier)) {
+                throw new Error('Unexpected carrier object for "binary" format');
             }
         }
 
         let imp = null;
         if (this._imp) {
-            imp = this._imp.injector(format);
+            imp = this._imp.inject(span, format, carrier);
         }
-        return new Injector(imp);
     }
 
     /**
-     * Returns an Extractor object that handles the given `format`.
+     * Returns a new Span object with the given operation name using the trace
+     * information from the carrier.
      *
+     * @param  {string} operationName
+     *         Operation name to use on the newly created span.
      * @param  {string} format
-     *         See the Extractor documentation for valid formats.
-     * @return {Injector}
+     *         The format of the carrier.
+     * @param  {any} carrier
+     *         The type of the carrier object is determined by the format.
+     * @return {Span}
      */
-    extractor(format) {
+    join(operationName, format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 1) {
+            if (arguments.length !== 3) {
                 throw new Error('Invalid number of arguments.');
             }
-            if (typeof format !== 'string') {
-                throw new Error('format expected to be a string');
+            if (typeof operationName !== 'string' || !operationName.length) {
+                throw new Error('operationName is expected to be a string of non-zero length');
+            }
+            if (typeof format !== 'string' || !format.length) {
+                throw new Error('format is expected to be a string of non-zero length');
+            }
+            if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
+                throw new Error('Unexpected carrier object for "split_text" format');
+            }
+            if (format === Constants.FORMAT_BINARY && !(carrier instanceof BinaryCarrier)) {
+                throw new Error('Unexpected carrier object for "binary" format');
             }
         }
-        let imp = null;
+        let spanImp = null;
         if (this._imp) {
-            imp = this._imp.extractor(format);
+            spanImp = this._imp.join(operationName, format, carrier);
         }
-        return new Extractor(imp);
+        return new Span(spanImp);
     }
 
     /**
@@ -139,7 +168,6 @@ export default class Tracer {
                 throw new Error('callback expected to be a function');
             }
         }
-
         if (!this._imp) {
             done(null);
             return;

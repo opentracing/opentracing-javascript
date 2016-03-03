@@ -14,6 +14,20 @@ export default class Span {
     // OpenTracing API methods
     // ---------------------------------------------------------------------- //
 
+    setOperationName(name) {
+        if (API_CONFORMANCE_CHECKS) {
+            if (arguments.length !== 1) {
+                throw new Error('Invalid number of arguments');
+            }
+            if (typeof name !== 'string' || name.length > 0) {
+                throw new Error('Name must be a string of length > 0');
+            }
+        }
+        if (this._imp) {
+            this._imp.setOperationName(name);
+        }
+        return this;
+    }
 
     /**
      * Adds a single tag to the span.  See `AddTags()` for details.
@@ -31,6 +45,7 @@ export default class Span {
             }
         }
         this.addTags({ [key] : value });
+        return this;
     }
 
     /**
@@ -63,27 +78,27 @@ export default class Span {
             return;
         }
         this._imp.addTags(keyValuePairs);
+        return this;
     }
 
     /**
      * Set an arbitrary key-value string pair that will be carried along the
      * full path of a trace.
      *
-     * All spans created as children of this span will inherit the set of trace
-     * attributes of this span.
+     * All spans created as children of this span will inherit the baggage items
+     * of this span.
      *
-     * Trace attributes are copied between all spans, both in-process and across
-     * distributed requets, therefore this feature should be used with care to
+     * Baggage items are copied between all spans, both in-process and across
+     * distributed requests, therefore this feature should be used with care to
      * ensure undue overhead is not incurred.
      *
-     * Trace keys are case insensitive, must match the regular expresssion
+     * Keys are case insensitive and must match the regular expresssion
      * `[a-z0-9][-a-z0-9]*`.
      *
      * @param {string} key
      * @param {string} value
      */
-    setTraceAttribute(key, value) {
-
+    setBaggageItem(key, value) {
         if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 2) {
                 throw new Error('Expected 2 arguments');
@@ -107,11 +122,11 @@ export default class Span {
         if (this._imp) {
             this._imp.setTraceAttribute(key, value);
         }
-        return;
+        return this;
     }
 
     /**
-     * Returns the value for the given trace attribute key.
+     * Returns the value for the given baggage item key.
      *
      * @param  {string} key
      *         The key for the given trace attribute.
@@ -119,7 +134,7 @@ export default class Span {
      *         String value for the given key, or undefined if the key does not
      *         correspond to a set trace attribute.
      */
-    getTraceAttribute(key) {
+    getBaggageItem(key) {
         if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 1) {
                 throw new Error('Expected 1 arguments');
@@ -206,6 +221,7 @@ export default class Span {
             return;
         }
         this._imp.log(fields);
+        return this;
     }
 
     /**

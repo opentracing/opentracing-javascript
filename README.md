@@ -4,7 +4,7 @@ This library is a JavaScript implementation of Open Tracing API. It is intended 
 
 ## Required Reading
 
-In order to fully understand this platform API, one must must first be familiar with the [OpenTracing project](http://opentracing.io) and
+To fully understand this platform API, it's helpful to be familiar with the [OpenTracing project](http://opentracing.io) and
 [terminology](http://opentracing.io/spec/) more generally.
 
 ## Quick Start
@@ -15,7 +15,7 @@ Install the package:
 npm install --save opentracing
 ```
 
-In the JS code, add instrumentation to the operations to be tracked. This is composed primarily of using "spans" around operations of interest and adding log statements to capture useful data relevant to those operations.
+In your JavaScript code, add instrumentation to the operations to be tracked. This is composed primarily of using "spans" around operations of interest and adding log statements to capture useful data relevant to those operations.
 
 ```js
 var http = require('http');
