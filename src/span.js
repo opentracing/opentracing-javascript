@@ -1,5 +1,7 @@
 'use strict';
 
+let defaultTracer = require('./default_tracer');
+
 const kKeyRegExp = new RegExp(/^[a-z0-9][-a-z0-9]*/);
 
 /**
@@ -13,6 +15,18 @@ export default class Span {
     // ---------------------------------------------------------------------- //
     // OpenTracing API methods
     // ---------------------------------------------------------------------- //
+
+    tracer() {
+        if (API_CONFORMANCE_CHECKS) {
+            if (arguments.length !== 0) {
+                throw new Error('Invalid number of arguments');
+            }
+        }
+        if (this._imp) {
+            return this._imp.tracer();
+        }
+        return defaultTracer;
+    }
 
     setOperationName(name) {
         if (API_CONFORMANCE_CHECKS) {
