@@ -34,6 +34,7 @@ describe('OpenTracing API', function() {
 
             it('should have the required Span functions', function() {
                 var span = Tracer.startSpan('test_operation');
+                expect(span.tracer).to.be.a('function');
                 expect(span.setTag).to.be.a('function');
                 expect(span.addTags).to.be.a('function');
                 expect(span.setBaggageItem).to.be.a('function');
