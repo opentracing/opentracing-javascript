@@ -107,13 +107,13 @@ export default class Tracer {
                 throw new Error('Expected span object as first argument');
             }
             if (typeof format !== 'string') {
-                throw new Error('format expected to be a string');
+                throw new Error('format expected to be a string. Found: ' + typeof format);
             }
             if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
                 throw new Error('Unexpected carrier object for "split_text" format');
             }
-            if (format === Constants.FORMAT_BINARY && !(carrier instanceof BinaryCarrier)) {
-                throw new Error('Unexpected carrier object for "binary" format');
+            if (format === Constants.FORMAT_SPLIT_BINARY && !(carrier instanceof BinaryCarrier)) {
+                throw new Error('Unexpected carrier object for "split_binary" format');
             }
         }
 
@@ -148,8 +148,8 @@ export default class Tracer {
             if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
                 throw new Error('Unexpected carrier object for "split_text" format');
             }
-            if (format === Constants.FORMAT_BINARY && !(carrier instanceof BinaryCarrier)) {
-                throw new Error('Unexpected carrier object for "binary" format');
+            if (format === Constants.FORMAT_SPLIT_BINARY && !(carrier instanceof BinaryCarrier)) {
+                throw new Error('Unexpected carrier object for "split_binary" format');
             }
         }
         let spanImp = null;

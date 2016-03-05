@@ -1,6 +1,6 @@
 {
   "name": "opentracing",
-  "version": "0.9.11",
+  "version": "0.9.12",
   "main": "dist/opentracing-node.js",
   "scripts": {
     "prepublish": "npm run webpack",

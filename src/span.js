@@ -131,7 +131,7 @@ export default class Span {
             if (typeof key !== 'string' || key.length === 0) {
                 throw new Error('Key must be a string');
             }
-            if (!kKeyRegExp.match(key)) {
+            if (!kKeyRegExp.test(key)) {
                 throw new Error('Invalid trace key');
             }
 
@@ -167,7 +167,7 @@ export default class Span {
             if (typeof key !== 'string' || key.length === 0) {
                 throw new Error('Key must be a string');
             }
-            if (!kKeyRegExp.match(key)) {
+            if (!kKeyRegExp.test(key)) {
                 throw new Error('Invalid trace key');
             }
         }
