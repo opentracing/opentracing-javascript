@@ -43,9 +43,9 @@ export default class Tracer {
      * @return {Span}
      *         A new Span object.
      */
-    startSpan(nameOrFields) {
+    startSpan(nameOrFields, fields) {
         if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 1) {
+            if (arguments.length > 2) {
                 throw new Error('Invalid number of arguments.');
             }
             if (typeof nameOrFields !== 'string' && typeof nameOrFields !== 'object') {
@@ -55,6 +55,9 @@ export default class Tracer {
                 throw new Error('operation name cannot be length zero');
             }
             if (typeof nameOrFields === 'object') {
+                if (arguments.length !== 1) {
+                    throw new Error('Unexpected number of arguments');
+                }
                 if (nameOrFields === null) {
                     throw new Error('fields should not be null');
                 }
@@ -67,13 +70,19 @@ export default class Tracer {
         let spanImp = null;
         if (this._imp) {
             // Normalize the argument so the implementation is always provided
-            // the same argument type.
-            if (typeof nameOrFields === 'string') {
-                nameOrFields = {
-                    operationName : nameOrFields,
+            // an associative array of fields.
+            if (arguments.length === 1) {
+                if (typeof nameOrFields === 'string') {
+                    fields = {
+                        operationName : nameOrFields,
+                    };
+                } else {
+                    fields = nameOrFields;
                 }
+            } else {
+                fields.operationName = nameOrFields;
             }
-            spanImp = this._imp.startSpan(nameOrFields);
+            spanImp = this._imp.startSpan(fields);
         }
         return new Span(spanImp);
     }
@@ -108,9 +117,8 @@ export default class Tracer {
             }
         }
 
-        let imp = null;
         if (this._imp) {
-            imp = this._imp.inject(span, format, carrier);
+            this._imp.inject(span._imp, format, carrier);
         }
     }
 

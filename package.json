@@ -1,7 +1,7 @@
 {
   "name": "opentracing",
-  "version": "0.9.9",
-  "main": "dist/opentracing-node-debug.js",
+  "version": "0.9.10",
+  "main": "dist/opentracing-node.js",
   "scripts": {
     "prepublish": "npm run webpack",
     "test": "node node_modules/mocha/bin/mocha -c test/unittest.js",

@@ -1,5 +1,6 @@
 'use strict';
 
+import Tracer from './tracer';
 let defaultTracer = require('./default_tracer');
 
 const kKeyRegExp = new RegExp(/^[a-z0-9][-a-z0-9]*/);
@@ -16,6 +17,11 @@ export default class Span {
     // OpenTracing API methods
     // ---------------------------------------------------------------------- //
 
+    /**
+     * Returns the Tracer object used to create this Span.
+     *
+     * @return {Tracer}
+     */
     tracer() {
         if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 0) {
@@ -23,11 +29,16 @@ export default class Span {
             }
         }
         if (this._imp) {
-            return this._imp.tracer();
+            return new Tracer(this._imp.tracer());
         }
         return defaultTracer;
     }
 
+    /**
+     * Sets the string name for the logical operation this span represents.
+     *
+     * @param {string} name
+     */
     setOperationName(name) {
         if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 1) {
@@ -134,7 +145,7 @@ export default class Span {
         }
 
         if (this._imp) {
-            this._imp.setTraceAttribute(key, value);
+            this._imp.setBaggageItem(key, value);
         }
         return this;
     }
@@ -164,44 +175,7 @@ export default class Span {
         if (!this._imp) {
             return undefined;
         }
-        return this._imp.getTraceAttribute(key);
-    }
-
-    /**
-     * Starts a child span with the given operation name.
-     *
-     * Child spans automatically inherit all the trace attributes of the
-     * parent span. Child span do not inherit any of the parent span tags.
-     *
-     * @param  {string} operationName
-     *         Operation name to use for the child span.
-     * @param  {Object} fields
-     *         Optional associative array of key-value pairs. The set of valid
-     *         fields is the same as `Tracer.startSpan` with the exception that
-     *         `parent` is not valid in this context.
-     * @return {Span}
-     *         The newly created span.
-     */
-    startChildSpan(operationNameOrFields) {
-        if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 1) {
-                throw new Error('Invalid arguments');
-            }
-            if (typeof operationNameOrFields !== 'string' && typeof operationNameOrFields !== 'object') {
-                throw new Error('Invalid arguments');
-            }
-        }
-
-        let spanImp = null;
-        if (this._imp) {
-            if (typeof operationNameOrFields === 'string') {
-                operationNameOrFields = {
-                    operationName: operationNameOrFields,
-                };
-            }
-            spanImp = this._imp.startChildSpan(operationNameOrFields);
-        }
-        return new Span(spanImp);
+        return this._imp.getBaggageItem(key);
     }
 
     /**
@@ -302,4 +276,6 @@ export default class Span {
     imp() {
         return this._imp;
     }
+
+
 }
