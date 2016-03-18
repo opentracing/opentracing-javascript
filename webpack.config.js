@@ -67,7 +67,7 @@ switch (PLATFORM) {
         bundleSuffix = (CONFIG == 'debug') ? '' : '.min';
         defines.PLATFORM_BROWSER = true;
         target = "web";
-        libraryTarget = "var";
+        libraryTarget = "umd";
         break;
 
     default:
