@@ -2,8 +2,6 @@
 
 import Span from './span';
 import Constants from './constants';
-import SplitTextCarrier from './carriers/split_text_carrier';
-import BinaryCarrier from './carriers/binary_carrier';
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -91,6 +89,20 @@ export default class Tracer {
      * Injects the information about the given span into the carrier
      * so that the span can propogate across inter-process barriers.
      *
+     * See FORMAT_TEXT_MAP and FORMAT_BINARY for the two required carriers.
+     *
+     * Consider this pseudocode example:
+     *
+     *     var clientSpan = ...;
+     *     ...
+     *     // Inject clientSpan into a text carrier.
+     *     var textCarrier = {};
+     *     Tracer.inject(clientSpan, Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *     // Incorporate the textCarrier into the outbound HTTP request header
+     *     // map.
+     *     outboundHTTPReq.headers.extend(textCarrier);
+     *     // ... send the httpReq
+     *
      * @param  {Span} span
      *         The span whose information should be injected into the carrier.
      * @param  {string} format
@@ -125,6 +137,15 @@ export default class Tracer {
     /**
      * Returns a new Span object with the given operation name using the trace
      * information from the carrier.
+     *
+     * See FORMAT_TEXT_MAP and FORMAT_BINARY for the two required carriers.
+     *
+     * Consider this pseudocode example:
+     *
+     *     // Use the inbound HTTP request's headers as a text map carrier.
+     *     var textCarrier = inboundHTTPReq.headers;
+     *     var serverSpan = Tracer.join(
+     *         "operation name", Tracer.FORMAT_TEXT_MAP, textCarrier);
      *
      * @param  {string} operationName
      *         Operation name to use on the newly created span.

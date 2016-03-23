@@ -1,8 +1,6 @@
 'use strict';
 
 import Tracer from './tracer';
-import BinaryCarrier from './carriers/binary_carrier';
-import SplitTextCarrier from './carriers/split_text_carrier';
 import * as Constants from './constants';
 
 /**
@@ -58,9 +56,5 @@ export default class Singleton extends Tracer {
         for (let key in Constants) {
             this[key] = Constants[key];
         }
-
-        // Include the carriers objects
-        this.SplitTextCarrier = SplitTextCarrier;
-        this.BinaryCarrier = BinaryCarrier;
     }
 }
