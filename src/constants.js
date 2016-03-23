@@ -2,12 +2,21 @@
 
 module.exports = {
     /**
-     * Used to inject/join a span with using a BinaryCarrier.
+     * Used to inject/join a span using a ArrayBuffer as a carrier.
      */
-    FORMAT_SPLIT_BINARY : 'split_binary',
+    FORMAT_BINARY : 'binary',
 
     /**
-     * Used to inject/join a span with using a SplitTextCarrier.
+     * Used to inject/join a span using a string->string map as a carrier.
+     *
+     * NOTE: Since HTTP headers are a particularly important use case for the
+     * TEXT_MAP carrier, map keys identify their respective values in a
+     * case-insensitive manner.
+     * 
+     * NOTE: The TEXT_MAP carrier map may contain unrelated data (e.g.,
+     * arbitrary HTTP headers). As such, the Tracer implementation should use a
+     * prefix or other convention to distinguish Tracer-specific key:value
+     * pairs.
      */
-    FORMAT_SPLIT_TEXT   : 'split_text',
+    FORMAT_TEXT_MAP   : 'text_map',
 };
