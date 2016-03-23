@@ -21,8 +21,8 @@ describe('OpenTracing API', function() {
             });
 
             it('should have the required constants', function() {
-                expect(Tracer.FORMAT_SPLIT_TEXT).to.be.a('string');
-                expect(Tracer.FORMAT_SPLIT_BINARY).to.be.a('string');
+                expect(Tracer.FORMAT_TEXT_MAP).to.be.a('string');
+                expect(Tracer.FORMAT_BINARY).to.be.a('string');
             });
 
             it('should have the required Tracer functions', function() {
@@ -42,14 +42,6 @@ describe('OpenTracing API', function() {
                 expect(span.log).to.be.a('function');
                 expect(span.logEvent).to.be.a('function');
                 expect(span.finish).to.be.a('function');
-            });
-
-            it('should have the required carrier objects', function() {
-                expect(Tracer.SplitTextCarrier).to.be.a('function');
-                expect(Tracer.BinaryCarrier).to.be.a('function');
-
-                expect(new Tracer.SplitTextCarrier()).to.be.a('object');
-                expect(new Tracer.BinaryCarrier()).to.be.a('object');                
             });
         });
     });
