@@ -121,11 +121,11 @@ export default class Tracer {
             if (typeof format !== 'string') {
                 throw new Error('format expected to be a string. Found: ' + typeof format);
             }
-            if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
-                throw new Error('Unexpected carrier object for "split_text" format');
+            if (format === Constants.FORMAT_TEXT_MAP && !(typeof carrier === 'object')) {
+                throw new Error('Unexpected carrier object for TEXT_MAP format');
             }
-            if (format === Constants.FORMAT_SPLIT_BINARY && !(carrier instanceof BinaryCarrier)) {
-                throw new Error('Unexpected carrier object for "split_binary" format');
+            if (format === Constants.FORMAT_BINARY && !(carrier instanceof ArrayBuffer)) {
+                throw new Error('Unexpected carrier object for BINARY format');
             }
         }
 
@@ -166,11 +166,11 @@ export default class Tracer {
             if (typeof format !== 'string' || !format.length) {
                 throw new Error('format is expected to be a string of non-zero length');
             }
-            if (format === Constants.FORMAT_SPLIT_TEXT && !(carrier instanceof SplitTextCarrier)) {
-                throw new Error('Unexpected carrier object for "split_text" format');
+            if (format === Constants.FORMAT_TEXT_MAP && !(typeof carrier === 'object')) {
+                throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
             }
-            if (format === Constants.FORMAT_SPLIT_BINARY && !(carrier instanceof BinaryCarrier)) {
-                throw new Error('Unexpected carrier object for "split_binary" format');
+            if (format === Constants.FORMAT_BINARY && !(carrier instanceof ArrayBuffer)) {
+                throw new Error('Unexpected carrier object for FORMAT_BINARY');
             }
         }
         let spanImp = null;

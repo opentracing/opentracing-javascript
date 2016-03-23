@@ -43,6 +43,20 @@ describe('OpenTracing API', function() {
                 expect(span.logEvent).to.be.a('function');
                 expect(span.finish).to.be.a('function');
             });
+
+            it('should enforce the required carrier types', function() {
+                var textCarrier = {};
+                var binCarrier = new ArrayBuffer();
+                var span = Tracer.startSpan('test_operation');
+
+                // Pair format/carrier correctly:
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+
+                // Pair format/carrier incorrectly:
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, 5); }).to.throw(Error);
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, textCarrier); }).to.throw(Error);
+            });
         });
     });
 });

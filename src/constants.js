@@ -2,7 +2,7 @@
 
 module.exports = {
     /**
-     * Used to inject/join a span using a Uint8Array as a carrier.
+     * Used to inject/join a span using a ArrayBuffer as a carrier.
      */
     FORMAT_BINARY : 'binary',
 
