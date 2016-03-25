@@ -57,13 +57,14 @@ Tracer.initGlobalTracer(TracingBackend.create());
 
 *Note: the underlying implementation object is shared between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
-## API
+## Development Information
 
-Coming soon!
+*I.e. information for developers working on this package.*
 
-## Usage Examples
+#### Building the library
 
-Coming soon!
+* `make build` creates the compiled, distributable code
+* `make test` runs the tests
 
 ## JavaScript OpenTracing Implementations
 
@@ -73,22 +74,4 @@ The API layer uses a [bridge pattern](https://en.wikipedia.org/wiki/Bridge_patte
 
 The "implementation API" - i.e. the interface the API layer expects to be able to call on the implementation - is a proper subset of the API layer itself. The surface area of the implementation API has been reduced in the case where the an API layer method (usually a convenience method of some form) can be expressed in terms of another more general method. For example, `logEvent` can be expressed as a `log` call, therefore the implementation only needs to implement `log`.
 
-For truly implementation-dependent methods, the JavaScript API layer does expose `imp()` methods on each major type to allow the implementations to be accessed directly. Use of implementation-dependent methods is discouraged as it immediately makes instrumented code no longer portable.  However, the `imp()` call does at least call attention to deviations from the standard API without making implementation-dependent calls impossible.
-
-## Development Information
-
-*I.e. information for developers working on this package.*
-
-#### Building the library
-
-```
-npm run webpack
-```
-
-This builds both a production and debug version of the library. The production version is intended to introduce minimal overhead, whereas the debug version does more aggressive checks for correct API usage.
-
-#### Unit tests
-
-```
-npm test
-```
+For truly implementation-dependent methods, the JavaScript API layer *does* expose `imp()` methods on each major type to allow the implementations to be accessed directly. Use of implementation-dependent methods is discouraged as it immediately makes instrumented code no longer portable.  However, the `imp()` call does at least call attention to deviations from the standard API without making implementation-dependent calls impossible.
