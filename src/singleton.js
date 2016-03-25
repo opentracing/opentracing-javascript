@@ -1,8 +1,6 @@
 'use strict';
 
 import Tracer from './tracer';
-import BinaryCarrier from './carriers/binary_carrier';
-import SplitTextCarrier from './carriers/split_text_carrier';
 import * as Constants from './constants';
 
 /**
@@ -20,9 +18,11 @@ export default class Singleton extends Tracer {
      * Set the global Tracer's underlying implementation.
      *
      * The behavior is undefined if this function is called more than once.
+     *
+     * @param {TracerImp} The Tracer implementation object
      */
-    initGlobalTracer(tracingImp) {
-        this._imp = tracingImp.newTracer();
+    initGlobalTracer(tracerImp) {
+        this._imp = tracerImp;
     }
 
     /**
@@ -30,8 +30,8 @@ export default class Singleton extends Tracer {
      *
      * @return {Tracer} a new Tracer object
      */
-    initNewTracer(tracingImp) {
-        return new Tracer(tracingImp);
+    initNewTracer(tracerImp) {
+        return new Tracer(tracerImp);
     }
 
     // ---------------------------------------------------------------------- //
@@ -56,9 +56,5 @@ export default class Singleton extends Tracer {
         for (let key in Constants) {
             this[key] = Constants[key];
         }
-
-        // Include the carriers objects
-        this.SplitTextCarrier = SplitTextCarrier;
-        this.BinaryCarrier = BinaryCarrier;
     }
 }
