@@ -2,6 +2,7 @@
 
 import Tracer from './tracer';
 import * as Constants from './constants';
+import BinaryCarrier from './binary_carrier';
 
 /**
  * The Singleton object extends the standard Tracer object so that the default
@@ -56,5 +57,8 @@ export default class Singleton extends Tracer {
         for (let key in Constants) {
             this[key] = Constants[key];
         }
+
+        // Carrier objects to be exposed at the package level
+        this.BinaryCarrier = BinaryCarrier;
     }
 }
