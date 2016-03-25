@@ -2,7 +2,10 @@
 
 module.exports = {
     /**
-     * Used to inject/join a span using a ArrayBuffer as a carrier.
+     * Used to inject/join a span using a binary format.
+     *
+     * A valid binary carrier is any Object with a field named 'buffer' that
+     * contains or will contain the binary data.
      */
     FORMAT_BINARY : 'binary',
 
@@ -12,7 +15,7 @@ module.exports = {
      * NOTE: Since HTTP headers are a particularly important use case for the
      * TEXT_MAP carrier, map keys identify their respective values in a
      * case-insensitive manner.
-     * 
+     *
      * NOTE: The TEXT_MAP carrier map may contain unrelated data (e.g.,
      * arbitrary HTTP headers). As such, the Tracer implementation should use a
      * prefix or other convention to distinguish Tracer-specific key:value

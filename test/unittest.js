@@ -45,17 +45,24 @@ describe('OpenTracing API', function() {
             });
 
             it('should enforce the required carrier types', function() {
-                var textCarrier = {};
-                var binCarrier = new ArrayBuffer();
                 var span = Tracer.startSpan('test_operation');
 
-                // Pair format/carrier correctly:
+                var textCarrier = {};
                 expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-
-                // Pair format/carrier incorrectly:
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, ''); }).to.throw(Error);
                 expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, 5); }).to.throw(Error);
-                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, textCarrier); }).to.throw(Error);
+
+                var binCarrier = new Tracer.BinaryCarrier();
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, new Object); }).to.not.throw(Error);
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                expect(function() { Tracer.inject(span, Tracer.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+
+                expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+                expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, { buffer : '' }); }).to.throw(Error);
+                expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, { buffer : 5 }); }).to.throw(Error);
             });
         });
     });

@@ -103,12 +103,17 @@ export default class Tracer {
      *     outboundHTTPReq.headers.extend(textCarrier);
      *     // ... send the httpReq
      *
+     * For FORMAT_BINARY, inject() will set the buffer field to an Array-like
+     * (Array, ArrayBuffer, or TypedBuffer) object containing the injected
+     * binary data.  Any valid Object can be used as long as the buffer field of
+     * the object can be set.
+     *
      * @param  {Span} span
      *         The span whose information should be injected into the carrier.
      * @param  {string} format
      *         The format of the carrier.
      * @param  {any} carrier
-     *         The type of the carrier object is determined by the format.
+     *         See the method description for details on the carrier object.
      */
     inject(span, format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
@@ -121,10 +126,10 @@ export default class Tracer {
             if (typeof format !== 'string') {
                 throw new Error('format expected to be a string. Found: ' + typeof format);
             }
-            if (format === Constants.FORMAT_TEXT_MAP && !(typeof carrier === 'object')) {
+            if (format === Constants.FORMAT_TEXT_MAP && typeof carrier !== 'object') {
                 throw new Error('Unexpected carrier object for TEXT_MAP format');
             }
-            if (format === Constants.FORMAT_BINARY && !(carrier instanceof ArrayBuffer)) {
+            if (format === Constants.FORMAT_BINARY && typeof carrier !== 'object') {
                 throw new Error('Unexpected carrier object for BINARY format');
             }
         }
@@ -146,6 +151,9 @@ export default class Tracer {
      *     var textCarrier = inboundHTTPReq.headers;
      *     var serverSpan = Tracer.join(
      *         "operation name", Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *
+     * For FORMAT_BINARY, `carrier` is expected to have a field named `buffer`
+     * that contains an Array-like object (Array, ArrayBuffer, or TypedBuffer).
      *
      * @param  {string} operationName
      *         Operation name to use on the newly created span.
@@ -169,8 +177,10 @@ export default class Tracer {
             if (format === Constants.FORMAT_TEXT_MAP && !(typeof carrier === 'object')) {
                 throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
             }
-            if (format === Constants.FORMAT_BINARY && !(carrier instanceof ArrayBuffer)) {
-                throw new Error('Unexpected carrier object for FORMAT_BINARY');
+            if (format === Constants.FORMAT_BINARY) {
+                if (carrier.buffer !== undefined && typeof carrier.buffer !== 'object') {
+                    throw new Error('Unexpected carrier object for FORMAT_BINARY');
+                }
             }
         }
         let spanImp = null;
