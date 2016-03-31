@@ -7,7 +7,7 @@ global.expect = require('chai').expect;
 // library.
 global.Tracer = require('../dist/opentracing-node-debug.js');
 
-var NoopTracerImp = require('./noop_imp.js');
+var NoopTracerImp;
 
 describe('OpenTracing API', function() {
 
@@ -69,6 +69,10 @@ describe('OpenTracing API', function() {
         });
 
         describe('Miscellaneous', function() {
+            before(function() {
+                NoopTracerImp = require('../src/imp/noop_imp.js');
+            });
+
             it('should not report leaks after setting the global tracer', function() {
                 Tracer.initGlobalTracer(new NoopTracerImp());
             });

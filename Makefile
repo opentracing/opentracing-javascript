@@ -1,4 +1,4 @@
-.PHONY: build publish test test_all
+.PHONY: build clean publish test test_all
 
 DST_FILES = \
 	dist/opentracing-node-debug.js \
@@ -12,6 +12,9 @@ SRC_FILES = $(shell find src/ -type f) \
 build: $(DST_FILES)
 $(DST_FILES) : node_modules $(SRC_FILES)
 	npm run webpack
+
+clean:
+	rm dist/*.js
 
 node_modules:
 	npm install
