@@ -7,14 +7,16 @@ global.expect = require('chai').expect;
 // library.
 global.Tracer = require('../dist/opentracing-node-debug.js');
 
+var NoopTracerImp;
+
 describe('OpenTracing API', function() {
 
     // Test that the API layer, while in debug mode, catches API misuse
     // before the implementation is even invoked (i.e. even with the no-op
     // implementation).
-    describe("Base layer conformance", function() {
+    describe('Base layer conformance', function() {
 
-        describe("API surface area", function() {
+        describe('API surface area', function() {
             it('should have the required functions on the singleton', function() {
                 expect(Tracer.initGlobalTracer).to.be.a('function');
                 expect(Tracer.initNewTracer).to.be.a('function');
@@ -63,6 +65,16 @@ describe('OpenTracing API', function() {
                 expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
                 expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, { buffer : '' }); }).to.throw(Error);
                 expect(function() { Tracer.join('test_op2', Tracer.FORMAT_BINARY, { buffer : 5 }); }).to.throw(Error);
+            });
+        });
+
+        describe('Miscellaneous', function() {
+            before(function() {
+                NoopTracerImp = require('../src/imp/noop_imp.js');
+            });
+
+            it('should not report leaks after setting the global tracer', function() {
+                Tracer.initGlobalTracer(new NoopTracerImp());
             });
         });
     });

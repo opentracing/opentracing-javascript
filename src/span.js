@@ -276,6 +276,4 @@ export default class Span {
     imp() {
         return this._imp;
     }
-
-
 }

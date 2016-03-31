@@ -24,6 +24,10 @@ export default class Singleton extends Tracer {
      */
     initGlobalTracer(tracerImp) {
         this._imp = tracerImp;
+
+        // Provide the implementation with a handle to the interface. This can
+        // also be used a post-initialization signal.
+        tracerImp.setInterface(this);
     }
 
     /**
@@ -32,7 +36,9 @@ export default class Singleton extends Tracer {
      * @return {Tracer} a new Tracer object
      */
     initNewTracer(tracerImp) {
-        return new Tracer(tracerImp);
+        let tracer = new Tracer(tracerImp);
+        tracerImp.setInterface(this);
+        return tracer;
     }
 
     // ---------------------------------------------------------------------- //
