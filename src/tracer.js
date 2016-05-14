@@ -80,6 +80,9 @@ export default class Tracer {
             } else {
                 fields.operationName = nameOrFields;
             }
+            if (fields.parent) {
+                fields.parent = fields.parent._imp;
+            }
             spanImp = this._imp.startSpan(fields);
         }
         return new Span(spanImp);
