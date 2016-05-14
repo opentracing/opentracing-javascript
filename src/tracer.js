@@ -70,20 +70,19 @@ export default class Tracer {
             // Normalize the argument so the implementation is always provided
             // an associative array of fields.
             if (arguments.length === 1) {
-                if (typeof nameOrFields === 'string') {
-                    fields = {
-                        operationName : nameOrFields,
-                    };
-                } else {
+                if (typeof nameOrFields === 'object') {
                     fields = nameOrFields;
+                    nameOrFields = fields.operationName;
+                } else {
+                    fields = {};
                 }
-            } else {
-                fields.operationName = nameOrFields;
             }
-            if (fields.parent) {
-                fields.parent = fields.parent._imp;
-            }
-            spanImp = this._imp.startSpan(fields);
+            spanImp = this._imp.startSpan({
+                operationName: operationName,
+                parent: fields.parent && fields.parent._imp,
+                tags: fields.tags,
+                startTime: fields.startTime,
+            });
         }
         return new Span(spanImp);
     }
