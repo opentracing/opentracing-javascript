@@ -78,8 +78,8 @@ export default class Tracer {
                 }
             }
             spanImp = this._imp.startSpan({
-                operationName: operationName,
-                parent: fields.parent && fields.parent._imp,
+                operationName: nameOrFields,
+                parent: fields.parent ? fields.parent._imp : undefined,
                 tags: fields.tags,
                 startTime: fields.startTime,
             });
