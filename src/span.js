@@ -181,20 +181,15 @@ export default class Span {
     /**
      * Explicitly create a log record associated with the span.
      *
-     * @param  {[type]} fields [description]
-     * @param  {object} fields
-     *         Optional associative array of fields.
-     *         - `timestamp` {Number} Optional field specifying the timestamp
-     *              in milliseconds as a Unix timestamp. Fractional values are
-     *              allowed so that timestamps with sub-millisecond accuracy
-     *              can be represented. If not specified, the implementation
-     *              is expected to use it's notion of the current time of the
-     *              call.
-     *         - `event` {string}
-     *              The event name.
-     *         - `payload` {object}
-     *              An arbitrary structured payload. It is implementation-dependent
-     *              how this will be processed.
+     * @param {object} fields - object containing the log record properties
+     * @param {number} [fields.timestamp] - optional field specifying the
+     *        timestamp in milliseconds as a Unix timestamp. Fractional values
+     *        are allowed so that timestamps with sub-millisecond accuracy
+     *        can be represented. If not specified, the implementation is
+     *        expected to use it's notion of the current time of the call.
+     * @param {string} [fields.event] - the event name
+     * @param {object} [fields.payload] - an arbitrary structured payload. It is
+     *        implementation-dependent how this will be processed.
      */
     log(fields) {
         if (API_CONFORMANCE_CHECKS) {
@@ -215,9 +210,9 @@ export default class Span {
     /**
      * Logs a event with an optional payload.
      *
-     * @param  {string} eventName [description]
-     * @param  {} payload   [description]
-     * @return {[type]}           [description]
+     * @param  {string} eventName - string associated with the log record
+     * @param  {object} [payload] - arbitrary payload object associated with the
+     *         log record.
      */
     logEvent(eventName, payload) {
         return this.log({

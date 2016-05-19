@@ -5,7 +5,8 @@ import * as Constants from './constants';
 import BinaryCarrier from './binary_carrier';
 
 /**
- * The Singleton object extends the standard Tracer object so that the default
+ * The Singleton object is the default export of the package and extends the
+ * standard Tracer object so that the default
  * exported object of the package can be conveniently be used both as the
  * default tracer and an interface to the library.
  */
@@ -20,7 +21,7 @@ export default class Singleton extends Tracer {
      *
      * The behavior is undefined if this function is called more than once.
      *
-     * @param {TracerImp} The Tracer implementation object
+     * @param {TracerImp} tracerImp - the Tracer implementation object
      */
     initGlobalTracer(tracerImp) {
         this._imp = tracerImp;
@@ -49,7 +50,8 @@ export default class Singleton extends Tracer {
     // Private and non-standard methods
     // ---------------------------------------------------------------------- //
 
-    /**
+    /* For internal use only:
+     *
      * Creates the Singleton with no underlying implementation (i.e. defaults
      * to no-op behavior for all functions).
      *
