@@ -18,28 +18,23 @@ export default class Tracer {
     /**
      * Starts and returns a new Span representing a logical unit of work.
      *
-     * @param  {string|object} nameOrFields
-     *         If the given argument is a `string`, it is the name of the
-     *         the operation from the perpsective of the current service.
-     *
-     *         If the given argument is a object, it is treated as a set of
-     *         fields to set on the newly created span.
-     *
-     *         - `operationName` {string} Required. This is the name to use for
-     *              the newly created span.
-     *         - `parent` {Span}  Optional. The newly created Span will be created
-     *              as a child of `parent`.
-     *         - `tags` {object} Optional set of key-value pairs which will be set as
-     *              tags on the newly created Span. Ownership of the object is
-     *              passed to the created span and the caller for efficiency
-     *              reasons.
-     *         - `startTime` {Number} Optional manually specified start time for the
-     *              created Span object. The time should be specified in
-     *              milliseconds as Unix timestamp. Decimal value are supported
-     *              to represent time values with sub-millisecond accuracy.
-     *
-     * @return {Span}
-     *         A new Span object.
+     * @param  {string|object} nameOrFields - if the given argument is a
+     *        string, it is the name of the operation and the second `fields`
+     *        argument is optional. If it is an object, it is treated as the
+     *        fields argument and a second argument should not be provided.
+     * @param {object} [fields] - the fields to set on the newly created span.
+     * @param {string} [fields.operationName] - the name to use for the newly
+     *        created span. Required if called with a single argument.
+     * @param {Span} [fields.parent] - the parent of the newly created span
+     * @param {object} [fields.tags] - set of key-value pairs which will be set
+     *        as tags on the newly created Span. Ownership of the object is
+     *        passed to the created span for efficiency reasons (the caller
+     *        should not modify this object after calling startSpan).
+     * @param {number} [fields.startTime] - a manually specified start time for
+     *        the created Span object. The time should be specified in
+     *        milliseconds as Unix timestamp. Decimal value are supported
+     *        to represent time values with sub-millisecond accuracy.
+     * @return {Span} - a new Span object.
      */
     startSpan(nameOrFields, fields) {
         if (API_CONFORMANCE_CHECKS) {
@@ -108,12 +103,11 @@ export default class Tracer {
      * binary data.  Any valid Object can be used as long as the buffer field of
      * the object can be set.
      *
-     * @param  {Span} span
-     *         The span whose information should be injected into the carrier.
-     * @param  {string} format
-     *         The format of the carrier.
-     * @param  {any} carrier
-     *         See the method description for details on the carrier object.
+     * @param  {Span} span - the span whose information should be injected into
+     *         the carrier.
+     * @param  {string} format - the format of the carrier.
+     * @param  {any} carrier - see the method description for details on the
+     *         carrier object.
      */
     inject(span, format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
@@ -155,12 +149,11 @@ export default class Tracer {
      * For FORMAT_BINARY, `carrier` is expected to have a field named `buffer`
      * that contains an Array-like object (Array, ArrayBuffer, or TypedBuffer).
      *
-     * @param  {string} operationName
-     *         Operation name to use on the newly created span.
-     * @param  {string} format
-     *         The format of the carrier.
-     * @param  {any} carrier
-     *         The type of the carrier object is determined by the format.
+     * @param  {string} operationName - operation name to use on the newly
+     *         created span.
+     * @param  {string} format - the format of the carrier.
+     * @param  {any} carrier - the type of the carrier object is determined by
+     *         the format.
      * @return {Span}
      */
     join(operationName, format, carrier) {
@@ -193,10 +186,10 @@ export default class Tracer {
     /**
      * Request that any buffered or in-memory data is flushed out of the process.
      *
-     * @param {function} done
-     *        Optional callback function with the signature `function(err)` that
-     *        will be called as soon as the flush completes. `err` should be
-     *        null or undefined if the flush was successful.
+     * @param {function(err: objectg)} done - optional callback function with
+     *        the signature `function(err)` that will be called as soon as the
+     *        flush completes. `err` should be null or undefined if the flush
+     *        was successful.
      */
     flush(done) {
         if (API_CONFORMANCE_CHECKS) {
