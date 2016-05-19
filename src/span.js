@@ -258,7 +258,8 @@ export default class Span {
     // ---------------------------------------------------------------------- //
 
     /**
-     * Constructs a new Span object. This method should not be called directly.
+     * Constructs a new Span object, this method should not be called directly;
+     * Tracer.startSpan() or Tracer.join() should be used instead.
      */
     constructor(imp) {
         this._imp = imp;
