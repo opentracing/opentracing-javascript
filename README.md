@@ -57,6 +57,10 @@ Tracer.initGlobalTracer(TracingBackend.create());
 
 *Note: the underlying implementation object is shared between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
+## API Documentation
+
+There is a hosted copy of the current generated [ESDoc API Documentation here](https://doc.esdoc.org/github.com/opentracing/opentracing-javascript/).
+
 ## Development Information
 
 *I.e. information for developers working on this package.*
