@@ -42,7 +42,7 @@ export default class Singleton extends Tracer {
         let tracer = new Tracer(tracerImp);
         if (tracerImp) {
             tracerImp.setInterface(this);
-        }
+	}
         return tracer;
     }
 

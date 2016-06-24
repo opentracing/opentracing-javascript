@@ -18,17 +18,19 @@ NoopSpanImp.prototype.log = function (fields) {
 NoopSpanImp.prototype.finish = function (finishTime) {
 }
 
+let noopSpanSingleton = new NoopSpanImp();
+
 function NoopTracerImp() {
 }
 NoopTracerImp.prototype.setInterface = function (inf) {
 }
 NoopTracerImp.prototype.startSpan = function (nameOrFields, fields) {
-    return new NoopSpanImp();
+    return noopSpanSingleton;
 }
 NoopTracerImp.prototype.inject = function (span, format, carrier) {
 }
 NoopTracerImp.prototype.join = function (operationName, format, carrier) {
-    return new NoopSpanImp();
+    return noopSpanSingleton;
 }
 
 module.exports = NoopTracerImp;
