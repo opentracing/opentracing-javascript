@@ -1,0 +1,5 @@
+src/imp/platform/browser/generated/thrift_all.js
+src/imp/platform/browser/thrift_api/crouton_types.js
+src/imp/platform/node/generated/crouton_types.js
+src/imp/platform/node/thrift_api/crouton_types.js
+src/imp/platform/node/crouton_thrift.js

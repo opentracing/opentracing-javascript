@@ -55,7 +55,7 @@ export default class Tracer {
                     throw new Error('fields should not be null');
                 }
                 if (!nameOrFields.operationName) {
-                    throw new Error('operationName is a required parameter')
+                    throw new Error('operationName is a required parameter');
                 }
             }
         }
@@ -118,7 +118,7 @@ export default class Tracer {
                 throw new Error('Expected span object as first argument');
             }
             if (typeof format !== 'string') {
-                throw new Error('format expected to be a string. Found: ' + typeof format);
+                throw new Error(`format expected to be a string. Found: ${typeof format}`);
             }
             if (format === Constants.FORMAT_TEXT_MAP && typeof carrier !== 'object') {
                 throw new Error('Unexpected carrier object for TEXT_MAP format');

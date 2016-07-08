@@ -19,6 +19,9 @@ clean:
 node_modules:
 	npm install
 
+lint:
+	node node_modules/eslint/bin/eslint.js --fix --color src
+
 # NOTE: `npm version` automatically creates a git commit ang git tag for the
 # incremented version
 publish: test
@@ -29,6 +32,7 @@ publish: test
 	npm publish
 
 test: build
+	node node_modules/eslint/bin/eslint.js --color src
 	npm test
 
 test_all: build

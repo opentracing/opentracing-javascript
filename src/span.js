@@ -216,8 +216,8 @@ export default class Span {
      */
     logEvent(eventName, payload) {
         return this.log({
-            'event'   : eventName,
-            'payload' : payload,
+            event   : eventName,
+            payload : payload,
         });
     }
 

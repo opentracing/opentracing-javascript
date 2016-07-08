@@ -21,5 +21,5 @@ module.exports = {
      * prefix or other convention to distinguish Tracer-specific key:value
      * pairs.
      */
-    FORMAT_TEXT_MAP   : 'text_map',
+    FORMAT_TEXT_MAP : 'text_map',
 };
