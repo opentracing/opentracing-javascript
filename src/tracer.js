@@ -1,6 +1,7 @@
 'use strict';
 
 import Span from './span';
+import SpanContext from './span_context';
 import Constants from './constants';
 
 /**
@@ -18,14 +19,29 @@ export default class Tracer {
     /**
      * Starts and returns a new Span representing a logical unit of work.
      *
-     * @param  {string|object} nameOrFields - if the given argument is a
+     * For example:
+     *
+     *     // Start a new (parentless) root Span:
+     *     var parent = Tracer.startSpan('DoWork');
+     *
+     *     // Start a new (child) Span:
+     *     var child = Tracer.startSpan('Subroutine', {
+     *         reference: Tracer.childOf(parent.context()),
+     *     });
+     *
+     * @param {string|object} nameOrFields - if the given argument is a
      *        string, it is the name of the operation and the second `fields`
      *        argument is optional. If it is an object, it is treated as the
      *        fields argument and a second argument should not be provided.
      * @param {object} [fields] - the fields to set on the newly created span.
      * @param {string} [fields.operationName] - the name to use for the newly
      *        created span. Required if called with a single argument.
-     * @param {Span} [fields.parent] - the parent of the newly created span
+     * @param {SpanContext} [fields.reference] - a single Reference instance
+     *        pointing to a causal parent SpanContext. If specified,
+     *        `fields.references` must be unspecified.
+     * @param {array} [fields.references] - an array of Reference instances,
+     *        each pointing to a causal parent SpanContext. If specified,
+     *        `fields.reference` must be unspecified.
      * @param {object} [fields.tags] - set of key-value pairs which will be set
      *        as tags on the newly created Span. Ownership of the object is
      *        passed to the created span for efficiency reasons (the caller
@@ -75,16 +91,23 @@ export default class Tracer {
             } else {
                 fields.operationName = nameOrFields;
             }
+            if (API_CONFORMANCE_CHECKS && fields.reference && fields.references) {
+                throw new Error('At most one of `reference` and ' +
+                    '`references` may be specified');
+            }
+
             spanImp = this._imp.startSpan(fields);
         }
         return new Span(spanImp);
     }
 
     /**
-     * Injects the information about the given span into the carrier
-     * so that the span can propogate across inter-process barriers.
+     * Injects the given SpanContext instance for cross-process propagation
+     * within `carrier`. The expected type of `carrier` depends on the value of
+     * `format.
      *
-     * See FORMAT_TEXT_MAP and FORMAT_BINARY for the two required carriers.
+     * OpenTracing defines a common set of `format` values (see FORMAT_TEXT_MAP
+     * and FORMAT_BINARY), and each has an expected carrier type.
      *
      * Consider this pseudocode example:
      *
@@ -92,7 +115,7 @@ export default class Tracer {
      *     ...
      *     // Inject clientSpan into a text carrier.
      *     var textCarrier = {};
-     *     Tracer.inject(clientSpan, Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *     Tracer.inject(clientSpan.context(), Tracer.FORMAT_TEXT_MAP, textCarrier);
      *     // Incorporate the textCarrier into the outbound HTTP request header
      *     // map.
      *     outboundHTTPReq.headers.extend(textCarrier);
@@ -103,19 +126,19 @@ export default class Tracer {
      * binary data.  Any valid Object can be used as long as the buffer field of
      * the object can be set.
      *
-     * @param  {Span} span - the span whose information should be injected into
-     *         the carrier.
-     * @param  {string} format - the format of the carrier.
-     * @param  {any} carrier - see the method description for details on the
+     * @param  {SpanContext} spanContext - the SpanContext to inject into the
      *         carrier object.
+     * @param  {string} format - the format of the carrier.
+     * @param  {any} carrier - see the documentation for the chosen `format`
+     *         for a description of the carrier object.
      */
-    inject(span, format, carrier) {
+    inject(spanContext, format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
             if (arguments.length !== 3) {
                 throw new Error('Invalid number of arguments.');
             }
-            if (!(span instanceof Span)) {
-                throw new Error('Expected span object as first argument');
+            if (!(spanContext instanceof SpanContext)) {
+                throw new Error('Expected SpanContext object as first argument');
             }
             if (typeof format !== 'string') {
                 throw new Error(`format expected to be a string. Found: ${typeof format}`);
@@ -129,40 +152,36 @@ export default class Tracer {
         }
 
         if (this._imp) {
-            this._imp.inject(span._imp, format, carrier);
+            this._imp.inject(spanContext._imp, format, carrier);
         }
     }
 
     /**
-     * Returns a new Span object with the given operation name using the trace
-     * information from the carrier.
+     * Returns a SpanContext instance extracted from `carrier` in the given
+     * `format`.
      *
-     * See FORMAT_TEXT_MAP and FORMAT_BINARY for the two required carriers.
+     * OpenTracing defines a common set of `format` values (see FORMAT_TEXT_MAP
+     * and FORMAT_BINARY), and each has an expected carrier type.
      *
      * Consider this pseudocode example:
      *
      *     // Use the inbound HTTP request's headers as a text map carrier.
      *     var textCarrier = inboundHTTPReq.headers;
-     *     var serverSpan = Tracer.join(
-     *         "operation name", Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *     var wireCtx = Tracer.extract(Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *     var serverSpan = Tracer.startSpan('...', Tracer.childOf(wireCtx));
      *
      * For FORMAT_BINARY, `carrier` is expected to have a field named `buffer`
      * that contains an Array-like object (Array, ArrayBuffer, or TypedBuffer).
      *
-     * @param  {string} operationName - operation name to use on the newly
-     *         created span.
      * @param  {string} format - the format of the carrier.
      * @param  {any} carrier - the type of the carrier object is determined by
      *         the format.
-     * @return {Span}
+     * @return {SpanContext}
      */
-    join(operationName, format, carrier) {
+    extract(format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 3) {
+            if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments.');
-            }
-            if (typeof operationName !== 'string' || !operationName.length) {
-                throw new Error('operationName is expected to be a string of non-zero length');
             }
             if (typeof format !== 'string' || !format.length) {
                 throw new Error('format is expected to be a string of non-zero length');
@@ -176,11 +195,11 @@ export default class Tracer {
                 }
             }
         }
-        let spanImp = null;
+        let spanContextImp = null;
         if (this._imp) {
-            spanImp = this._imp.join(operationName, format, carrier);
+            spanContextImp = this._imp.extract(format, carrier);
         }
-        return new Span(spanImp);
+        return new SpanContext(spanContextImp);
     }
 
     /**

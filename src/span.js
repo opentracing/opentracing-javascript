@@ -1,9 +1,8 @@
 'use strict';
 
 import Tracer from './tracer';
+import SpanContext from './span_context';
 let defaultTracer = require('./default_tracer');
-
-const kKeyRegExp = new RegExp(/^[a-z0-9][-a-z0-9]*/);
 
 /**
  * Span represents a logical unit of work as part of a broader Trace. Examples
@@ -16,6 +15,25 @@ export default class Span {
     // ---------------------------------------------------------------------- //
     // OpenTracing API methods
     // ---------------------------------------------------------------------- //
+
+    /**
+     * Returns the SpanContext object associated with this Span.
+     *
+     * @return {SpanContext}
+     */
+    context() {
+        if (API_CONFORMANCE_CHECKS) {
+            if (arguments.length !== 0) {
+                throw new Error('Invalid number of arguments');
+            }
+        }
+        let spanContextImp = null;
+        if (this._imp) {
+            spanContextImp = this._imp.context();
+        }
+        // If there's no imp...
+        return new SpanContext(spanContextImp);
+    }
 
     /**
      * Returns the Tracer object used to create this Span.
@@ -107,78 +125,6 @@ export default class Span {
     }
 
     /**
-     * Set an arbitrary key-value string pair that will be carried along the
-     * full path of a trace.
-     *
-     * All spans created as children of this span will inherit the baggage items
-     * of this span.
-     *
-     * Baggage items are copied between all spans, both in-process and across
-     * distributed requests, therefore this feature should be used with care to
-     * ensure undue overhead is not incurred.
-     *
-     * Keys are case insensitive and must match the regular expresssion
-     * `[a-z0-9][-a-z0-9]*`.
-     *
-     * @param {string} key
-     * @param {string} value
-     */
-    setBaggageItem(key, value) {
-        if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 2) {
-                throw new Error('Expected 2 arguments');
-            }
-            if (typeof key !== 'string' || key.length === 0) {
-                throw new Error('Key must be a string');
-            }
-            if (!kKeyRegExp.test(key)) {
-                throw new Error('Invalid trace key');
-            }
-
-            let valueType = typeof value;
-            if (value !== null &&
-                valueType !== 'boolean' &&
-                valueType !== 'number' &&
-                valueType !== 'string') {
-                throw new Error('Trace attribute values can only be basic types');
-            }
-        }
-
-        if (this._imp) {
-            this._imp.setBaggageItem(key, value);
-        }
-        return this;
-    }
-
-    /**
-     * Returns the value for the given baggage item key.
-     *
-     * @param  {string} key
-     *         The key for the given trace attribute.
-     * @return {string}
-     *         String value for the given key, or undefined if the key does not
-     *         correspond to a set trace attribute.
-     */
-    getBaggageItem(key) {
-        if (API_CONFORMANCE_CHECKS) {
-            if (arguments.length !== 1) {
-                throw new Error('Expected 1 arguments');
-            }
-            if (typeof key !== 'string' || key.length === 0) {
-                throw new Error('Key must be a string');
-            }
-            if (!kKeyRegExp.test(key)) {
-                throw new Error('Invalid trace key');
-            }
-        }
-
-        if (!this._imp) {
-            return undefined;
-        }
-        return this._imp.getBaggageItem(key);
-    }
-
-    /**
      * Explicitly create a log record associated with the span.
      *
      * @param {object} fields - object containing the log record properties
@@ -222,14 +168,11 @@ export default class Span {
     }
 
     /**
-     * Indicates that the unit of work represented by the span is complete or
-     * has otherwise been terminated.
+     * Sets the end timestamp and finalizes Span state.
      *
-     * All Span objects must have finish() called on them before they are
-     * reported to the backend implementation.
-     *
-     * Once `finish()` is called on a Span object, the behavior of all methods
-     * on the object is considered undefined.
+     * With the exception of calls to Span.context() (which are always allowed),
+     * finish() must be the last call made to any span instance, and to do
+     * otherwise leads to undefined behavior.
      *
      * @param  {Number} finishTime
      *         Optional finish time in milliseconds as a Unix timestamp. Decimal
