@@ -66,7 +66,7 @@ export default class Singleton extends Tracer {
 
         // Merge the constants into the singleton object so they are accessible at the
         // package level.
-        for (let key in Constants) {
+        for (let key in Constants) {        // eslint-disable-line no-restricted-syntax
             this[key] = Constants[key];
         }
 

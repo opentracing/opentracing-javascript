@@ -83,7 +83,7 @@ describe('OpenTracing API', function() {
 
     describe('Memory usage', function() {
         before(function() {
-            NoopTracerImp = require('../src/imp/noop_imp.js');
+            NoopTracerImp = require('./imp/noop_imp.js');
         });
 
         it('should not report leaks after setting the global tracer', function() {
