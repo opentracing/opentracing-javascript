@@ -63,7 +63,7 @@ There is a hosted copy of the current generated [ESDoc API Documentation here](h
 
 ## Development Information
 
-*I.e. information for developers working on this package.*
+*I.e., information for developers working on this package.*
 
 #### Building the library
 
