@@ -27,9 +27,9 @@ export default class Reference {
     /**
      * Initialize a new Reference instance.
      *
-     * @param {type} string - the Reference type constant (e.g.,
+     * @param {string} type - the Reference type constant (e.g.,
      *        REFERENCE_CHILD_OF or REFERENCE_FOLLOWS_FROM).
-     * @param {spanContext} SpanContext - the SpanContext being referred to.
+     * @param {SpanContext} spanContext - the SpanContext being referred to.
      */
     constructor(type, spanContext) {
         this._type = type;

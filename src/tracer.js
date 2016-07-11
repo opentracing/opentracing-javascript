@@ -95,7 +95,15 @@ export default class Tracer {
                 throw new Error('At most one of `reference` and ' +
                     '`references` may be specified');
             }
-
+            // Convert fields.reference to fields.references as needed.
+            if (fields.reference) {
+                if (fields.references) {
+                    fields.references.push(fields.reference);
+                } else {
+                    fields.references = [fields.reference];
+                }
+                delete(fields.reference);
+            }
             spanImp = this._imp.startSpan(fields);
         }
         return new Span(spanImp);

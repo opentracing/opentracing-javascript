@@ -6,14 +6,12 @@ NoopSpanContextImp.prototype.getBaggageItem = function (key) {
 };
 
 function NoopSpanImp() {
-    this._context = new NoopSpanContextImp();
 };
 NoopSpanImp.prototype.tracer = function () {
     return null;
 };
 NoopSpanImp.prototype.context = function () {
-    // XXX what's the deal here? Why can tracer() return null?
-    return this._context;
+    return null;
 };
 NoopSpanImp.prototype.setOperationName = function (name) {
 };

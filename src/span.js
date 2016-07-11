@@ -31,7 +31,6 @@ export default class Span {
         if (this._imp) {
             spanContextImp = this._imp.context();
         }
-        // If there's no imp...
         return new SpanContext(spanContextImp);
     }
 
