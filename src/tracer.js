@@ -177,6 +177,8 @@ export default class Tracer {
      * @param  {any} carrier - the type of the carrier object is determined by
      *         the format.
      * @return {SpanContext}
+     *         The extracted SpanContext, or null if no such SpanContext could
+     *         be found in `carrier`
      */
     extract(format, carrier) {
         if (API_CONFORMANCE_CHECKS) {
@@ -199,7 +201,10 @@ export default class Tracer {
         if (this._imp) {
             spanContextImp = this._imp.extract(format, carrier);
         }
-        return new SpanContext(spanContextImp);
+        if (spanContextImp !== null) {
+            return new SpanContext(spanContextImp);
+        }
+        return null;
     }
 
     /**
