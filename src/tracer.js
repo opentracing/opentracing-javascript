@@ -105,8 +105,8 @@ export default class Tracer {
             }
             // Convert fields.childOf to fields.references as needed.
             if (fields.childOf) {
-                // Coerce from a Span to a SpanContext.
-                let childOf = (
+                // Convert from a Span or a SpanContext into a Reference.
+                let childOf = this.childOf(
                         fields.childOf instanceof Span ?
                         fields.childOf.context() :
                         fields.childOf);
