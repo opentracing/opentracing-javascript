@@ -3,6 +3,7 @@
 import Tracer from './tracer';
 import * as Constants from './constants';
 import BinaryCarrier from './binary_carrier';
+import Reference from './reference';
 
 /**
  * The Singleton object is the default export of the package and extends the
@@ -46,6 +47,28 @@ export default class Singleton extends Tracer {
         return tracer;
     }
 
+    /**
+     * Return a new REFERENCE_CHILD_OF reference.
+     *
+     * @param {SpanContext} spanContext - the parent SpanContext instance to
+     *        reference.
+     * @return a REFERENCE_CHILD_OF reference pointing to `spanContext`
+     */
+    childOf(spanContext) {
+        return new Reference(Constants.REFERENCE_CHILD_OF, spanContext);
+    }
+
+    /**
+     * Return a new REFERENCE_FOLLOWS_FROM reference.
+     *
+     * @param {SpanContext} spanContext - the parent SpanContext instance to
+     *        reference.
+     * @return a REFERENCE_FOLLOWS_FROM reference pointing to `spanContext`
+     */
+    followsFrom(spanContext) {
+        return new Reference(Constants.REFERENCE_FOLLOWS_FROM, spanContext);
+    }
+
     // ---------------------------------------------------------------------- //
     // Private and non-standard methods
     // ---------------------------------------------------------------------- //
@@ -69,6 +92,7 @@ export default class Singleton extends Tracer {
         for (let key in Constants) {        // eslint-disable-line no-restricted-syntax
             this[key] = Constants[key];
         }
+        this.Reference = Reference;
 
         // Carrier objects to be exposed at the package level
         this.BinaryCarrier = BinaryCarrier;
