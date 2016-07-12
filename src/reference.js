@@ -1,5 +1,8 @@
 'use strict';
 
+import Span from './span';
+import SpanContext from './span_context';
+
 /**
  * Reference pairs a reference type constant (e.g., REFERENCE_CHILD_OF or
  * REFERENCE_FOLLOWS_FROM) with the SpanContext it points to.
@@ -29,10 +32,20 @@ export default class Reference {
      *
      * @param {string} type - the Reference type constant (e.g.,
      *        REFERENCE_CHILD_OF or REFERENCE_FOLLOWS_FROM).
-     * @param {SpanContext} spanContext - the SpanContext being referred to.
+     * @param {SpanContext} spanContext - the SpanContext being referred to. As
+     *        a convenience, a Span instance may be passed in instead (in which
+     *        case its .context() is used here).
      */
     constructor(type, spanContext) {
+        if (API_CONFORMANCE_CHECKS) {
+            if (!(spanContext instanceof SpanContext || spanContext instanceof Span)) {
+                throw new Error('spanContext must be a Span or SpanContext instance');
+            }
+        }
         this._type = type;
-        this._spanContext = spanContext;
+        this._spanContext = (
+                spanContext instanceof Span ?
+                spanContext.context() :
+                spanContext);
     }
 }

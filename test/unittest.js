@@ -72,6 +72,15 @@ describe('OpenTracing API', function() {
             expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, { buffer : '' }); }).to.throw(Error);
             expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, { buffer : 5 }); }).to.throw(Error);
         });
+
+        it('should coerce to spanContext as needed', function() {
+            var span = Tracer.startSpan('test_operation');
+
+            var textCarrier = {};
+            expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+            expect(function() { Tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
+            expect(function() { var _ = new Tracer.Reference(Tracer.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
+        });
     });
 
     describe('No-op tracer', function() {

@@ -92,6 +92,7 @@ export default class Singleton extends Tracer {
         for (let key in Constants) {        // eslint-disable-line no-restricted-syntax
             this[key] = Constants[key];
         }
+        this.Reference = Reference;
 
         // Carrier objects to be exposed at the package level
         this.BinaryCarrier = BinaryCarrier;

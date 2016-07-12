@@ -36,12 +36,13 @@ export default class Tracer {
      * @param {object} [fields] - the fields to set on the newly created span.
      * @param {string} [fields.operationName] - the name to use for the newly
      *        created span. Required if called with a single argument.
-     * @param {SpanContext} [fields.reference] - a single Reference instance
-     *        pointing to a causal parent SpanContext. If specified,
-     *        `fields.references` must be unspecified.
+     * @param {SpanContext} [fields.childOf] - a parent SpanContext (or Span,
+     *        for convenience) that the newly-started span will be the child of
+     *        (per REFERENCE_CHILD_OF). If specified, `fields.references` must
+     *        be unspecified.
      * @param {array} [fields.references] - an array of Reference instances,
      *        each pointing to a causal parent SpanContext. If specified,
-     *        `fields.reference` must be unspecified.
+     *        `fields.childOf` must be unspecified.
      * @param {object} [fields.tags] - set of key-value pairs which will be set
      *        as tags on the newly created Span. Ownership of the object is
      *        passed to the created span for efficiency reasons (the caller
@@ -91,18 +92,31 @@ export default class Tracer {
             } else {
                 fields.operationName = nameOrFields;
             }
-            if (API_CONFORMANCE_CHECKS && fields.reference && fields.references) {
-                throw new Error('At most one of `reference` and ' +
-                    '`references` may be specified');
-            }
-            // Convert fields.reference to fields.references as needed.
-            if (fields.reference) {
-                if (fields.references) {
-                    fields.references.push(fields.reference);
-                } else {
-                    fields.references = [fields.reference];
+            if (API_CONFORMANCE_CHECKS) {
+                if (fields.childOf && fields.references) {
+                    throw new Error('At most one of `childOf` and ' +
+                            '`references` may be specified');
                 }
-                delete(fields.reference);
+                if (fields.childOf && !(
+                            fields.childOf instanceof Span ||
+                            fields.childOf instanceof SpanContext)) {
+                    throw new Error('childOf must be a Span or SpanContext instance');
+                }
+            }
+            // Convert fields.childOf to fields.references as needed.
+            if (fields.childOf) {
+                // Coerce from a Span to a SpanContext.
+                let childOf = (
+                        fields.childOf instanceof Span ?
+                        fields.childOf.context() :
+                        fields.childOf);
+
+                if (fields.references) {
+                    fields.references.push(childOf);
+                } else {
+                    fields.references = [childOf];
+                }
+                delete(fields.childOf);
             }
             spanImp = this._imp.startSpan(fields);
         }
@@ -135,7 +149,9 @@ export default class Tracer {
      * the object can be set.
      *
      * @param  {SpanContext} spanContext - the SpanContext to inject into the
-     *         carrier object.
+     *         carrier object. As a convenience, a Span instance may be passed
+     *         in instead (in which case its .context() is used for the
+     *         inject()).
      * @param  {string} format - the format of the carrier.
      * @param  {any} carrier - see the documentation for the chosen `format`
      *         for a description of the carrier object.
@@ -145,8 +161,8 @@ export default class Tracer {
             if (arguments.length !== 3) {
                 throw new Error('Invalid number of arguments.');
             }
-            if (!(spanContext instanceof SpanContext)) {
-                throw new Error('Expected SpanContext object as first argument');
+            if (!(spanContext instanceof SpanContext || spanContext instanceof Span)) {
+                throw new Error('first argument must be a SpanContext or Span instance');
             }
             if (typeof format !== 'string') {
                 throw new Error(`format expected to be a string. Found: ${typeof format}`);
@@ -160,6 +176,10 @@ export default class Tracer {
         }
 
         if (this._imp) {
+            // Allow the user to pass a Span instead of a SpanContext
+            if (spanContext instanceof Span) {
+                spanContext = spanContext.context();
+            }
             this._imp.inject(spanContext._imp, format, carrier);
         }
     }
