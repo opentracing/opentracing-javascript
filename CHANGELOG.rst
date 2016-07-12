@@ -3,6 +3,12 @@
 History
 -------
 
+0.10.3 (2016-06-12)
+-------------------
+
+- Use the `referee` terminology within `Reference`
+
+
 0.10.2 (2016-06-12)
 -------------------
 
