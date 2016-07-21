@@ -121,13 +121,25 @@ export default class Tracer {
     }
 
     /**
-     * Returns a new CHILD_OF Reference to the given Span or SpanContext object.
+     * Return a new REFERENCE_CHILD_OF reference.
      *
-     * @param {object} spanOrSpanContext - the Span or SpanContext to reference
-     * @return {Reference}
+     * @param {SpanContext} spanContext - the parent SpanContext instance to
+     *        reference.
+     * @return a REFERENCE_CHILD_OF reference pointing to `spanContext`
      */
-    childOf(spanOrSpanContext) {
-        return new Reference(Constants.REFERENCE_CHILD_OF, spanOrSpanContext);
+    childOf(spanContext) {
+        return new Reference(Constants.REFERENCE_CHILD_OF, spanContext);
+    }
+
+    /**
+     * Return a new REFERENCE_FOLLOWS_FROM reference.
+     *
+     * @param {SpanContext} spanContext - the parent SpanContext instance to
+     *        reference.
+     * @return a REFERENCE_FOLLOWS_FROM reference pointing to `spanContext`
+     */
+    followsFrom(spanContext) {
+        return new Reference(Constants.REFERENCE_FOLLOWS_FROM, spanContext);
     }
 
     /**
