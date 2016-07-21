@@ -3,6 +3,7 @@
 import Span from './span';
 import SpanContext from './span_context';
 import Constants from './constants';
+import Reference from './reference';
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -106,11 +107,7 @@ export default class Tracer {
             // Convert fields.childOf to fields.references as needed.
             if (fields.childOf) {
                 // Convert from a Span or a SpanContext into a Reference.
-                let childOf = this.childOf(
-                        fields.childOf instanceof Span ?
-                        fields.childOf.context() :
-                        fields.childOf);
-
+                let childOf = this.childOf(fields.childOf);
                 if (fields.references) {
                     fields.references.push(childOf);
                 } else {
@@ -121,6 +118,16 @@ export default class Tracer {
             spanImp = this._imp.startSpan(fields);
         }
         return new Span(spanImp);
+    }
+
+    /**
+     * Returns a new CHILD_OF Reference to the given Span or SpanContext object.
+     *
+     * @param {object} spanOrSpanContext - the Span or SpanContext to reference
+     * @return {Reference}
+     */
+    childOf(spanOrSpanContext) {
+        return new Reference(Constants.REFERENCE_CHILD_OF, spanOrSpanContext);
     }
 
     /**
