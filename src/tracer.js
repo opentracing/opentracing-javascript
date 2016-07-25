@@ -147,25 +147,21 @@ export default class Tracer {
      * within `carrier`. The expected type of `carrier` depends on the value of
      * `format.
      *
-     * OpenTracing defines a common set of `format` values (see FORMAT_TEXT_MAP
-     * and FORMAT_BINARY), and each has an expected carrier type.
+     * OpenTracing defines a common set of `format` values (see
+     * FORMAT_TEXT_MAP, FORMAT_HTTP_HEADERS, and FORMAT_BINARY), and each has
+     * an expected carrier type.
      *
      * Consider this pseudocode example:
      *
      *     var clientSpan = ...;
      *     ...
      *     // Inject clientSpan into a text carrier.
-     *     var textCarrier = {};
-     *     Tracer.inject(clientSpan.context(), Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *     var headersCarrier = {};
+     *     Tracer.inject(clientSpan.context(), Tracer.FORMAT_HTTP_HEADERS, headersCarrier);
      *     // Incorporate the textCarrier into the outbound HTTP request header
      *     // map.
-     *     outboundHTTPReq.headers.extend(textCarrier);
+     *     outboundHTTPReq.headers.extend(headersCarrier);
      *     // ... send the httpReq
-     *
-     * For FORMAT_BINARY, inject() will set the buffer field to an Array-like
-     * (Array, ArrayBuffer, or TypedBuffer) object containing the injected
-     * binary data.  Any valid Object can be used as long as the buffer field of
-     * the object can be set.
      *
      * @param  {SpanContext} spanContext - the SpanContext to inject into the
      *         carrier object. As a convenience, a Span instance may be passed
@@ -187,10 +183,13 @@ export default class Tracer {
                 throw new Error(`format expected to be a string. Found: ${typeof format}`);
             }
             if (format === Constants.FORMAT_TEXT_MAP && typeof carrier !== 'object') {
-                throw new Error('Unexpected carrier object for TEXT_MAP format');
+                throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
+            }
+            if (format === Constants.FORMAT_HTTP_HEADERS && typeof carrier !== 'object') {
+                throw new Error('Unexpected carrier object for FORMAT_HTTP_HEADERS');
             }
             if (format === Constants.FORMAT_BINARY && typeof carrier !== 'object') {
-                throw new Error('Unexpected carrier object for BINARY format');
+                throw new Error('Unexpected carrier object for FORMAT_BINARY');
             }
         }
 
@@ -207,18 +206,16 @@ export default class Tracer {
      * Returns a SpanContext instance extracted from `carrier` in the given
      * `format`.
      *
-     * OpenTracing defines a common set of `format` values (see FORMAT_TEXT_MAP
-     * and FORMAT_BINARY), and each has an expected carrier type.
+     * OpenTracing defines a common set of `format` values (see
+     * FORMAT_TEXT_MAP, FORMAT_HTTP_HEADERS, and FORMAT_BINARY), and each has
+     * an expected carrier type.
      *
      * Consider this pseudocode example:
      *
      *     // Use the inbound HTTP request's headers as a text map carrier.
-     *     var textCarrier = inboundHTTPReq.headers;
-     *     var wireCtx = Tracer.extract(Tracer.FORMAT_TEXT_MAP, textCarrier);
+     *     var headersCarrier = inboundHTTPReq.headers;
+     *     var wireCtx = Tracer.extract(Tracer.FORMAT_HTTP_HEADERS, headersCarrier);
      *     var serverSpan = Tracer.startSpan('...', Tracer.childOf(wireCtx));
-     *
-     * For FORMAT_BINARY, `carrier` is expected to have a field named `buffer`
-     * that contains an Array-like object (Array, ArrayBuffer, or TypedBuffer).
      *
      * @param  {string} format - the format of the carrier.
      * @param  {any} carrier - the type of the carrier object is determined by
@@ -237,6 +234,9 @@ export default class Tracer {
             }
             if (format === Constants.FORMAT_TEXT_MAP && !(typeof carrier === 'object')) {
                 throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
+            }
+            if (format === Constants.FORMAT_HTTP_HEADERS && !(typeof carrier === 'object')) {
+                throw new Error('Unexpected carrier object for FORMAT_HTTP_HEADERS');
             }
             if (format === Constants.FORMAT_BINARY) {
                 if (carrier.buffer !== undefined && typeof carrier.buffer !== 'object') {
