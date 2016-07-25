@@ -160,7 +160,7 @@ export default class Tracer {
      *     Tracer.inject(clientSpan.context(), Tracer.FORMAT_HTTP_HEADERS, headersCarrier);
      *     // Incorporate the textCarrier into the outbound HTTP request header
      *     // map.
-     *     outboundHTTPReq.headers.extend(headersCarrier);
+     *     Object.assign(outboundHTTPReq.headers, headersCarrier);
      *     // ... send the httpReq
      *
      * @param  {SpanContext} spanContext - the SpanContext to inject into the
@@ -215,7 +215,7 @@ export default class Tracer {
      *     // Use the inbound HTTP request's headers as a text map carrier.
      *     var headersCarrier = inboundHTTPReq.headers;
      *     var wireCtx = Tracer.extract(Tracer.FORMAT_HTTP_HEADERS, headersCarrier);
-     *     var serverSpan = Tracer.startSpan('...', Tracer.childOf(wireCtx));
+     *     var serverSpan = Tracer.startSpan('...', { childOf : wireCtx });
      *
      * @param  {string} format - the format of the carrier.
      * @param  {any} carrier - the type of the carrier object is determined by
