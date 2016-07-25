@@ -61,7 +61,7 @@ export default class Span {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }
-            if (typeof name !== 'string' || name.length > 0) {
+            if (typeof name !== 'string' || name.length === 0) {
                 throw new Error('Name must be a string of length > 0');
             }
         }
