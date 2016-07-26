@@ -22,7 +22,7 @@ node_modules:
 lint:
 	node node_modules/eslint/bin/eslint.js --fix --color src
 
-# NOTE: `npm version` automatically creates a git commit ang git tag for the
+# NOTE: `npm version` automatically creates a git commit and git tag for the
 # incremented version
 publish: test
 	npm version patch
