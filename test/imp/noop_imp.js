@@ -1,9 +1,5 @@
 function NoopSpanContextImp() {
 };
-NoopSpanContextImp.prototype.setBaggageItem = function (key, value) {
-};
-NoopSpanContextImp.prototype.getBaggageItem = function (key) {
-};
 
 function NoopSpanImp() {
 };
@@ -22,6 +18,10 @@ NoopSpanImp.prototype.addTags = function (keyValuePairs) {
 NoopSpanImp.prototype.log = function (fields) {
 };
 NoopSpanImp.prototype.finish = function (finishTime) {
+};
+NoopSpanImp.prototype.setBaggageItem = function (key, value) {
+};
+NoopSpanImp.prototype.getBaggageItem = function (key) {
 };
 
 function NoopTracerImp() {

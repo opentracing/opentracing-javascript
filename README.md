@@ -2,6 +2,8 @@
 
 This library is a JavaScript implementation of Open Tracing API. It is intended for use both on the server and in the browser.
 
+[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov]
+
 ## Required Reading
 
 To fully understand this platform API, it's helpful to be familiar with the [OpenTracing project](http://opentracing.io) and
@@ -94,3 +96,9 @@ The API layer uses a [bridge pattern](https://en.wikipedia.org/wiki/Bridge_patte
 The "implementation API" - i.e. the interface the API layer expects to be able to call on the implementation - is a proper subset of the API layer itself. The surface area of the implementation API has been reduced in the case where the an API layer method (usually a convenience method of some form) can be expressed in terms of another more general method. For example, `logEvent` can be expressed as a `log` call, therefore the implementation only needs to implement `log`.
 
 For truly implementation-dependent methods, the JavaScript API layer *does* expose `imp()` methods on each major type to allow the implementations to be accessed directly. Use of implementation-dependent methods is discouraged as it immediately makes instrumented code no longer portable.  However, the `imp()` call does at least call attention to deviations from the standard API without making implementation-dependent calls impossible.
+
+
+  [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
+  [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
+  [ci]: https://travis-ci.org/opentracing/opentracing-javascript
+  [cov]: https://coveralls.io/github/opentracing/opentracing-javascript?branch=master
