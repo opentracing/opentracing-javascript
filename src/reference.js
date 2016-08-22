@@ -37,7 +37,7 @@ export default class Reference {
      *        (in which case its .context() is used here).
      */
     constructor(type, referencedContext) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (!(referencedContext instanceof SpanContext || referencedContext instanceof Span)) {
                 throw new Error('referencedContext must be a Span or SpanContext instance');
             }

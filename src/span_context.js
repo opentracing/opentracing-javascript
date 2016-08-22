@@ -33,7 +33,7 @@ export default class SpanContext {
      * @param {string} value
      */
     setBaggageItem(key, value) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments');
             }
@@ -53,7 +53,7 @@ export default class SpanContext {
      *         correspond to a set trace attribute.
      */
     getBaggageItem(key) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }

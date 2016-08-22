@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/default_tracer.js"],"names":[],"mappings":"AAAA;;AAEA;;;;;;AAEA,OAAO,OAAP,GAAiB,yBAAjB","file":"default_tracer.js","sourcesContent":["'use strict';\n\nimport Singleton from './singleton';\n\nmodule.exports = new Singleton();\n"]}

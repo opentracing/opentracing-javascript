@@ -22,7 +22,7 @@ export default class Span {
      * @return {SpanContext}
      */
     context() {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 0) {
                 throw new Error('Invalid number of arguments');
             }
@@ -40,7 +40,7 @@ export default class Span {
      * @return {Tracer}
      */
     tracer() {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 0) {
                 throw new Error('Invalid number of arguments');
             }
@@ -57,7 +57,7 @@ export default class Span {
      * @param {string} name
      */
     setOperationName(name) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }
@@ -78,7 +78,7 @@ export default class Span {
      * @param {any} value
      */
     setTag(key, value) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments');
             }
@@ -107,7 +107,7 @@ export default class Span {
      * @return {[type]} [description]
      */
     addTags(keyValuePairs) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }
@@ -137,7 +137,7 @@ export default class Span {
      *        implementation-dependent how this will be processed.
      */
     log(fields) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }
@@ -180,7 +180,7 @@ export default class Span {
      *         implementation) will be used.
      */
     finish(finishTime) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 1) {
                 throw new Error('Invalid arguments');
             }

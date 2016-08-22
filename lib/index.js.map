@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/index.js"],"names":[],"mappings":";;AAAA,OAAO,OAAP,GAAiB,QAAQ,kBAAR,CAAjB","file":"index.js","sourcesContent":["module.exports = require('./default_tracer');\n"]}
