@@ -29,7 +29,7 @@ History
 0.10.0
 ------
 
-This release makes the `opentracing-javascript` package conformant with the ideas proposed in [opentracing/opentracing.github.io#99](https://github.com/opentracing/opentracing.github.io/issues/99). The API changes can be summarized as follows:
+This release makes the `opentracing-javascript` package conformant with the ideas proposed in https://github.com/opentracing/opentracing.github.io/issues/99. The API changes can be summarized as follows:
 
 - Every `Span` has a `SpanContext`, available via `Span.context()`. The `SpanContext` represents the subset of `Span` state that must propagate across process boundaries in-band along with the application data.
 - `Span.setBaggageItem()` and `Span.getBaggageItem()` have moved to `SpanContext`. Calls can be migrated trivially: `Span.context().{set,get}BaggageItem()`.
@@ -40,10 +40,14 @@ This release makes the `opentracing-javascript` package conformant with the idea
 
 TL;DR, to start a child span, do this:
 
+::
+
     let parentSpan = ...;
     let childSpan = Tracer.startSpan('child op', { childOf : parentSpan });
 
 ... and to continue a trace from the server side of an RPC, do this:
+
+::
 
     let format = ...;  // same as for Tracer.join()
     let carrier = ...;  // same as for Tracer.join()
