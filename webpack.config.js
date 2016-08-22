@@ -10,19 +10,33 @@ var devtool = undefined;
 
 if (CONFIG === 'debug') {
     devtool = "source-map";
+    plugins.push(
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': '"debug"'
+            }
+        })
+    );
 } else {
     bundleSuffix = ".min";
-    plugins.push(new webpack.optimize.UglifyJsPlugin({
-        minimize: true,
-        compress : {
-            dead_code : true,
-            unused : true,
-            // Hide the dead code warnings. The defines intentionally create
-            // dead code paths.
-            warnings  : false,
-        }
-    }));
-    plugins.push(new webpack.optimize.DedupePlugin());
+    plugins.push(
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': '"production"'
+            }
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            minimize: true,
+            compress : {
+                dead_code : true,
+                unused : true,
+                // Hide the dead code warnings. The defines intentionally create
+                // dead code paths.
+                warnings  : false,
+            },
+        }),
+        new webpack.optimize.DedupePlugin()
+    );
 }
 
 //
