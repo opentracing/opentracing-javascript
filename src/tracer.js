@@ -55,7 +55,7 @@ export default class Tracer {
      * @return {Span} - a new Span object.
      */
     startSpan(nameOrFields, fields) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2) {
                 throw new Error('Invalid number of arguments.');
             }
@@ -93,7 +93,7 @@ export default class Tracer {
             } else {
                 fields.operationName = nameOrFields;
             }
-            if (API_CONFORMANCE_CHECKS) {
+            if (process.env.NODE_ENV === 'debug') {
                 if (fields.childOf && fields.references) {
                     throw new Error('At most one of `childOf` and ' +
                             '`references` may be specified');
@@ -172,7 +172,7 @@ export default class Tracer {
      *         for a description of the carrier object.
      */
     inject(spanContext, format, carrier) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 3) {
                 throw new Error('Invalid number of arguments.');
             }
@@ -225,7 +225,7 @@ export default class Tracer {
      *         be found in `carrier`
      */
     extract(format, carrier) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments.');
             }
@@ -263,7 +263,7 @@ export default class Tracer {
      *        was successful.
      */
     flush(done) {
-        if (API_CONFORMANCE_CHECKS) {
+        if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 1) {
                 throw new Error('Invalid number of arguments');
             }

@@ -6,7 +6,6 @@
     "node": true
   },
   "globals": {
-      "API_CONFORMANCE_CHECKS" : true,
   },
   "rules": {
       "consistent-return": [0],

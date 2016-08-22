@@ -5,7 +5,7 @@ global.expect = require('chai').expect;
 // Unit testing is done against the debug version of the library as it has
 // additional conformance checks that are optimized out of the production
 // library.
-global.Tracer = require('../dist/opentracing-node-debug.js');
+global.Tracer = require('../debug');
 
 var NoopTracerImp;
 
