@@ -40,16 +40,12 @@ This release makes the `opentracing-javascript` package conformant with the idea
 
 TL;DR, to start a child span, do this:
 
-```javascript
-let parentSpan = ...;
-let childSpan = Tracer.startSpan('child op', { childOf : parentSpan });
-```
+    let parentSpan = ...;
+    let childSpan = Tracer.startSpan('child op', { childOf : parentSpan });
 
 ... and to continue a trace from the server side of an RPC, do this:
 
-```javascript
-let format = ...;  // same as for Tracer.join()
-let carrier = ...;  // same as for Tracer.join()
-let extractedCtx = Tracer.extract(format, carrier);
-let serverSpan = Tracer.startSpan('...', { childOf : extractedCtx });
-```
+    let format = ...;  // same as for Tracer.join()
+    let carrier = ...;  // same as for Tracer.join()
+    let extractedCtx = Tracer.extract(format, carrier);
+    let serverSpan = Tracer.startSpan('...', { childOf : extractedCtx });
