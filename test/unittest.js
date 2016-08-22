@@ -44,12 +44,8 @@ describe('OpenTracing API', function() {
             expect(span.log).to.be.a('function');
             expect(span.logEvent).to.be.a('function');
             expect(span.finish).to.be.a('function');
-        });
-
-        it('should have the required SpanContext functions', function() {
-            var spanContext = Tracer.startSpan('test_operation').context();
-            expect(spanContext.setBaggageItem).to.be.a('function');
-            expect(spanContext.getBaggageItem).to.be.a('function');
+            expect(span.setBaggageItem).to.be.a('function');
+            expect(span.getBaggageItem).to.be.a('function');
         });
 
         it('should enforce the required carrier types', function() {
