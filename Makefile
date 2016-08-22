@@ -26,7 +26,8 @@ lib-debug/%.js: src/%.js
 	mkdir -p $(@D)
 	$(CMD_BABEL) --presets es2015 $< -o $@ --source-maps
 
-# Use webpack to build a single file bundle for the browser
+# Use webpack to build a minified production bundle ande debug bundle for the
+# browser
 .PHONY: build-browser
 build-browser: $(DST_BROWSER) webpack.config.js package.json
 $(DST_BROWSER): $(SOURCES_JS)
