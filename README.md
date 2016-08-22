@@ -9,7 +9,7 @@ To fully understand this platform API, it's helpful to be familiar with the [Ope
 
 ## Quick Start
 
-Install the package:
+Install the package using `npm`:
 
 ```bash
 npm install --save opentracing
@@ -57,13 +57,32 @@ Tracer.initGlobalTracer(TracingBackend.create());
 
 *Note: the underlying implementation object is shared between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
+### Usage in the browser
+
+The package contains two bundles built with webpack that can be included using a standard `<script>` tag. The library will be exposed under the global `opentracing` symbol:
+
+* `dist/opentracing-browser.min.js` - minified, no runtime checks
+* `dist/opentracing-browser.js` - debug version with runtime checks
+
+### Node.js debug version
+
+```javascript
+var opentracing = require('opentracing/debug');
+```
+
+Requiring `opentracing/debug` will include a version of the library with additional runtime checks that are useful for debugging but not desirable for production use.
+
 ## API Documentation
 
 There is a hosted copy of the current generated [ESDoc API Documentation here](https://doc.esdoc.org/github.com/opentracing/opentracing-javascript/).
 
 ## Notes on backwards-incompatible changes
 
-### v0.9.x to v0.10.x
+### v0.11 to v0.12
+
+* Renamed the browser global symbol from `Tracer` to `opentracing`
+
+### v0.9 to v0.10
 
 This release makes the `opentracing-javascript` package conformant with the ideas proposed in [opentracing/opentracing.github.io#99](https://github.com/opentracing/opentracing.github.io/issues/99). The API changes can be summarized as follows:
 

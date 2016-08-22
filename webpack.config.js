@@ -9,9 +9,9 @@ var bundleSuffix = '';
 var devtool = undefined;
 
 if (CONFIG === 'debug') {
-    bundleSuffix = ".min";
     devtool = "source-map";
 } else {
+    bundleSuffix = ".min";
     plugins.push(new webpack.optimize.UglifyJsPlugin({
         minimize: true,
         compress : {
