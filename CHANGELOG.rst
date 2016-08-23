@@ -17,6 +17,7 @@ History
 *Non-breaking changes*
 
 - A `MockTracer` implementation has been added to the source code
+- Adds a naive example, runnable via `make example`
 
 
 0.12.0 (2016-08-22)
