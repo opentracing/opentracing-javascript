@@ -36,9 +36,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
+// Object.assign() is not available on Node v0.12, so implement a similar
+// function here (subset of a proper polyfill).
+function _extend(target) {
+    for (var index = 1; index < arguments.length; index++) {
+        var source = arguments[index];
+        for (var key in source) {
+            // eslint-disable-line no-restricted-syntax
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
+}
+
 // Use `module.exports` rather than `export` to avoid the need to use `.default`
 // when requiring the package in ES5 code.
-module.exports = Object.assign({
+module.exports = _extend({
     BinaryCarrier: _binary_carrier2.default,
     Reference: _reference2.default,
     SpanContext: _span_context2.default,

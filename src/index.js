@@ -7,10 +7,24 @@ import SpanContext from './span_context';
 import Span from './span';
 import Tracer from './tracer';
 
+// Object.assign() is not available on Node v0.12, so implement a similar
+// function here (subset of a proper polyfill).
+function _extend(target) {
+    for (let index = 1; index < arguments.length; index++) {
+        const source = arguments[index];
+        for (let key in source) { // eslint-disable-line no-restricted-syntax
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
+}
+
 
 // Use `module.exports` rather than `export` to avoid the need to use `.default`
 // when requiring the package in ES5 code.
-module.exports = Object.assign(
+module.exports = _extend(
     {
         BinaryCarrier : BinaryCarrier,
         Reference     : Reference,
