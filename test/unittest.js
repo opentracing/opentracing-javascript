@@ -150,7 +150,6 @@ describe('OpenTracing API', function() {
     });
 
     describe('SpanContext', function() {
-
         var tracer = new opentracing.Tracer();
         var span = tracer.startSpan('test_span');
         var spanContext = span.context();

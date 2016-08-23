@@ -78,25 +78,24 @@ Requiring `opentracing/debug` will include a version of the library with additio
 
 There is a hosted copy of the current generated [ESDoc API Documentation here](https://doc.esdoc.org/github.com/opentracing/opentracing-javascript/).
 
-## Development Information
+## Contributing & developer information
 
-*I.e., information for developers working on this package.*
+See the [OpenTracing website](http://opentracing.io) for general information on contributing to OpenTracing.
 
-#### Building the library
+The project is built using a `Makefile`. Run:
 
 * `make build` creates the compiled, distributable code
 * `make test` runs the tests
 
-## JavaScript OpenTracing Implementations
+## OpenTracing tracer implementations
 
-*I.e. information for developers wanting to create an OpenTracing-compatible JavaScript implementation.*
+*This section is intended for developers wishing to* ***implement their own tracers***. *Developers who simply wish to* ***use OpenTracing*** *can safely ignore this information.*
 
-The API layer uses a [bridge pattern](https://en.wikipedia.org/wiki/Bridge_pattern) to pass work to the specific tracing implementation. The indirection allows the API layer to enforce greater API conformance and standardization across implementations (especially in debug builds), which helps keep instrumented code more portable across OpenTracing implementations.
+Implementations can sub-class the `Tracer`, `Span`, `SpanContext`, and other OpenTracing API classes to build their own implementation. The derived classes can implement the set of underscore-prefixed methods called out in the source code (for example, `Tracer._startSpan` rather than `Tracer.startSpan`). By implementing these methods, the derived classes with automatically pick up "common" code from the base classes that won't vary between implementations. This includes argument normalization and conveniences such as only having to implement `Tracer._addTags` rather than both `Tracer.setTag` and `Tracer.addTags` (since the two methods are effectively map to the same functionality).  Implementors are encouraged to use this approach as it allows the OpenTracing library a place to enforce the call semantics of the API.
 
-The "implementation API" - i.e. the interface the API layer expects to be able to call on the implementation - is a proper subset of the API layer itself. The surface area of the implementation API has been reduced in the case where the an API layer method (usually a convenience method of some form) can be expressed in terms of another more general method. For example, `logEvent` can be expressed as a `log` call, therefore the implementation only needs to implement `log`.
+Implementations can of course directly override the API methods (i.e. `Tracer.startSpan` rather than `Tracer._startSpan`), if desired. This works fine but requires more code to be written.
 
-For truly implementation-dependent methods, the JavaScript API layer *does* expose `imp()` methods on each major type to allow the implementations to be accessed directly. Use of implementation-dependent methods is discouraged as it immediately makes instrumented code no longer portable.  However, the `imp()` call does at least call attention to deviations from the standard API without making implementation-dependent calls impossible.
-
+An minimal example tracer is provided in the `src/mock_tracer` directory of the source code.
 
   [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
   [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
