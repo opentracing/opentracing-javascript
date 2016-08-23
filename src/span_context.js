@@ -11,21 +11,5 @@
  * <trace_id, span_id, sampled> tuple).
  */
 export default class SpanContext {
-    /**
-     * Constructs a new SpanContext object.
-     *
-     * This method should not be called directly; Span.context() should be used
-     * instead.
-     */
-    constructor(imp) {
-        this._imp = imp;
-    }
-
-    /**
-     * Returns the SpanContext implementation object. The returned object is by
-     * its nature entirely implementation-dependent.
-     */
-    imp() {
-        return this._imp;
-    }
+    // The SpanContext is entirely implementation dependent
 }

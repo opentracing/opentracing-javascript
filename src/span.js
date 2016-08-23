@@ -2,7 +2,8 @@
 
 import Tracer from './tracer';
 import SpanContext from './span_context';
-let defaultTracer = require('./default_tracer');
+
+const noopTracer = new Tracer();
 
 /**
  * Span represents a logical unit of work as part of a broader Trace. Examples
@@ -22,17 +23,16 @@ export default class Span {
      * @return {SpanContext}
      */
     context() {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 0) {
                 throw new Error('Invalid number of arguments');
             }
         }
-        let spanContextImp = null;
-        if (this._imp) {
-            spanContextImp = this._imp.context();
-        }
-        return new SpanContext(spanContextImp);
+
+        return this._context();
     }
+
 
     /**
      * Returns the Tracer object used to create this Span.
@@ -40,15 +40,14 @@ export default class Span {
      * @return {Tracer}
      */
     tracer() {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 0) {
                 throw new Error('Invalid number of arguments');
             }
         }
-        if (this._imp) {
-            return new Tracer(this._imp.tracer());
-        }
-        return defaultTracer;
+
+        return this._tracer();
     }
 
     /**
@@ -57,6 +56,7 @@ export default class Span {
      * @param {string} name
      */
     setOperationName(name) {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
@@ -65,134 +65,9 @@ export default class Span {
                 throw new Error('Name must be a string of length > 0');
             }
         }
-        if (this._imp) {
-            this._imp.setOperationName(name);
-        }
+
+        this._setOperationName(name);
         return this;
-    }
-
-    /**
-     * Adds a single tag to the span.  See `AddTags()` for details.
-     *
-     * @param {string} key
-     * @param {any} value
-     */
-    setTag(key, value) {
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 2) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof key !== 'string') {
-                throw new Error('Tag key must be a string');
-            }
-        }
-        this.addTags({ [key] : value });
-        return this;
-    }
-
-    /**
-     * Adds the given key value pairs to the set of span tags.
-     *
-     * Multiple calls to addTags() results in the tags being the superset of
-     * all calls.
-     *
-     * The behavior of setting the same key multiple times on the same span
-     * is undefined.
-     *
-     * The supported type of the values is implementation-dependent.
-     * Implementations are expected to safely handle all types of values but
-     * may choose to ignore unrecognized / unhandle-able values (e.g. objects
-     * with cyclic references, function objects).
-     *
-     * @return {[type]} [description]
-     */
-    addTags(keyValuePairs) {
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 1) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof keyValuePairs !== 'object') {
-                throw new Error('Invalid argument type');
-            }
-        }
-
-        if (!this._imp) {
-            return;
-        }
-        this._imp.addTags(keyValuePairs);
-        return this;
-    }
-
-    /**
-     * Explicitly create a log record associated with the span.
-     *
-     * @param {object} fields - object containing the log record properties
-     * @param {number} [fields.timestamp] - optional field specifying the
-     *        timestamp in milliseconds as a Unix timestamp. Fractional values
-     *        are allowed so that timestamps with sub-millisecond accuracy
-     *        can be represented. If not specified, the implementation is
-     *        expected to use it's notion of the current time of the call.
-     * @param {string} [fields.event] - the event name
-     * @param {object} [fields.payload] - an arbitrary structured payload. It is
-     *        implementation-dependent how this will be processed.
-     */
-    log(fields) {
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 1) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof fields !== 'object') {
-                throw new Error('Expected fields to be an object');
-            }
-        }
-        if (!this._imp) {
-            return;
-        }
-        this._imp.log(fields);
-        return this;
-    }
-
-    /**
-     * Logs a event with an optional payload.
-     *
-     * @param  {string} eventName - string associated with the log record
-     * @param  {object} [payload] - arbitrary payload object associated with the
-     *         log record.
-     */
-    logEvent(eventName, payload) {
-        return this.log({
-            event   : eventName,
-            payload : payload,
-        });
-    }
-
-    /**
-     * Sets the end timestamp and finalizes Span state.
-     *
-     * With the exception of calls to Span.context() (which are always allowed),
-     * finish() must be the last call made to any span instance, and to do
-     * otherwise leads to undefined behavior.
-     *
-     * @param  {Number} finishTime
-     *         Optional finish time in milliseconds as a Unix timestamp. Decimal
-     *         values are supported for timestamps with sub-millisecond accuracy.
-     *         If not specified, the current time (as defined by the
-     *         implementation) will be used.
-     */
-    finish(finishTime) {
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length > 1) {
-                throw new Error('Invalid arguments');
-            }
-            if (arguments.length === 1 && typeof finishTime !== 'number') {
-                throw new Error('Unexpected argument type');
-            }
-        }
-
-        if (!this._imp) {
-            return;
-        }
-        this._imp.finish(finishTime);
     }
 
     /**
@@ -216,14 +91,15 @@ export default class Span {
      * @param {string} value
      */
     setBaggageItem(key, value) {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments');
             }
         }
-        if (this._imp) {
-            this._imp.setBaggageItem(key, value);
-        }
+
+        this._setBaggageItem(key, value);
+        return this;
     }
 
     /**
@@ -236,34 +112,202 @@ export default class Span {
      *         correspond to a set trace attribute.
      */
     getBaggageItem(key) {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }
         }
-        if (this._imp) {
-            return this._imp.getBaggageItem(key);
+
+        return this._getBaggageItem(key);
+    }
+
+    /**
+     * Adds a single tag to the span.  See `AddTags()` for details.
+     *
+     * @param {string} key
+     * @param {any} value
+     */
+    setTag(key, value) {
+        // Debug-only runtime checks on the arguments
+        if (process.env.NODE_ENV === 'debug') {
+            if (arguments.length !== 2) {
+                throw new Error('Invalid number of arguments');
+            }
+            if (typeof key !== 'string') {
+                throw new Error('Tag key must be a string');
+            }
         }
-        return undefined;
-    }
 
-    // ---------------------------------------------------------------------- //
-    // Private and non-standard methods
-    // ---------------------------------------------------------------------- //
-
-    /**
-     * Constructs a new Span object, this method should not be called directly;
-     * Tracer.startSpan() or Tracer.join() should be used instead.
-     */
-    constructor(imp) {
-        this._imp = imp;
+        // NOTE: the call is normalized to a call to _addTags()
+        this._addTags({ [key] : value });
+        return this;
     }
 
     /**
-     * Returns the Span implementation object. The returned object is by its
-     * nature entirely implementation-dependent.
+     * Adds the given key value pairs to the set of span tags.
+     *
+     * Multiple calls to addTags() results in the tags being the superset of
+     * all calls.
+     *
+     * The behavior of setting the same key multiple times on the same span
+     * is undefined.
+     *
+     * The supported type of the values is implementation-dependent.
+     * Implementations are expected to safely handle all types of values but
+     * may choose to ignore unrecognized / unhandle-able values (e.g. objects
+     * with cyclic references, function objects).
+     *
+     * @return {[type]} [description]
      */
-    imp() {
-        return this._imp;
+    addTags(keyValuePairs) {
+        // Debug-only runtime checks on the arguments
+        if (process.env.NODE_ENV === 'debug') {
+            if (arguments.length !== 1) {
+                throw new Error('Invalid number of arguments');
+            }
+            if (typeof keyValuePairs !== 'object') {
+                throw new Error('Invalid argument type');
+            }
+        }
+
+        this._addTags(keyValuePairs);
+        return this;
+    }
+
+    /**
+     * Explicitly create a log record associated with the span.
+     *
+     * @param {object} fields - object containing the log record properties
+     * @param {number} [fields.timestamp] - optional field specifying the
+     *        timestamp in milliseconds as a Unix timestamp. Fractional values
+     *        are allowed so that timestamps with sub-millisecond accuracy
+     *        can be represented. If not specified, the implementation is
+     *        expected to use it's notion of the current time of the call.
+     * @param {string} [fields.event] - the event name
+     * @param {object} [fields.payload] - an arbitrary structured payload. It is
+     *        implementation-dependent how this will be processed.
+     */
+    log(fields) {
+        // Debug-only runtime checks on the arguments
+        if (process.env.NODE_ENV === 'debug') {
+            if (arguments.length !== 1) {
+                throw new Error('Invalid number of arguments');
+            }
+            if (typeof fields !== 'object') {
+                throw new Error('Expected fields to be an object');
+            }
+        }
+
+        this._log(fields);
+        return this;
+    }
+
+    /**
+     * Logs a event with an optional payload.
+     *
+     * @param  {string} eventName - string associated with the log record
+     * @param  {object} [payload] - arbitrary payload object associated with the
+     *         log record.
+     */
+    logEvent(eventName, payload) {
+        // Debug-only runtime checks on the arguments
+        if (process.env.NODE_ENV === 'debug') {
+            if (arguments.length >= 1 && arguments.length <= 2) {
+                throw new Error('Invalid number of arguments');
+            }
+            if (typeof eventName !== 'string') {
+                throw new Error('Expected eventName to be a string');
+            }
+            if (payload !== undefined && typeof payload !== 'object') {
+                throw new Error('Expected payload to be an object');
+            }
+        }
+
+        return this._log({
+            event   : eventName,
+            payload : payload,
+        });
+    }
+
+    /**
+     * Sets the end timestamp and finalizes Span state.
+     *
+     * With the exception of calls to Span.context() (which are always allowed),
+     * finish() must be the last call made to any span instance, and to do
+     * otherwise leads to undefined behavior.
+     *
+     * @param  {Number} finishTime
+     *         Optional finish time in milliseconds as a Unix timestamp. Decimal
+     *         values are supported for timestamps with sub-millisecond accuracy.
+     *         If not specified, the current time (as defined by the
+     *         implementation) will be used.
+     */
+    finish(finishTime) {
+        // Debug-only runtime checks on the arguments
+        if (process.env.NODE_ENV === 'debug') {
+            if (arguments.length > 1) {
+                throw new Error('Invalid arguments');
+            }
+            if (arguments.length === 1 && typeof finishTime !== 'number') {
+                throw new Error('Unexpected argument type');
+            }
+        }
+
+        this._finish(finishTime);
+
+        // Do not return this. The Span generally should not be used after it
+        // is finished so chaining is not desired in this context.
+    }
+
+
+    // ---------------------------------------------------------------------- //
+    // Methods to be implemented by derived classes
+    // ---------------------------------------------------------------------- //
+
+    // By default returns a no-op SpanContext.
+    _context() {
+        return new SpanContext();
+    }
+
+    // By default returns a no-op tracer.
+    //
+    // The base class could store the tracer that created it, but it does not
+    // in order to ensure the no-op span implementation has zero members,
+    // which allows V8 to aggressively optimize calls to such objects.
+    _tracer() {
+        return noopTracer;
+    }
+
+    // By default does nothing
+    _setOperationName(name) {
+    }
+
+    // By default does nothing
+    _setBaggageItem(key, value) {
+    }
+
+    // By default does nothing
+    _getBaggageItem(key) {
+    }
+
+    // By default does nothing
+    //
+    // NOTE: both setTag() and addTags() map to this function. keyValuePairs
+    // will always be an associative array.
+    _addTags(keyValuePairs) {
+    }
+
+    // By default does nothing
+    //
+    // NOTE: both log() and logEvent() map to this function. fields will always
+    // be an associative array.
+    _log(fields) {
+    }
+
+    // By default does nothing
+    //
+    // finishTime is expected to be either a number or undefined.
+    _finish(finishTime) {
     }
 }
