@@ -307,7 +307,7 @@ var Span = function () {
         }
 
         // ---------------------------------------------------------------------- //
-        // Methods derived classes can choose to implement
+        // Derived classes can choose to implement the below
         // ---------------------------------------------------------------------- //
 
         // By default returns a no-op SpanContext.
