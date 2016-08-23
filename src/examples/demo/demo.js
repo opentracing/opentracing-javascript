@@ -1,5 +1,4 @@
-// Ensure the stack trace lines numbers are correct on errors
-require('source-map-support').install();
+/* eslint-disable */
 
 import opentracing from '../../..';
 import { MockTracer } from '../../mock_tracer';
