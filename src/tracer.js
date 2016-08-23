@@ -134,8 +134,6 @@ export default class Tracer {
             }
             delete(fields.childOf);
         }
-            spanImp = this._imp.startSpan(fields);
-        }
 
         return this._startSpan(fields);
     }
@@ -200,7 +198,6 @@ export default class Tracer {
      *         for a description of the carrier object.
      */
     inject(spanContext, format, carrier) {
-
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 3) {
@@ -330,7 +327,7 @@ export default class Tracer {
     // rather than the prior behavior of returning null. Otherwise the caller
     // may need to add an if check in various places depending to handle the
     // case where tracing is disabled / not initialized.
-    _extract(format, carrier)) {
+    _extract(format, carrier) {
         return null;
     }
 
@@ -341,5 +338,4 @@ export default class Tracer {
             done(null);
         }
     }
-
 }
