@@ -67,7 +67,7 @@ describe('OpenTracing API', function() {
 
         describe('Tracer#inject', function() {
             it('should enforce the required carrier types', function() {
-                let tracer = new opentracing.Tracer();
+                var tracer = new opentracing.Tracer();
                 var spanContext = tracer.startSpan('test_operation').context();
                 var textCarrier = {};
                 expect(function() { tracer.inject(spanContext, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
