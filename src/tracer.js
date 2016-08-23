@@ -10,6 +10,25 @@ import Reference from './reference';
  * implementation.
  *
  * The default object acts as a no-op implementation.
+ *
+ * ### Note to implementators:
+ *
+ * An implementation should derive from Tracer. The base class provides
+ * "public" methods such as `startSpan()` which do two things before calling
+ * the a similarly named worker method (in this case, `_startSpan()`), which the
+ * derived class is expected to implement. The base does two things before
+ * calling the worker method:
+ *
+ * (1) It normalizes the arguments before passing the arguments along to the
+ * derived class. This avoids all N implementations from having to re-implement
+ * error-prone argument manipulation to support different call signatures.  For
+ * example, `inject()` allows either a `Span` or a `SpanContext` to be passed to
+ * the function; `_inject()` will always be passed a `SpanContext`.
+ *
+ * (2) It provides argument checking when run in debug mode.
+ *
+ * Derived classes, of course, can override the "public" methods directly if
+ * desired.
  */
 export default class Tracer {
 
@@ -55,6 +74,7 @@ export default class Tracer {
      * @return {Span} - a new Span object.
      */
     startSpan(nameOrFields, fields) {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2) {
                 throw new Error('Invalid number of arguments.');
@@ -78,46 +98,46 @@ export default class Tracer {
             }
         }
 
-        let spanImp = null;
-        if (this._imp) {
-            // Normalize the argument so the implementation is always provided
-            // an associative array of fields.
-            if (arguments.length === 1) {
-                if (typeof nameOrFields === 'string') {
-                    fields = {
-                        operationName : nameOrFields,
-                    };
-                } else {
-                    fields = nameOrFields;
-                }
+        // Normalize the argument so the implementation is always provided
+        // an associative array of fields.
+        if (arguments.length === 1) {
+            if (typeof nameOrFields === 'string') {
+                fields = {
+                    operationName : nameOrFields,
+                };
             } else {
-                fields.operationName = nameOrFields;
+                fields = nameOrFields;
             }
-            if (process.env.NODE_ENV === 'debug') {
-                if (fields.childOf && fields.references) {
-                    throw new Error('At most one of `childOf` and ' +
-                            '`references` may be specified');
-                }
-                if (fields.childOf && !(
-                            fields.childOf instanceof Span ||
-                            fields.childOf instanceof SpanContext)) {
-                    throw new Error('childOf must be a Span or SpanContext instance');
-                }
+        } else {
+            fields.operationName = nameOrFields;
+        }
+        if (process.env.NODE_ENV === 'debug') {
+            if (fields.childOf && fields.references) {
+                throw new Error('At most one of `childOf` and ' +
+                        '`references` may be specified');
             }
-            // Convert fields.childOf to fields.references as needed.
-            if (fields.childOf) {
-                // Convert from a Span or a SpanContext into a Reference.
-                let childOf = this.childOf(fields.childOf);
-                if (fields.references) {
-                    fields.references.push(childOf);
-                } else {
-                    fields.references = [childOf];
-                }
-                delete(fields.childOf);
+            if (fields.childOf && !(
+                        fields.childOf instanceof Span ||
+                        fields.childOf instanceof SpanContext)) {
+                throw new Error('childOf must be a Span or SpanContext instance');
             }
+        }
+
+        // Convert fields.childOf to fields.references as needed.
+        if (fields.childOf) {
+            // Convert from a Span or a SpanContext into a Reference.
+            let childOf = this.childOf(fields.childOf);
+            if (fields.references) {
+                fields.references.push(childOf);
+            } else {
+                fields.references = [childOf];
+            }
+            delete(fields.childOf);
+        }
             spanImp = this._imp.startSpan(fields);
         }
-        return new Span(spanImp);
+
+        return this._startSpan(fields);
     }
 
     /**
@@ -128,7 +148,11 @@ export default class Tracer {
      * @return a REFERENCE_CHILD_OF reference pointing to `spanContext`
      */
     childOf(spanContext) {
-        return new Reference(Constants.REFERENCE_CHILD_OF, spanContext);
+        // Allow the user to pass a Span instead of a SpanContext
+        if (spanContext instanceof Span) {
+            spanContext = spanContext.context();
+        }
+        return this._reference(Constants.REFERENCE_CHILD_OF, spanContext);
     }
 
     /**
@@ -139,7 +163,11 @@ export default class Tracer {
      * @return a REFERENCE_FOLLOWS_FROM reference pointing to `spanContext`
      */
     followsFrom(spanContext) {
-        return new Reference(Constants.REFERENCE_FOLLOWS_FROM, spanContext);
+        // Allow the user to pass a Span instead of a SpanContext
+        if (spanContext instanceof Span) {
+            spanContext = spanContext.context();
+        }
+        return this._reference(Constants.REFERENCE_FOLLOWS_FROM, spanContext);
     }
 
     /**
@@ -172,6 +200,8 @@ export default class Tracer {
      *         for a description of the carrier object.
      */
     inject(spanContext, format, carrier) {
+
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 3) {
                 throw new Error('Invalid number of arguments.');
@@ -193,13 +223,12 @@ export default class Tracer {
             }
         }
 
-        if (this._imp) {
-            // Allow the user to pass a Span instead of a SpanContext
-            if (spanContext instanceof Span) {
-                spanContext = spanContext.context();
-            }
-            this._imp.inject(spanContext._imp, format, carrier);
+        // Allow the user to pass a Span instead of a SpanContext
+        if (spanContext instanceof Span) {
+            spanContext = spanContext.context();
         }
+
+        return this._inject(spanContext, format, carrier);
     }
 
     /**
@@ -225,6 +254,7 @@ export default class Tracer {
      *         be found in `carrier`
      */
     extract(format, carrier) {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
                 throw new Error('Invalid number of arguments.');
@@ -244,14 +274,7 @@ export default class Tracer {
                 }
             }
         }
-        let spanContextImp = null;
-        if (this._imp) {
-            spanContextImp = this._imp.extract(format, carrier);
-        }
-        if (spanContextImp !== null) {
-            return new SpanContext(spanContextImp);
-        }
-        return null;
+        return this._extract(format, carrier);
     }
 
     /**
@@ -263,6 +286,7 @@ export default class Tracer {
      *        was successful.
      */
     flush(done) {
+        // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 1) {
                 throw new Error('Invalid number of arguments');
@@ -271,37 +295,51 @@ export default class Tracer {
                 throw new Error('callback expected to be a function');
             }
         }
-        if (!this._imp) {
+
+        this._flush(done);
+    }
+
+
+    // ---------------------------------------------------------------------- //
+    // Methods to be implemented by derived classes
+    // ---------------------------------------------------------------------- //
+
+    // NOTE: the input to this method is *always* an associative array. The
+    // public-facing startSpan() method normalizes the arguments so that
+    // all N implementations do not need to worry about variations in the call
+    // signature.
+    //
+    // The default behavior returns a no-op span.
+    _startSpan(fields) {
+        // TODO: return no-op Span
+        throw new Error('TODO');
+    }
+
+    // The default behavior returns a valid Reference of the given type
+    _reference(type, spanContext) {
+        return new Reference(type, spanContext);
+    }
+
+    // The default behavior is a no-op.
+    _inject(spanContext, format, carrier) {
+    }
+
+    // The default behavior is to return null.
+    //
+    // TODO: seems like this should this be returning a no-op SpanContext
+    // rather than the prior behavior of returning null. Otherwise the caller
+    // may need to add an if check in various places depending to handle the
+    // case where tracing is disabled / not initialized.
+    _extract(format, carrier)) {
+        return null;
+    }
+
+    // The default implementation is a no-op that directly calls the callback,
+    // presuming one is provided.
+    _flush(done) {
+        if (done) {
             done(null);
-            return;
         }
-        this._imp.flush(done);
     }
 
-
-    // ---------------------------------------------------------------------- //
-    // Private and non-standard methods
-    // ---------------------------------------------------------------------- //
-
-    /**
-     * Note: this constructor should not be called directly by consumers of this
-     * code. The singleton's initNewTracer() method should be invoked instead.
-     */
-    constructor(imp) {
-        this._imp = imp || null;
-    }
-
-    /**
-     * Handle to implementation object.
-     *
-     * Use of this method is discouraged as it greatly reduces the portability of
-     * the calling code. Use only when implementation-specific functionality must
-     * be used and cannot accessed otherwise.
-     *
-     * @return {object}
-     *         An implementation-dependent object.
-     */
-    imp() {
-        return this._imp;
-    }
 }
