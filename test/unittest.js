@@ -120,6 +120,33 @@ describe('OpenTracing API', function() {
                 expect(span[name]).to.be.a('function');
             });
         });
+
+        describe('Span#finish', function() {
+            it('should return undefined', function() {
+                var tracer = new opentracing.Tracer();
+                var span = tracer.startSpan('test_span');
+                expect(span.finish()).to.be.undefined;
+            });
+            it('should only accept numbers as an argument', function() {
+                var tracer = new opentracing.Tracer();
+                function f(arg) {
+                    return function() {
+                        var span = tracer.startSpan('test_span');
+                        span.finish(arg);
+                    }
+                }
+                expect(f(10)).to.not.throw(Error);
+                expect(f(Date.now())).to.not.throw(Error);
+                expect(f('1234567')).to.throw(Error);
+                expect(f([])).to.throw(Error);
+                expect(f({})).to.throw(Error);
+            });
+            it('should throw an Error if given more than 1 argument', function() {
+                var tracer = new opentracing.Tracer();
+                var span = tracer.startSpan('test_span');
+                expect(function() { span.finish(Date.now(), { extra : 123 }) }).to.be.throw(Error);
+            });
+        });
     });
 
     describe('SpanContext', function() {
