@@ -21,9 +21,13 @@ In your JavaScript code, add instrumentation to the operations to be tracked. Th
 
 ```js
 var http = require('http');
-var Tracer = require('opentracing');
+var opentracing = require('opentracing');
 
-var span = Tracer.startSpan('http_request');
+// NOTE: the default OpenTracing tracer does not record any tracing information.
+// Replace this line with the tracer implementation of your choice.
+var tracer = new opentracing.Tracer();
+
+var span = tracer.startSpan('http_request');
 var opts = {
     host : 'example.com',
     method: 'GET',
@@ -46,18 +50,12 @@ http.request(opts, function (res) {
 }).end();
 ```
 
-The default behavior of the `opentracing` package is to act as a "no-op" implementation.
-
-To capture and make the tracing data actionable, the `Tracer` object should be initialized with the OpenTracing implementation of your choice as in the pseudo-code below:
+As noted in the source snippet, the default behavior of the `opentracing` package is to act as a "no op" implementation. To capture and make the tracing data actionable, the `tracer` object should be initialized with the OpenTracing implementation of your choice as in the pseudo-code below:
 
 ```js
-var Tracer = require('opentracing');
-var TracingBackend = require('tracing-implementation-of-your-choice');
-
-Tracer.initGlobalTracer(TracingBackend.create());
+var CustomTracer = require('tracing-implementation-of-your-choice');
+var tracer = new CustomTracer();
 ```
-
-*Note: the underlying implementation object is shared between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
 ### Usage in the browser
 
@@ -65,6 +63,18 @@ The package contains two bundles built with webpack that can be included using a
 
 * `dist/opentracing-browser.min.js` - minified, no runtime checks
 * `dist/opentracing-browser.js` - debug version with runtime checks
+
+### Global tracer
+
+The library also provides a global singleton tracer for convenience. This can be set and accessed via the following:
+
+```javascript
+opentracing.initGlobalTracer(new CustomTracer());
+
+var tracer = opentracing.globalTracer();
+```
+
+Note: `globalTracer()` returns a wrapper on the actual tracer object. This is done for convenience of use as it ensures that the function will always return a non-null object.  This can be helpful in cases where it is difficult or impossible to know precisely when `initGlobalTracer` is called (for example, when writing a utility library that does not control the initialization process).  For more precise control, individual `Tracer` objects can be used instead of the global tracer.
 
 ### Node.js debug version
 
