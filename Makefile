@@ -79,3 +79,7 @@ test_all: build
 	scripts/docker_test.sh 4.4
 	scripts/docker_test.sh 4.0
 	scripts/docker_test.sh 0.12
+
+.PHONY: example
+example: build
+	NODE_ENV=debug node ./lib-debug/examples/demo/demo.js

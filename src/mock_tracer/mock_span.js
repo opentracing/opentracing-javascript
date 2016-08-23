@@ -56,6 +56,18 @@ export default class MockSpan extends opentracing.Span {
         return this._uuid;
     }
 
+    operationName() {
+        return this._operationName;
+    }
+
+    durationMs() {
+        return this._finishMs - this._startMs;
+    }
+
+    tags() {
+        return this._tags;
+    }
+
     _generateUUID() {
         const p0 = `00000000${Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)}`.substr(-8);
         const p1 = `00000000${Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)}`.substr(-8);

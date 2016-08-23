@@ -4,7 +4,7 @@ import opentracing from '../..';
  * OpenTracing Context implementation designed for use in
  * unit tests.
  */
-export default class MockContext extends opentracing.Context {
+export default class MockContext extends opentracing.SpanContext {
 
     //------------------------------------------------------------------------//
     // MockContext-specific

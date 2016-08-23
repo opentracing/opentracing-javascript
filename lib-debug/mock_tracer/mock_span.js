@@ -95,6 +95,21 @@ var MockSpan = function (_opentracing$Span) {
             return this._uuid;
         }
     }, {
+        key: 'operationName',
+        value: function operationName() {
+            return this._operationName;
+        }
+    }, {
+        key: 'durationMs',
+        value: function durationMs() {
+            return this._finishMs - this._startMs;
+        }
+    }, {
+        key: 'tags',
+        value: function tags() {
+            return this._tags;
+        }
+    }, {
         key: '_generateUUID',
         value: function _generateUUID() {
             var p0 = ('00000000' + Math.abs(Math.random() * 0xFFFFFFFF | 0).toString(16)).substr(-8);

@@ -17,6 +17,28 @@ Install the package using `npm`:
 npm install --save opentracing
 ```
 
+### Example
+
+The package contains a example using a naive `MockTracer` implementation. To run the example:
+
+```bash
+make example
+```
+
+The output should look something like:
+
+```
+Spans:
+    parent_span - 1521ms
+        tag 'custom':'tag value'
+        tag 'alpha':'1000'
+    child_span - 503ms
+        tag 'alpha':'200'
+        tag 'beta':'50'
+```
+
+### Code snippet
+
 In your JavaScript code, add instrumentation to the operations to be tracked. This is composed primarily of using "spans" around operations of interest and adding log statements to capture useful data relevant to those operations.
 
 ```js
