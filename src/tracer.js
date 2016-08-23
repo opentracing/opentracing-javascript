@@ -1,8 +1,8 @@
 import Span from './span';
 import SpanContext from './span_context';
-import Reference from './reference';
 import * as Constants from './constants';
-import * as noop from './noop';
+import * as Functions from './functions';
+import * as Noop from './noop';
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -10,24 +10,10 @@ import * as noop from './noop';
  *
  * The default object acts as a no-op implementation.
  *
- * ### Note to implementators:
- *
- * An implementation should derive from Tracer. The base class provides
- * "public" methods such as `startSpan()` which do two things before calling
- * the a similarly named worker method (in this case, `_startSpan()`), which the
- * derived class is expected to implement. The base does two things before
- * calling the worker method:
- *
- * (1) It normalizes the arguments before passing the arguments along to the
- * derived class. This avoids all N implementations from having to re-implement
- * error-prone argument manipulation to support different call signatures.  For
- * example, `inject()` allows either a `Span` or a `SpanContext` to be passed to
- * the function; `_inject()` will always be passed a `SpanContext`.
- *
- * (2) It provides argument checking when run in debug mode.
- *
- * Derived classes, of course, can override the "public" methods directly if
- * desired.
+ * Note to implementators: derived classes can choose to directly implement the
+ * methods in the "OpenTracing API methods" section, or optionally the subset of
+ * underscore-prefixed methods to pick up the argument checking and handling
+ * automatically from the base class.
  */
 export default class Tracer {
 
@@ -48,10 +34,7 @@ export default class Tracer {
      *         reference: Tracer.childOf(parent.context()),
      *     });
      *
-     * @param {string|object} nameOrFields - if the given argument is a
-     *        string, it is the name of the operation and the second `fields`
-     *        argument is optional. If it is an object, it is treated as the
-     *        fields argument and a second argument should not be provided.
+     * @param {string} name - the name of the operation.
      * @param {object} [fields] - the fields to set on the newly created span.
      * @param {string} [fields.operationName] - the name to use for the newly
      *        created span. Required if called with a single argument.
@@ -72,50 +55,23 @@ export default class Tracer {
      *        to represent time values with sub-millisecond accuracy.
      * @return {Span} - a new Span object.
      */
-    startSpan(nameOrFields, fields) {
+    startSpan(name, fields) {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2) {
                 throw new Error('Invalid number of arguments.');
             }
-            if (typeof nameOrFields !== 'string' && typeof nameOrFields !== 'object') {
-                throw new Error('argument expected to be a string or object');
+            if (typeof name !== 'string') {
+                throw new Error('argument expected to be a string');
             }
-            if (typeof nameOrFields === 'string' && nameOrFields.length === 0) {
+            if (name.length === 0) {
                 throw new Error('operation name cannot be length zero');
             }
-            if (typeof nameOrFields === 'object') {
-                if (arguments.length !== 1) {
-                    throw new Error('Unexpected number of arguments');
-                }
-                if (nameOrFields === null) {
-                    throw new Error('fields should not be null');
-                }
-                if (!nameOrFields.operationName) {
-                    throw new Error('operationName is a required parameter');
-                }
-            }
-        }
-
-        // Normalize the argument so the implementation is always provided
-        // an associative array of fields.
-        if (arguments.length === 1) {
-            if (typeof nameOrFields === 'string') {
-                fields = {
-                    operationName : nameOrFields,
-                };
-            } else {
-                fields = nameOrFields;
-            }
-        } else {
-            fields.operationName = nameOrFields;
-        }
-        if (process.env.NODE_ENV === 'debug') {
-            if (fields.childOf && fields.references) {
+            if (fields && fields.childOf && fields.references) {
                 throw new Error('At most one of `childOf` and ' +
                         '`references` may be specified');
             }
-            if (fields.childOf && !(
+            if (fields && fields.childOf && !(
                         fields.childOf instanceof Span ||
                         fields.childOf instanceof SpanContext)) {
                 throw new Error('childOf must be a Span or SpanContext instance');
@@ -123,9 +79,10 @@ export default class Tracer {
         }
 
         // Convert fields.childOf to fields.references as needed.
+        fields = fields || {};
         if (fields.childOf) {
             // Convert from a Span or a SpanContext into a Reference.
-            let childOf = this.childOf(fields.childOf);
+            let childOf = Functions.childOf(fields.childOf);
             if (fields.references) {
                 fields.references.push(childOf);
             } else {
@@ -133,37 +90,7 @@ export default class Tracer {
             }
             delete(fields.childOf);
         }
-        return this._startSpan(fields);
-    }
-
-    /**
-     * Return a new REFERENCE_CHILD_OF reference.
-     *
-     * @param {SpanContext} spanContext - the parent SpanContext instance to
-     *        reference.
-     * @return a REFERENCE_CHILD_OF reference pointing to `spanContext`
-     */
-    childOf(spanContext) {
-        // Allow the user to pass a Span instead of a SpanContext
-        if (spanContext instanceof Span) {
-            spanContext = spanContext.context();
-        }
-        return this._reference(Constants.REFERENCE_CHILD_OF, spanContext);
-    }
-
-    /**
-     * Return a new REFERENCE_FOLLOWS_FROM reference.
-     *
-     * @param {SpanContext} spanContext - the parent SpanContext instance to
-     *        reference.
-     * @return a REFERENCE_FOLLOWS_FROM reference pointing to `spanContext`
-     */
-    followsFrom(spanContext) {
-        // Allow the user to pass a Span instead of a SpanContext
-        if (spanContext instanceof Span) {
-            spanContext = spanContext.context();
-        }
-        return this._reference(Constants.REFERENCE_FOLLOWS_FROM, spanContext);
+        return this._startSpan(name, fields);
     }
 
     /**
@@ -222,7 +149,6 @@ export default class Tracer {
         if (spanContext instanceof Span) {
             spanContext = spanContext.context();
         }
-
         return this._inject(spanContext, format, carrier);
     }
 
@@ -272,31 +198,8 @@ export default class Tracer {
         return this._extract(format, carrier);
     }
 
-    /**
-     * Request that any buffered or in-memory data is flushed out of the process.
-     *
-     * @param {function(err: objectg)} done - optional callback function with
-     *        the signature `function(err)` that will be called as soon as the
-     *        flush completes. `err` should be null or undefined if the flush
-     *        was successful.
-     */
-    flush(done) {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length > 1) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (done !== undefined && typeof done !== 'function') {
-                throw new Error('callback expected to be a function');
-            }
-        }
-
-        this._flush(done);
-    }
-
-
     // ---------------------------------------------------------------------- //
-    // Methods to be implemented by derived classes
+    // Derived classes can choose to implement the below
     // ---------------------------------------------------------------------- //
 
     // NOTE: the input to this method is *always* an associative array. The
@@ -305,13 +208,8 @@ export default class Tracer {
     // signature.
     //
     // The default behavior returns a no-op span.
-    _startSpan(fields) {
-        return noop.span;
-    }
-
-    // The default behavior returns a valid Reference of the given type
-    _reference(type, spanContext) {
-        return new Reference(type, spanContext);
+    _startSpan(name, fields) {
+        return Noop.span;
     }
 
     // The default behavior is a no-op.
@@ -320,14 +218,6 @@ export default class Tracer {
 
     // The default behavior is to return null.
     _extract(format, carrier) {
-        return noop.spanContext;
-    }
-
-    // The default implementation is a no-op that directly calls the callback,
-    // presuming one is provided.
-    _flush(done) {
-        if (done) {
-            done(null);
-        }
+        return Noop.spanContext;
     }
 }

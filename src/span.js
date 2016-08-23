@@ -118,7 +118,7 @@ export default class Span {
     }
 
     /**
-     * Adds a single tag to the span.  See `AddTags()` for details.
+     * Adds a single tag to the span.  See `addTags()` for details.
      *
      * @param {string} key
      * @param {any} value
@@ -155,18 +155,18 @@ export default class Span {
      *
      * @return {[type]} [description]
      */
-    addTags(keyValuePairs) {
+    addTags(keyValueMap) {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
                 throw new Error('Invalid number of arguments');
             }
-            if (typeof keyValuePairs !== 'object') {
+            if (typeof keyValueMap !== 'object') {
                 throw new Error('Invalid argument type');
             }
         }
 
-        this._addTags(keyValuePairs);
+        this._addTags(keyValueMap);
         return this;
     }
 
@@ -257,7 +257,7 @@ export default class Span {
 
 
     // ---------------------------------------------------------------------- //
-    // Methods to be implemented by derived classes
+    // Derived classes can choose to implement the below
     // ---------------------------------------------------------------------- //
 
     // By default returns a no-op SpanContext.

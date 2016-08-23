@@ -16,29 +16,19 @@ let _globalTracer = null;
 // case where
 class GlobalTracerDelegate extends Tracer {
 
-    _startSpan(...args) {
+    startSpan(...args) {
         const tracer = _globalTracer || noopTracer;
-        return tracer._startSpan(...args);
+        return tracer.startSpan(...args);
     }
 
-    _reference(...args) {
+    inject(...args) {
         const tracer = _globalTracer || noopTracer;
-        return tracer._reference(...args);
+        return tracer.inject(...args);
     }
 
-    _inject(...args) {
+    extract(...args) {
         const tracer = _globalTracer || noopTracer;
-        return tracer._inject(...args);
-    }
-
-    _extract(...args) {
-        const tracer = _globalTracer || noopTracer;
-        return tracer._extract(...args);
-    }
-
-    _flush(...args) {
-        const tracer = _globalTracer || noopTracer;
-        return tracer._flush(...args);
+        return tracer.extract(...args);
     }
 }
 

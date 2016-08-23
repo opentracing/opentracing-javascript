@@ -1,6 +1,7 @@
 import * as GlobalTracer from './global_tracer';
 import * as Constants from './constants';
-import * as noop from './noop';
+import * as Functions from './functions';
+import * as Noop from './noop';
 import BinaryCarrier from './binary_carrier';
 import Reference from './reference';
 import SpanContext from './span_context';
@@ -33,8 +34,9 @@ module.exports = _extend(
         Tracer        : Tracer,
     },
     Constants,
+    Functions,
     GlobalTracer
 );
 
 // Initialize the noops last to avoid a dependecy cycle between the classes.
-noop.initialize();
+Noop.initialize();

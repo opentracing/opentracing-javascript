@@ -123,9 +123,26 @@ The project is built using a `Makefile`. Run:
 
 *This section is intended for developers wishing to* ***implement their own tracers***. *Developers who simply wish to* ***use OpenTracing*** *can safely ignore this information.*
 
-Implementations can subclass the `Tracer`, `Span`, `SpanContext`, and other OpenTracing API classes to build their own implementation. The derived classes can implement the set of underscore-prefixed methods called out in the source code (for example, `Tracer._startSpan` rather than `Tracer.startSpan`). By implementing these methods, the derived classes with automatically pick up "common" code from the base classes that won't vary between implementations. This includes argument normalization and conveniences such as only having to implement `Tracer._addTags` rather than both `Tracer.setTag` and `Tracer.addTags` (since the two methods are effectively map to the same functionality).  Implementors are encouraged to use this approach as it affords the OpenTracing library a opportunity to enforce the call semantics of the API.
+### Custom tracer implementation
 
-Implementations can of course directly override the API methods (i.e. override `Tracer.startSpan` rather than `Tracer._startSpan`), if desired. This works correctly but requires more code to be written by the implementation.
+Implementations can subclass `opentracing.Trace`, `opentracing.Span`, and the other API classes to build a OpenTracing tracer.
+
+Due to the dynamic nature of JavaScript, implementations can simply implement classes with the same signatures as the OpenTracing classes and use these directly as well (there's no need to subclass).
+
+Lastly, optionally implementations may choose to subclass `opentracing.Trace`, etc. and implement the underscore prefixed methods such as `_addTag` to pick up a bit of common code implemented in the base classes. This is entirely optional.
+
+### API compatibility testing
+
+If `mocha` is being used for unit testing, the `api_compatibility.js` file can be used to test the custom tracer. The file exports a single function that expects as an argument a function that will return a new instance of the tracer.
+
+```javascript
+var apiCompatibilityChecks = require('opentracing/test/api_compatibility.js');
+apiCompatibilityCheck(function() {
+     return new CustomTracer();
+});
+```
+
+### MockTracer
 
 An minimal example tracer is provided in the `src/mock_tracer` directory of the source code.
 

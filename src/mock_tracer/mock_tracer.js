@@ -14,13 +14,12 @@ export default class MockTracer extends opentracing.Tracer {
     // OpenTracing implementation
     //------------------------------------------------------------------------//
 
-    _startSpan(fields) {
+    _startSpan(name, fields) {
         // _allocSpan is given it's own method so that derived classes can
         // allocate any type of object they want, but not have to duplicate
         // the other common logic in startSpan().
         const span = this._allocSpan(fields);
-
-        span.setOperationName(fields.operationName);
+        span.setOperationName(name);
         this._spans.push(span);
 
         if (fields.references) {
@@ -40,13 +39,6 @@ export default class MockTracer extends opentracing.Tracer {
 
     _extract(format, carrier) {
         throw new Error('NOT YET IMPLEMENTED');
-    }
-
-    _flush(callback) {
-        this.clear();
-        if (callback) {
-            callback(null);
-        }
     }
 
     //------------------------------------------------------------------------//

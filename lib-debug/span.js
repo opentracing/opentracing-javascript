@@ -154,7 +154,7 @@ var Span = function () {
         }
 
         /**
-         * Adds a single tag to the span.  See `AddTags()` for details.
+         * Adds a single tag to the span.  See `addTags()` for details.
          *
          * @param {string} key
          * @param {any} value
@@ -197,18 +197,18 @@ var Span = function () {
 
     }, {
         key: 'addTags',
-        value: function addTags(keyValuePairs) {
+        value: function addTags(keyValueMap) {
             // Debug-only runtime checks on the arguments
             if (process.env.NODE_ENV === 'debug') {
                 if (arguments.length !== 1) {
                     throw new Error('Invalid number of arguments');
                 }
-                if ((typeof keyValuePairs === 'undefined' ? 'undefined' : _typeof(keyValuePairs)) !== 'object') {
+                if ((typeof keyValueMap === 'undefined' ? 'undefined' : _typeof(keyValueMap)) !== 'object') {
                     throw new Error('Invalid argument type');
                 }
             }
 
-            this._addTags(keyValuePairs);
+            this._addTags(keyValueMap);
             return this;
         }
 
@@ -307,7 +307,7 @@ var Span = function () {
         }
 
         // ---------------------------------------------------------------------- //
-        // Methods to be implemented by derived classes
+        // Methods derived classes can choose to implement
         // ---------------------------------------------------------------------- //
 
         // By default returns a no-op SpanContext.
