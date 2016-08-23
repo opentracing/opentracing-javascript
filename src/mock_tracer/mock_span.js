@@ -42,6 +42,7 @@ export default class MockSpan extends opentracing.Span {
     //------------------------------------------------------------------------//
 
     constructor(tracer) {
+        super();
         this._tracer = tracer;
         this._uuid = this._generateUUID();
         this._startMs = Date.now();

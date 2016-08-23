@@ -54,6 +54,7 @@ export default class MockTracer extends opentracing.Tracer {
     //------------------------------------------------------------------------//
 
     constructor() {
+        super();
         this._spans = [];
     }
 

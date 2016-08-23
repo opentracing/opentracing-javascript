@@ -4,6 +4,7 @@ import Tracer from './tracer';
 import SpanContext from './span_context';
 
 const noopTracer = new Tracer();
+const noopSpanContext = new SpanContext();
 
 /**
  * Span represents a logical unit of work as part of a broader Trace. Examples
@@ -267,7 +268,7 @@ export default class Span {
 
     // By default returns a no-op SpanContext.
     _context() {
-        return new SpanContext();
+        return noopSpanContext;
     }
 
     // By default returns a no-op tracer.

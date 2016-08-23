@@ -308,8 +308,7 @@ export default class Tracer {
     //
     // The default behavior returns a no-op span.
     _startSpan(fields) {
-        // TODO: return no-op Span
-        throw new Error('TODO');
+        return new Span();
     }
 
     // The default behavior returns a valid Reference of the given type

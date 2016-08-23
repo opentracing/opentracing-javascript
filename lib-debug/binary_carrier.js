@@ -16,7 +16,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var BinaryCarrier = function BinaryCarrier(binaryData) {
     _classCallCheck(this, BinaryCarrier);
 
-    this.buffer = binaryData;
+    this._buffer = binaryData;
 };
 
 exports.default = BinaryCarrier;

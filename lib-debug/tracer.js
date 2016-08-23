@@ -20,9 +20,9 @@ var _constants = require('./constants');
 
 var _constants2 = _interopRequireDefault(_constants);
 
-var _reference = require('./reference');
+var _reference2 = require('./reference');
 
-var _reference2 = _interopRequireDefault(_reference);
+var _reference3 = _interopRequireDefault(_reference2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -33,8 +33,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * implementation.
  *
  * The default object acts as a no-op implementation.
+ *
+ * ### Note to implementators:
+ *
+ * An implementation should derive from Tracer. The base class provides
+ * "public" methods such as `startSpan()` which do two things before calling
+ * the a similarly named worker method (in this case, `_startSpan()`), which the
+ * derived class is expected to implement. The base does two things before
+ * calling the worker method:
+ *
+ * (1) It normalizes the arguments before passing the arguments along to the
+ * derived class. This avoids all N implementations from having to re-implement
+ * error-prone argument manipulation to support different call signatures.  For
+ * example, `inject()` allows either a `Span` or a `SpanContext` to be passed to
+ * the function; `_inject()` will always be passed a `SpanContext`.
+ *
+ * (2) It provides argument checking when run in debug mode.
+ *
+ * Derived classes, of course, can override the "public" methods directly if
+ * desired.
  */
 var Tracer = function () {
+    function Tracer() {
+        _classCallCheck(this, Tracer);
+    }
+
     _createClass(Tracer, [{
         key: 'startSpan',
 
@@ -81,6 +104,7 @@ var Tracer = function () {
          * @return {Span} - a new Span object.
          */
         value: function startSpan(nameOrFields, fields) {
+            // Debug-only runtime checks on the arguments
             if (process.env.NODE_ENV === 'debug') {
                 if (arguments.length > 2) {
                     throw new Error('Invalid number of arguments.');
@@ -104,43 +128,41 @@ var Tracer = function () {
                 }
             }
 
-            var spanImp = null;
-            if (this._imp) {
-                // Normalize the argument so the implementation is always provided
-                // an associative array of fields.
-                if (arguments.length === 1) {
-                    if (typeof nameOrFields === 'string') {
-                        fields = {
-                            operationName: nameOrFields
-                        };
-                    } else {
-                        fields = nameOrFields;
-                    }
+            // Normalize the argument so the implementation is always provided
+            // an associative array of fields.
+            if (arguments.length === 1) {
+                if (typeof nameOrFields === 'string') {
+                    fields = {
+                        operationName: nameOrFields
+                    };
                 } else {
-                    fields.operationName = nameOrFields;
+                    fields = nameOrFields;
                 }
-                if (process.env.NODE_ENV === 'debug') {
-                    if (fields.childOf && fields.references) {
-                        throw new Error('At most one of `childOf` and ' + '`references` may be specified');
-                    }
-                    if (fields.childOf && !(fields.childOf instanceof _span2.default || fields.childOf instanceof _span_context2.default)) {
-                        throw new Error('childOf must be a Span or SpanContext instance');
-                    }
-                }
-                // Convert fields.childOf to fields.references as needed.
-                if (fields.childOf) {
-                    // Convert from a Span or a SpanContext into a Reference.
-                    var childOf = this.childOf(fields.childOf);
-                    if (fields.references) {
-                        fields.references.push(childOf);
-                    } else {
-                        fields.references = [childOf];
-                    }
-                    delete fields.childOf;
-                }
-                spanImp = this._imp.startSpan(fields);
+            } else {
+                fields.operationName = nameOrFields;
             }
-            return new _span2.default(spanImp);
+            if (process.env.NODE_ENV === 'debug') {
+                if (fields.childOf && fields.references) {
+                    throw new Error('At most one of `childOf` and ' + '`references` may be specified');
+                }
+                if (fields.childOf && !(fields.childOf instanceof _span2.default || fields.childOf instanceof _span_context2.default)) {
+                    throw new Error('childOf must be a Span or SpanContext instance');
+                }
+            }
+
+            // Convert fields.childOf to fields.references as needed.
+            if (fields.childOf) {
+                // Convert from a Span or a SpanContext into a Reference.
+                var childOf = this.childOf(fields.childOf);
+                if (fields.references) {
+                    fields.references.push(childOf);
+                } else {
+                    fields.references = [childOf];
+                }
+                delete fields.childOf;
+            }
+
+            return this._startSpan(fields);
         }
 
         /**
@@ -154,7 +176,11 @@ var Tracer = function () {
     }, {
         key: 'childOf',
         value: function childOf(spanContext) {
-            return new _reference2.default(_constants2.default.REFERENCE_CHILD_OF, spanContext);
+            // Allow the user to pass a Span instead of a SpanContext
+            if (spanContext instanceof _span2.default) {
+                spanContext = spanContext.context();
+            }
+            return this._reference(_constants2.default.REFERENCE_CHILD_OF, spanContext);
         }
 
         /**
@@ -168,7 +194,11 @@ var Tracer = function () {
     }, {
         key: 'followsFrom',
         value: function followsFrom(spanContext) {
-            return new _reference2.default(_constants2.default.REFERENCE_FOLLOWS_FROM, spanContext);
+            // Allow the user to pass a Span instead of a SpanContext
+            if (spanContext instanceof _span2.default) {
+                spanContext = spanContext.context();
+            }
+            return this._reference(_constants2.default.REFERENCE_FOLLOWS_FROM, spanContext);
         }
 
         /**
@@ -204,6 +234,7 @@ var Tracer = function () {
     }, {
         key: 'inject',
         value: function inject(spanContext, format, carrier) {
+            // Debug-only runtime checks on the arguments
             if (process.env.NODE_ENV === 'debug') {
                 if (arguments.length !== 3) {
                     throw new Error('Invalid number of arguments.');
@@ -225,13 +256,12 @@ var Tracer = function () {
                 }
             }
 
-            if (this._imp) {
-                // Allow the user to pass a Span instead of a SpanContext
-                if (spanContext instanceof _span2.default) {
-                    spanContext = spanContext.context();
-                }
-                this._imp.inject(spanContext._imp, format, carrier);
+            // Allow the user to pass a Span instead of a SpanContext
+            if (spanContext instanceof _span2.default) {
+                spanContext = spanContext.context();
             }
+
+            return this._inject(spanContext, format, carrier);
         }
 
         /**
@@ -260,6 +290,7 @@ var Tracer = function () {
     }, {
         key: 'extract',
         value: function extract(format, carrier) {
+            // Debug-only runtime checks on the arguments
             if (process.env.NODE_ENV === 'debug') {
                 if (arguments.length !== 2) {
                     throw new Error('Invalid number of arguments.');
@@ -279,14 +310,7 @@ var Tracer = function () {
                     }
                 }
             }
-            var spanContextImp = null;
-            if (this._imp) {
-                spanContextImp = this._imp.extract(format, carrier);
-            }
-            if (spanContextImp !== null) {
-                return new _span_context2.default(spanContextImp);
-            }
-            return null;
+            return this._extract(format, carrier);
         }
 
         /**
@@ -301,6 +325,7 @@ var Tracer = function () {
     }, {
         key: 'flush',
         value: function flush(done) {
+            // Debug-only runtime checks on the arguments
             if (process.env.NODE_ENV === 'debug') {
                 if (arguments.length > 1) {
                     throw new Error('Invalid number of arguments');
@@ -309,46 +334,63 @@ var Tracer = function () {
                     throw new Error('callback expected to be a function');
                 }
             }
-            if (!this._imp) {
-                done(null);
-                return;
-            }
-            this._imp.flush(done);
+
+            this._flush(done);
         }
 
         // ---------------------------------------------------------------------- //
-        // Private and non-standard methods
+        // Methods to be implemented by derived classes
         // ---------------------------------------------------------------------- //
 
-        /**
-         * Note: this constructor should not be called directly by consumers of this
-         * code. The singleton's initNewTracer() method should be invoked instead.
-         */
+        // NOTE: the input to this method is *always* an associative array. The
+        // public-facing startSpan() method normalizes the arguments so that
+        // all N implementations do not need to worry about variations in the call
+        // signature.
+        //
+        // The default behavior returns a no-op span.
 
-    }]);
+    }, {
+        key: '_startSpan',
+        value: function _startSpan(fields) {
+            return new _span2.default();
+        }
 
-    function Tracer(imp) {
-        _classCallCheck(this, Tracer);
+        // The default behavior returns a valid Reference of the given type
 
-        this._imp = imp || null;
-    }
+    }, {
+        key: '_reference',
+        value: function _reference(type, spanContext) {
+            return new _reference3.default(type, spanContext);
+        }
 
-    /**
-     * Handle to implementation object.
-     *
-     * Use of this method is discouraged as it greatly reduces the portability of
-     * the calling code. Use only when implementation-specific functionality must
-     * be used and cannot accessed otherwise.
-     *
-     * @return {object}
-     *         An implementation-dependent object.
-     */
+        // The default behavior is a no-op.
 
+    }, {
+        key: '_inject',
+        value: function _inject(spanContext, format, carrier) {}
 
-    _createClass(Tracer, [{
-        key: 'imp',
-        value: function imp() {
-            return this._imp;
+        // The default behavior is to return null.
+        //
+        // TODO: seems like this should this be returning a no-op SpanContext
+        // rather than the prior behavior of returning null. Otherwise the caller
+        // may need to add an if check in various places depending to handle the
+        // case where tracing is disabled / not initialized.
+
+    }, {
+        key: '_extract',
+        value: function _extract(format, carrier) {
+            return null;
+        }
+
+        // The default implementation is a no-op that directly calls the callback,
+        // presuming one is provided.
+
+    }, {
+        key: '_flush',
+        value: function _flush(done) {
+            if (done) {
+                done(null);
+            }
         }
     }]);
 

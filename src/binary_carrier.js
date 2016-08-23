@@ -8,6 +8,6 @@
  */
 export default class BinaryCarrier {
     constructor(binaryData) {
-        this.buffer = binaryData;
+        this._buffer = binaryData;
     }
 }
