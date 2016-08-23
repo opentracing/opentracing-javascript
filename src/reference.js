@@ -1,5 +1,3 @@
-'use strict';
-
 import Span from './span';
 import SpanContext from './span_context';
 

@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Convenience class to use as a binary carrier.
  *

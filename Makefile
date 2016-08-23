@@ -63,6 +63,13 @@ test: build
 	node node_modules/eslint/bin/eslint.js --color src
 	npm test
 
+# A target that runs the unit tests without code coverage testing, as the code
+# coverage testing throws off the source code line number information - making
+# failures more difficult to debug.
+.PHONY: test-no-coverage
+test-no-coverage: build
+	NODE_ENV=debug node ./node_modules/.bin/_mocha test/unittest.js --check-leaks --color
+
 .PHONY: test_all
 test_all: build
 	scripts/docker_test.sh latest

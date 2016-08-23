@@ -1,9 +1,8 @@
-'use strict';
-
 import Span from './span';
 import SpanContext from './span_context';
-import Constants from './constants';
 import Reference from './reference';
+import * as Constants from './constants';
+import * as noop from './noop';
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -134,7 +133,6 @@ export default class Tracer {
             }
             delete(fields.childOf);
         }
-
         return this._startSpan(fields);
     }
 
@@ -308,7 +306,7 @@ export default class Tracer {
     //
     // The default behavior returns a no-op span.
     _startSpan(fields) {
-        return new Span();
+        return noop.span;
     }
 
     // The default behavior returns a valid Reference of the given type

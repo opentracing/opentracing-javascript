@@ -1,10 +1,4 @@
-'use strict';
-
-import Tracer from './tracer';
-import SpanContext from './span_context';
-
-const noopTracer = new Tracer();
-const noopSpanContext = new SpanContext();
+import * as noop from './noop';
 
 /**
  * Span represents a logical unit of work as part of a broader Trace. Examples
@@ -257,7 +251,7 @@ export default class Span {
 
         this._finish(finishTime);
 
-        // Do not return this. The Span generally should not be used after it
+        // Do not return `this`. The Span generally should not be used after it
         // is finished so chaining is not desired in this context.
     }
 
@@ -268,7 +262,7 @@ export default class Span {
 
     // By default returns a no-op SpanContext.
     _context() {
-        return noopSpanContext;
+        return noop.spanContext;
     }
 
     // By default returns a no-op tracer.
@@ -277,7 +271,7 @@ export default class Span {
     // in order to ensure the no-op span implementation has zero members,
     // which allows V8 to aggressively optimize calls to such objects.
     _tracer() {
-        return noopTracer;
+        return noop.tracer;
     }
 
     // By default does nothing

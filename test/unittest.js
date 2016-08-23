@@ -1,105 +1,159 @@
+// Ensure the stack trace lines numbers are correct on errors
+require('source-map-support').install();
+
 // For the convenience of unit testing, add these to the global namespace
 global._      = require('underscore');
 global.expect = require('chai').expect;
 
 // Unit testing is done against the debug version of the library as it has
 // additional conformance checks that are optimized out of the production
-// library.
-global.Tracer = require('../global-debug.js');
-
-var NoopTracerImp;
+// library.  Again, globals are used purely for convenience.
+global.opentracing = require('../debug.js');
+global.Tracer = opentracing.globalTracer();
 
 describe('OpenTracing API', function() {
 
-    // Test that the API layer, while in debug mode, catches API misuse
-    // before the implementation is even invoked (i.e. even with the no-op
-    // implementation).
-
-    describe('surface area', function() {
-        it('should have the required functions on the singleton', function() {
-            expect(Tracer.initGlobalTracer).to.be.a('function');
-            expect(Tracer.initNewTracer).to.be.a('function');
+    describe('Standalone functions', function() {
+        it('should have a function initGlobalTracer', function() {
+            expect(opentracing.initGlobalTracer).to.be.a('function');
         });
-
-        it('should have the required constants', function() {
-            expect(Tracer.FORMAT_TEXT_MAP).to.be.a('string');
-            expect(Tracer.FORMAT_BINARY).to.be.a('string');
-            expect(Tracer.REFERENCE_CHILD_OF).to.be.a('string');
-            expect(Tracer.REFERENCE_FOLLOWS_FROM).to.be.a('string');
+        it('should have a function globalTracer', function() {
+            expect(opentracing.globalTracer).to.be.a('function');
         });
-
-        it('should have the required Tracer functions', function() {
-            expect(Tracer.startSpan).to.be.a('function');
-            expect(Tracer.inject).to.be.a('function');
-            expect(Tracer.extract).to.be.a('function');
-            expect(Tracer.flush).to.be.a('function');
-        });
-
-        it('should have the required Span functions', function() {
-            var span = Tracer.startSpan('test_operation');
-            expect(span.tracer).to.be.a('function');
-            expect(span.context).to.be.a('function');
-            expect(span.setTag).to.be.a('function');
-            expect(span.addTags).to.be.a('function');
-            expect(span.log).to.be.a('function');
-            expect(span.logEvent).to.be.a('function');
-            expect(span.finish).to.be.a('function');
-            expect(span.setBaggageItem).to.be.a('function');
-            expect(span.getBaggageItem).to.be.a('function');
-        });
-
-        it('should enforce the required carrier types', function() {
-            var spanContext = Tracer.startSpan('test_operation').context();
-
-            var textCarrier = {};
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_TEXT_MAP, ''); }).to.throw(Error);
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_TEXT_MAP, 5); }).to.throw(Error);
-
-            var binCarrier = new Tracer.BinaryCarrier();
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_BINARY, new Object); }).to.not.throw(Error);
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_BINARY, {}); }).to.not.throw(Error);
-            expect(function() { Tracer.inject(spanContext, Tracer.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
-
-            expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-            expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, {}); }).to.not.throw(Error);
-            expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
-            expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, { buffer : '' }); }).to.throw(Error);
-            expect(function() { Tracer.extract(Tracer.FORMAT_BINARY, { buffer : 5 }); }).to.throw(Error);
-        });
-
-        it('should coerce to spanContext as needed', function() {
-            var span = Tracer.startSpan('test_operation');
-
-            var textCarrier = {};
-            expect(function() { Tracer.inject(span, Tracer.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-            expect(function() { Tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
-            expect(function() { var _ = new Tracer.Reference(Tracer.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
+    });
+    describe('Constants', function() {
+        var constStrings = [
+            'FORMAT_TEXT_MAP',
+            'FORMAT_BINARY',
+            'FORMAT_HTTP_HEADERS',
+            'REFERENCE_CHILD_OF',
+            'REFERENCE_FOLLOWS_FROM',
+        ];
+        _.each(constStrings, function(name) {
+            it(name + ' should be a constant string', function() {
+                expect(opentracing[name]).to.be.a('string');
+            });
         });
     });
 
-    describe('No-op tracer', function() {
-        it('should return a valid no-op tracer object when given a null implementation', function() {
-            var tracer;
-            expect(function() {
-                tracer = Tracer.initNewTracer(null);
-            }).not.to.throw();
-            expect(tracer).to.be.an('object');
+    describe('Tracer', function() {
+        it('should be a class', function() {
+            expect(opentracing.Tracer).to.be.a('function');
+            expect(new opentracing.Tracer()).to.be.an('object');
+        });
 
-            var span = tracer.startSpan('test_span')
+        var tracer = new opentracing.Tracer();
+        var funcs = [
+            'startSpan',
+            'inject',
+            'extract',
+            'flush',
+            'childOf',
+            'followsFrom',
+        ];
+        _.each(funcs, function(name) {
+            it(name + ' should be a method', function() {
+                expect(tracer[name]).to.be.a('function');
+            });
+        });
+
+        describe('Tracer#startSpan', function() {
+            it('should handle Spans and SpanContexts', function() {
+                var tracer = new opentracing.Tracer();
+                var span = tracer.startSpan('test_operation');
+                expect(function() { tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
+            });
+        });
+
+        describe('Tracer#inject', function() {
+            it('should enforce the required carrier types', function() {
+                let tracer = new opentracing.Tracer();
+                var spanContext = tracer.startSpan('test_operation').context();
+                var textCarrier = {};
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_TEXT_MAP, ''); }).to.throw(Error);
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_TEXT_MAP, 5); }).to.throw(Error);
+
+                var binCarrier = new opentracing.BinaryCarrier();
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, new Object); }).to.not.throw(Error);
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+
+                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : '' }); }).to.throw(Error);
+                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : 5 }); }).to.throw(Error);
+            });
+            it('should handle Spans and SpanContexts', function() {
+                var tracer = new opentracing.Tracer();
+                var span = tracer.startSpan('test_operation');
+                var textCarrier = {};
+                expect(function() { tracer.inject(span, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+            });
+        });
+    });
+
+    describe('Span', function() {
+
+        var tracer = new opentracing.Tracer();
+        var span = tracer.startSpan('test_span');
+
+        it('should be a class', function() {
             expect(span).to.be.an('object');
-            span.finish();
+        });
+
+        var funcs = [
+            'tracer',
+            'context',
+            'setTag',
+            'addTags',
+            'log',
+            'logEvent',
+            'finish',
+            'setBaggageItem',
+            'getBaggageItem',
+        ];
+        _.each(funcs, function(name) {
+            it(name + ' should be a method', function() {
+                expect(span[name]).to.be.a('function');
+            });
         });
     });
 
-    describe('Memory usage', function() {
-        before(function() {
-            NoopTracerImp = require('./imp/noop_imp.js');
-        });
+    describe('SpanContext', function() {
 
+        var tracer = new opentracing.Tracer();
+        var span = tracer.startSpan('test_span');
+        var spanContext = span.context();
+
+        it('should be a class', function() {
+            expect(spanContext).to.be.an('object');
+        });
+    });
+
+
+    describe('Reference', function() {
+
+        var tracer = new opentracing.Tracer();
+        var span = tracer.startSpan('test_span');
+        var ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span.context());
+
+        it('should be a class', function() {
+            expect(ref).to.be.an('object');
+        });
+        it('should handle Spans and SpanContexts', function() {
+            var tracer = new opentracing.Tracer();
+            var span = tracer.startSpan('test_operation');
+            expect(function() { new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
+        });
+    });
+});
+describe('Miscellaneous', function() {
+    describe('Memory usage', function() {
         it('should not report leaks after setting the global tracer', function() {
-            Tracer.initGlobalTracer(new NoopTracerImp());
+            opentracing.initGlobalTracer(new opentracing.Tracer());
         });
     });
 });

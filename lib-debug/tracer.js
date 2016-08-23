@@ -16,13 +16,19 @@ var _span_context = require('./span_context');
 
 var _span_context2 = _interopRequireDefault(_span_context);
 
-var _constants = require('./constants');
-
-var _constants2 = _interopRequireDefault(_constants);
-
 var _reference2 = require('./reference');
 
 var _reference3 = _interopRequireDefault(_reference2);
+
+var _constants = require('./constants');
+
+var Constants = _interopRequireWildcard(_constants);
+
+var _noop = require('./noop');
+
+var noop = _interopRequireWildcard(_noop);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -161,7 +167,6 @@ var Tracer = function () {
                 }
                 delete fields.childOf;
             }
-
             return this._startSpan(fields);
         }
 
@@ -180,7 +185,7 @@ var Tracer = function () {
             if (spanContext instanceof _span2.default) {
                 spanContext = spanContext.context();
             }
-            return this._reference(_constants2.default.REFERENCE_CHILD_OF, spanContext);
+            return this._reference(Constants.REFERENCE_CHILD_OF, spanContext);
         }
 
         /**
@@ -198,7 +203,7 @@ var Tracer = function () {
             if (spanContext instanceof _span2.default) {
                 spanContext = spanContext.context();
             }
-            return this._reference(_constants2.default.REFERENCE_FOLLOWS_FROM, spanContext);
+            return this._reference(Constants.REFERENCE_FOLLOWS_FROM, spanContext);
         }
 
         /**
@@ -245,13 +250,13 @@ var Tracer = function () {
                 if (typeof format !== 'string') {
                     throw new Error('format expected to be a string. Found: ' + (typeof format === 'undefined' ? 'undefined' : _typeof(format)));
                 }
-                if (format === _constants2.default.FORMAT_TEXT_MAP && (typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) !== 'object') {
+                if (format === Constants.FORMAT_TEXT_MAP && (typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) !== 'object') {
                     throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
                 }
-                if (format === _constants2.default.FORMAT_HTTP_HEADERS && (typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) !== 'object') {
+                if (format === Constants.FORMAT_HTTP_HEADERS && (typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) !== 'object') {
                     throw new Error('Unexpected carrier object for FORMAT_HTTP_HEADERS');
                 }
-                if (format === _constants2.default.FORMAT_BINARY && (typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) !== 'object') {
+                if (format === Constants.FORMAT_BINARY && (typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) !== 'object') {
                     throw new Error('Unexpected carrier object for FORMAT_BINARY');
                 }
             }
@@ -298,13 +303,13 @@ var Tracer = function () {
                 if (typeof format !== 'string' || !format.length) {
                     throw new Error('format is expected to be a string of non-zero length');
                 }
-                if (format === _constants2.default.FORMAT_TEXT_MAP && !((typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) === 'object')) {
+                if (format === Constants.FORMAT_TEXT_MAP && !((typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) === 'object')) {
                     throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
                 }
-                if (format === _constants2.default.FORMAT_HTTP_HEADERS && !((typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) === 'object')) {
+                if (format === Constants.FORMAT_HTTP_HEADERS && !((typeof carrier === 'undefined' ? 'undefined' : _typeof(carrier)) === 'object')) {
                     throw new Error('Unexpected carrier object for FORMAT_HTTP_HEADERS');
                 }
-                if (format === _constants2.default.FORMAT_BINARY) {
+                if (format === Constants.FORMAT_BINARY) {
                     if (carrier.buffer !== undefined && _typeof(carrier.buffer) !== 'object') {
                         throw new Error('Unexpected carrier object for FORMAT_BINARY');
                     }
@@ -352,7 +357,7 @@ var Tracer = function () {
     }, {
         key: '_startSpan',
         value: function _startSpan(fields) {
-            return new _span2.default();
+            return noop.span;
         }
 
         // The default behavior returns a valid Reference of the given type

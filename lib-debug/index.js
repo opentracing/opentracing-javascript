@@ -8,6 +8,10 @@ var _constants = require('./constants');
 
 var Constants = _interopRequireWildcard(_constants);
 
+var _noop = require('./noop');
+
+var noop = _interopRequireWildcard(_noop);
+
 var _binary_carrier = require('./binary_carrier');
 
 var _binary_carrier2 = _interopRequireDefault(_binary_carrier);
@@ -41,5 +45,8 @@ module.exports = Object.assign({
     Span: _span2.default,
     Tracer: _tracer2.default
 }, Constants, GlobalTracer);
+
+// Initialize the noops last to avoid a dependecy cycle between the classes.
+noop.initialize();
 
 //# sourceMappingURL=index.js.map

@@ -1,4 +1,48 @@
+import Tracer from './tracer';
+
+const noopTracer = new Tracer();
 let _globalTracer = null;
+
+// Allows direct importing/requiring of the global tracer:
+//
+// let globalTracer = require('opentracing/global');
+//      OR
+// import globalTracer from 'opentracing/global';
+//
+// Acts a bridge to the global tracer that can be safely called before the
+// global tracer is initialized. The purpose of the delegation is to avoid the
+// sometimes nearly intractible initialization order problems that can arise in
+// applications with a complex set of dependencies, while also avoiding the
+// case where
+class GlobalTracerDelegate extends Tracer {
+
+    _startSpan(...args) {
+        const tracer = _globalTracer || noopTracer;
+        return tracer._startSpan(...args);
+    }
+
+    _reference(...args) {
+        const tracer = _globalTracer || noopTracer;
+        return tracer._reference(...args);
+    }
+
+    _inject(...args) {
+        const tracer = _globalTracer || noopTracer;
+        return tracer._inject(...args);
+    }
+
+    _extract(...args) {
+        const tracer = _globalTracer || noopTracer;
+        return tracer._extract(...args);
+    }
+
+    _flush(...args) {
+        const tracer = _globalTracer || noopTracer;
+        return tracer._flush(...args);
+    }
+}
+
+const globalTracerDelegate = new GlobalTracerDelegate();
 
 /**
  * Set the global Tracer.
@@ -12,8 +56,12 @@ export function initGlobalTracer(tracer) {
 }
 
 /**
- * Returns the global tracer
+ * Returns the global tracer.
  */
-export function getGlobalTracer() {
-    return _globalTracer;
+export function globalTracer() {
+    // Return the delegate.  Since the global tracer is largely a convenience
+    // (the user can always create their own tracers), the delegate is used to
+    // give the added convenience of not needing to worry about initialization
+    // order.
+    return globalTracerDelegate;
 }

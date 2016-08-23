@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * SpanContext represents Span state that must propagate to descendant Spans
  * and across process boundaries.
