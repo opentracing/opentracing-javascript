@@ -17,13 +17,39 @@ Install the package using `npm`:
 npm install --save opentracing
 ```
 
+### Example
+
+The package contains a example using a naive `MockTracer` implementation. To run the example:
+
+```bash
+make example
+```
+
+The output should look something like:
+
+```
+Spans:
+    parent_span - 1521ms
+        tag 'custom':'tag value'
+        tag 'alpha':'1000'
+    child_span - 503ms
+        tag 'alpha':'200'
+        tag 'beta':'50'
+```
+
+### Code snippet
+
 In your JavaScript code, add instrumentation to the operations to be tracked. This is composed primarily of using "spans" around operations of interest and adding log statements to capture useful data relevant to those operations.
 
 ```js
 var http = require('http');
-var Tracer = require('opentracing');
+var opentracing = require('opentracing');
 
-var span = Tracer.startSpan('http_request');
+// NOTE: the default OpenTracing tracer does not record any tracing information.
+// Replace this line with the tracer implementation of your choice.
+var tracer = new opentracing.Tracer();
+
+var span = tracer.startSpan('http_request');
 var opts = {
     host : 'example.com',
     method: 'GET',
@@ -46,18 +72,12 @@ http.request(opts, function (res) {
 }).end();
 ```
 
-The default behavior of the `opentracing` package is to act as a "no-op" implementation.
-
-To capture and make the tracing data actionable, the `Tracer` object should be initialized with the OpenTracing implementation of your choice as in the pseudo-code below:
+As noted in the source snippet, the default behavior of the `opentracing` package is to act as a "no op" implementation. To capture and make the tracing data actionable, the `tracer` object should be initialized with the OpenTracing implementation of your choice as in the pseudo-code below:
 
 ```js
-var Tracer = require('opentracing');
-var TracingBackend = require('tracing-implementation-of-your-choice');
-
-Tracer.initGlobalTracer(TracingBackend.create());
+var CustomTracer = require('tracing-implementation-of-your-choice');
+var tracer = new CustomTracer();
 ```
-
-*Note: the underlying implementation object is shared between all inclusions of the `opentracing` package, so `initGlobalTracer` needs to only be called once during initialization.*
 
 ### Usage in the browser
 
@@ -65,6 +85,18 @@ The package contains two bundles built with webpack that can be included using a
 
 * `dist/opentracing-browser.min.js` - minified, no runtime checks
 * `dist/opentracing-browser.js` - debug version with runtime checks
+
+### Global tracer
+
+The library also provides a global singleton tracer for convenience. This can be set and accessed via the following:
+
+```javascript
+opentracing.initGlobalTracer(new CustomTracer());
+
+var tracer = opentracing.globalTracer();
+```
+
+Note: `globalTracer()` returns a wrapper on the actual tracer object. This is done for convenience of use as it ensures that the function will always return a non-null object.  This can be helpful in cases where it is difficult or impossible to know precisely when `initGlobalTracer` is called (for example, when writing a utility library that does not control the initialization process).  For more precise control, individual `Tracer` objects can be used instead of the global tracer.
 
 ### Node.js debug version
 
@@ -78,25 +110,41 @@ Requiring `opentracing/debug` will include a version of the library with additio
 
 There is a hosted copy of the current generated [ESDoc API Documentation here](https://doc.esdoc.org/github.com/opentracing/opentracing-javascript/).
 
-## Development Information
+## Contributing & developer information
 
-*I.e., information for developers working on this package.*
+See the [OpenTracing website](http://opentracing.io) for general information on contributing to OpenTracing.
 
-#### Building the library
+The project is built using a `Makefile`. Run:
 
 * `make build` creates the compiled, distributable code
 * `make test` runs the tests
 
-## JavaScript OpenTracing Implementations
+## OpenTracing tracer implementations
 
-*I.e. information for developers wanting to create an OpenTracing-compatible JavaScript implementation.*
+*This section is intended for developers wishing to* ***implement their own tracers***. *Developers who simply wish to* ***use OpenTracing*** *can safely ignore this information.*
 
-The API layer uses a [bridge pattern](https://en.wikipedia.org/wiki/Bridge_pattern) to pass work to the specific tracing implementation. The indirection allows the API layer to enforce greater API conformance and standardization across implementations (especially in debug builds), which helps keep instrumented code more portable across OpenTracing implementations.
+### Custom tracer implementation
 
-The "implementation API" - i.e. the interface the API layer expects to be able to call on the implementation - is a proper subset of the API layer itself. The surface area of the implementation API has been reduced in the case where the an API layer method (usually a convenience method of some form) can be expressed in terms of another more general method. For example, `logEvent` can be expressed as a `log` call, therefore the implementation only needs to implement `log`.
+Implementations can subclass `opentracing.Trace`, `opentracing.Span`, and the other API classes to build a OpenTracing tracer.
 
-For truly implementation-dependent methods, the JavaScript API layer *does* expose `imp()` methods on each major type to allow the implementations to be accessed directly. Use of implementation-dependent methods is discouraged as it immediately makes instrumented code no longer portable.  However, the `imp()` call does at least call attention to deviations from the standard API without making implementation-dependent calls impossible.
+Due to the dynamic nature of JavaScript, implementations can simply implement classes with the same signatures as the OpenTracing classes and use these directly as well (there's no need to subclass).
 
+Lastly, optionally implementations may choose to subclass `opentracing.Trace`, etc. and implement the underscore prefixed methods such as `_addTag` to pick up a bit of common code implemented in the base classes. This is entirely optional.
+
+### API compatibility testing
+
+If `mocha` is being used for unit testing, the `api_compatibility.js` file can be used to test the custom tracer. The file exports a single function that expects as an argument a function that will return a new instance of the tracer.
+
+```javascript
+var apiCompatibilityChecks = require('opentracing/test/api_compatibility.js');
+apiCompatibilityCheck(function() {
+     return new CustomTracer();
+});
+```
+
+### MockTracer
+
+An minimal example tracer is provided in the `src/mock_tracer` directory of the source code.
 
   [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
   [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master

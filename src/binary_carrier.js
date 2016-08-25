@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Convenience class to use as a binary carrier.
  *
@@ -8,6 +6,6 @@
  */
 export default class BinaryCarrier {
     constructor(binaryData) {
-        this.buffer = binaryData;
+        this._buffer = binaryData;
     }
 }

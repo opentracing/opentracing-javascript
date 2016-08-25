@@ -3,10 +3,30 @@
 History
 -------
 
+0.12.1 (2016-08-23)
+-------------------
+
+ **Contains API breaking changes for both library users and tracing implementations**
+
+- The package no longer exports the singleton, global tracer by default. `globalTracer()` should be used to access the global tracer
+- Implementation no longer use a `TracerImp` object. Implementations should instead subclass from `opentracing.Tracer`, `opentracing.Span`, etc.
+- The removal of the `TracerImp` object implies there is no longer an `imp()` method. Implementation-specific methods now exist in undifferentiated form on the tracer object.  Note: the OpenTracing library no longer forces the user to be explicit when calling implementation-specific methods; this has the downside that it is less obvious when an application becomes dependent on a specific tracing implementation.
+- `initNewTracer()` has been removed. The Tracer implementation object should be created directly by the library user.
+- The default no-op `Tracer.extract()` implementation now returns an empty SpanContext rather than null
+- `childOf` and `followFrom` have been moved from `Tracer` to standalone functions
+- `Tracer.flush` has been removed. It is not part of the OpenTracing spec.
+- Support for the `Tracer.startSpan(fields)` signature has been removed. It must always be called as `Tracer.startSpan(name, [fields])`
+
+*Non-breaking changes*
+
+- A `MockTracer` implementation has been added to the source code
+- Adds a naive example, runnable via `make example`
+
+
 0.12.0 (2016-08-22)
 -------------------
 
-* Renamed the browser global symbol from `Tracer` to `opentracing`
+- Renamed the browser global symbol from `Tracer` to `opentracing`
 
 0.10.3 (2016-06-12)
 -------------------
