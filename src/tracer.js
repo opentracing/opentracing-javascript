@@ -31,7 +31,7 @@ export default class Tracer {
      *
      *     // Start a new (child) Span:
      *     var child = Tracer.startSpan('Subroutine', {
-     *         reference: Tracer.childOf(parent.context()),
+     *         childOf: parent.context(),
      *     });
      *
      * @param {string} name - the name of the operation.
