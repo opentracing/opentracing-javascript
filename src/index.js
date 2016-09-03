@@ -2,6 +2,7 @@ import * as GlobalTracer from './global_tracer';
 import * as Constants from './constants';
 import * as Functions from './functions';
 import * as Noop from './noop';
+import * as Tags from './ext/tags';
 import BinaryCarrier from './binary_carrier';
 import Reference from './reference';
 import SpanContext from './span_context';
@@ -32,6 +33,7 @@ module.exports = _extend(
         SpanContext   : SpanContext,
         Span          : Span,
         Tracer        : Tracer,
+        Tags          : Tags,
     },
     Constants,
     Functions,
