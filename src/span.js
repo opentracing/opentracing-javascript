@@ -173,6 +173,19 @@ export default class Span {
     /**
      * Add a log record to this Span, optionally at a user-provided timestamp.
      *
+     * For example:
+     *
+     *     span.log({
+     *         size: rpc.size(),  // numeric value
+     *         URI: rpc.URI(),  // string value
+     *         payload: rpc.payload(),  // Object value
+     *         "keys can be arbitrary strings": rpc.foo(),
+     *     });
+     *
+     *     span.log({
+     *         "error.description": error.description(),  // numeric value
+     *     }, error.timestampMillis());
+     *
      * @param {object} keyValuePairs
      *        An object mapping string keys to arbitrary value types. All
      *        Tracer implementations should support bool, string, and numeric
