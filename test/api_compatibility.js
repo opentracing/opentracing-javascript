@@ -11,18 +11,6 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
     var createTracer = _createTracer || function() { return opentracing.Tracer(); };
 
     describe('OpenTracing API', function() {
-        describe('Standalone functions', function() {
-            var funcs = [
-                'childOf',
-                'followsFrom',
-            ];
-            _.each(funcs, function(name) {
-                it(name + ' should be a function', function() {
-                    expect(opentracing[name]).to.be.a('function');
-                });
-            });
-        });
-
         describe('Tracer', function() {
             it('should be a class', function() {
                 expect(createTracer).to.be.a('function');
