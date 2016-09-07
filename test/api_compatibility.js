@@ -8,9 +8,9 @@ var expect = require('chai').expect;
 var opentracing = require('../debug.js');
 
 module.exports = function apiCompatibilityChecks(_createTracer) {
-    var createTracer = _createTracer || function() { return opentracing.Tracer(); };
+    var createTracer = _createTracer || function() { return new opentracing.Tracer(); };
 
-    describe('OpenTracing API', function() {
+    describe('OpenTracing API Compatibility', function() {
         describe('Tracer', function() {
             it('should be a class', function() {
                 expect(createTracer).to.be.a('function');
@@ -31,7 +31,7 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
 
             describe('Tracer#startSpan', function() {
                 it('should handle Spans and SpanContexts', function() {
-                    var tracer = new opentracing.Tracer();
+                    var tracer = createTracer();
                     var span = tracer.startSpan('test_operation');
                     expect(function() { tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
                 });
@@ -39,7 +39,7 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
 
             describe('Tracer#inject', function() {
                 it('should not throw exception on required carrier types', function() {
-                    var tracer = new opentracing.Tracer();
+                    var tracer = createTracer();
                     var spanContext = tracer.startSpan('test_operation').context();
                     var textCarrier = {};
                     var binCarrier = new opentracing.BinaryCarrier();
@@ -55,7 +55,7 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
                 });
 
                 it('should handle Spans and SpanContexts', function() {
-                    var tracer = new opentracing.Tracer();
+                    var tracer = createTracer();
                     var span = tracer.startSpan('test_operation');
                     var textCarrier = {};
                     expect(function() { tracer.inject(span, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
@@ -90,7 +90,7 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
 
             describe('Span#finish', function() {
                 it('should not throw exceptions on valid arguments', function() {
-                    var tracer = new opentracing.Tracer();
+                    var tracer = createTracer();
                     function f(arg) {
                         return function() {
                             var span = tracer.startSpan('test_span');
@@ -121,6 +121,12 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
 
             it('should be a class', function() {
                 expect(ref).to.be.an('object');
+            });
+
+            it('should handle Spans and SpanContexts', function() {
+                var tracer = new opentracing.Tracer();
+                var span = tracer.startSpan('test_operation');
+                expect(function() { new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
             });
         });
     });
