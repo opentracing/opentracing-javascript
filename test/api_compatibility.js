@@ -40,38 +40,38 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
                     expect(tracer[name]).to.be.a('function');
                 });
             });
-        });
 
-        describe('Tracer#startSpan', function() {
-            it('should handle Spans and SpanContexts', function() {
-                var tracer = new opentracing.Tracer();
-                var span = tracer.startSpan('test_operation');
-                expect(function() { tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
-            });
-        });
-
-        describe('Tracer#inject', function() {
-            it('should not throw exception on required carrier types', function() {
-                var tracer = new opentracing.Tracer();
-                var spanContext = tracer.startSpan('test_operation').context();
-                var textCarrier = {};
-                var binCarrier = new opentracing.BinaryCarrier();
-                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, new Object); }).to.not.throw(Error);
-                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
-                expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
-
-                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
-                expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+            describe('Tracer#startSpan', function() {
+                it('should handle Spans and SpanContexts', function() {
+                    var tracer = new opentracing.Tracer();
+                    var span = tracer.startSpan('test_operation');
+                    expect(function() { tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
+                });
             });
 
-            it('should handle Spans and SpanContexts', function() {
-                var tracer = new opentracing.Tracer();
-                var span = tracer.startSpan('test_operation');
-                var textCarrier = {};
-                expect(function() { tracer.inject(span, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+            describe('Tracer#inject', function() {
+                it('should not throw exception on required carrier types', function() {
+                    var tracer = new opentracing.Tracer();
+                    var spanContext = tracer.startSpan('test_operation').context();
+                    var textCarrier = {};
+                    var binCarrier = new opentracing.BinaryCarrier();
+                    expect(function() { tracer.inject(spanContext, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                    expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                    expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, new Object); }).to.not.throw(Error);
+                    expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                    expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+
+                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+                });
+
+                it('should handle Spans and SpanContexts', function() {
+                    var tracer = new opentracing.Tracer();
+                    var span = tracer.startSpan('test_operation');
+                    var textCarrier = {};
+                    expect(function() { tracer.inject(span, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                });
             });
         });
 
@@ -99,19 +99,19 @@ module.exports = function apiCompatibilityChecks(_createTracer) {
                     expect(span[name]).to.be.a('function');
                 });
             });
-        });
 
-        describe('Span#finish', function() {
-            it('should not throw exceptions on valid arguments', function() {
-                var tracer = new opentracing.Tracer();
-                function f(arg) {
-                    return function() {
-                        var span = tracer.startSpan('test_span');
-                        span.finish(arg);
+            describe('Span#finish', function() {
+                it('should not throw exceptions on valid arguments', function() {
+                    var tracer = new opentracing.Tracer();
+                    function f(arg) {
+                        return function() {
+                            var span = tracer.startSpan('test_span');
+                            span.finish(arg);
+                        }
                     }
-                }
-                expect(f(10)).to.not.throw(Error);
-                expect(f(Date.now())).to.not.throw(Error);
+                    expect(f(10)).to.not.throw(Error);
+                    expect(f(Date.now())).to.not.throw(Error);
+                });
             });
         });
 
