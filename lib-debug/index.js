@@ -16,6 +16,10 @@ var _noop = require('./noop');
 
 var Noop = _interopRequireWildcard(_noop);
 
+var _tags = require('./ext/tags');
+
+var Tags = _interopRequireWildcard(_tags);
+
 var _binary_carrier = require('./binary_carrier');
 
 var _binary_carrier2 = _interopRequireDefault(_binary_carrier);
@@ -62,7 +66,8 @@ module.exports = _extend({
     Reference: _reference2.default,
     SpanContext: _span_context2.default,
     Span: _span2.default,
-    Tracer: _tracer2.default
+    Tracer: _tracer2.default,
+    Tags: Tags
 }, Constants, Functions, GlobalTracer);
 
 // Initialize the noops last to avoid a dependecy cycle between the classes.

@@ -80,7 +80,7 @@ var MockTracer = function (_opentracing$Tracer) {
     function MockTracer() {
         _classCallCheck(this, MockTracer);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MockTracer).call(this));
+        var _this = _possibleConstructorReturn(this, (MockTracer.__proto__ || Object.getPrototypeOf(MockTracer)).call(this));
 
         _this._spans = [];
         return _this;

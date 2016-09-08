@@ -32,7 +32,7 @@ var MockContext = function (_opentracing$SpanCont) {
 
         // Store a reference to the span itself since this is a mock tracer
         // intended to make debugging and unit testing easier.
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(MockContext).call(this));
+        var _this = _possibleConstructorReturn(this, (MockContext.__proto__ || Object.getPrototypeOf(MockContext)).call(this));
 
         _this._span = span;
         return _this;
