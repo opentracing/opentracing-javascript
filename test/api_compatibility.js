@@ -87,6 +87,7 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
                 it('should not throw exceptions on valid arguments', function() {
                     function f(arg) {
                         return function() {
+                            span = tracer.startSpan('test-span');
                             span.finish(arg);
                         }
                     }
@@ -97,7 +98,7 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
         });
 
         describe('Reference', function() {
-            it('should handle Spans and SpanContexts', function() {
+            it('should handle Spans and span.context()', function() {
                 expect(function() { new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
             });
         });
@@ -119,14 +120,6 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
                     expect(span[name]).to.be.a('function');
                 });
             });
-
-            it ('extract returns span context with allowed functions', function() {
-                // pass by default if no factory map was specified.
-                if (carrierFormatFactoryMap) {
-                    var carrierFactory = carrierFormatFactoryMap[opentracing.FORMAT_TEXT_MAP];
-                    tracer.extract(opentracing.FORMAT_TEXT_MAP, carrierFactory());
-                }
-            });
         });
 
         describe('Span', function() {
@@ -137,23 +130,28 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
             });
 
             var spanExecutions = [
-                {name: 'tracer', args: []},
-                {name: 'context', args: []},
-                {name: 'setOperationName', args: ['name']},
-                {name: 'setTag', args: ['key', 'value']},
-                {name: 'addTags', args: [{'key': 'value'}]},
+                {name: 'tracer', args: [], chainable: false},
+                {name: 'context', args: [], chainable: false},
+                {name: 'setOperationName', args: ['name'], chainable: true},
+                {name: 'setTag', args: ['key', 'value'], chainable: true},
+                {name: 'addTags', args: [{'key': 'value'}], chainable: true},
                 {name: 'log', args: [
                     {'event': 'event-name', 'payload': {'key': 'value'}}
-                ]},
-                {name: 'logEvent', args: ['eventName', null]},
-                {name: 'logEvent', args: ['eventName', {'key': 'value'}]},
-                {name: 'finish', args: []},
-                {name: 'setBaggageItem', args: ['key', 'value']},
-                {name: 'getBaggageItem', args: ['key']},
+                ], chainable: false},
+                {name: 'logEvent', args: ['eventName', null], chainable: false},
+                {name: 'logEvent', args: ['eventName', {'key': 'value'}], chainable: false},
+                {name: 'finish', args: [], chainable: false},
+                {name: 'setBaggageItem', args: ['key', 'value'], chainable: true},
+                {name: 'getBaggageItem', args: ['key'], chainable: false},
             ];
             _.each(spanExecutions, function(a) {
                 it(a.name + 'should not throw exceptions', function() {
-                    span[a.name].apply(span, a.args);
+                    var newSpan = span[a.name].apply(span, a.args);
+                    if (a['chainable']) {
+                        _.each(spanFunctions, function(name) {
+                            assert.isOk(newSpan[name] instanceof Function);
+                        });
+                    }
                 })
             });
 
