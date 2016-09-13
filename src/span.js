@@ -208,7 +208,7 @@ export default class Span {
     logEvent(eventName, payload) {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length >= 1 && arguments.length <= 2) {
+            if (arguments.length > 2 || arguments.length < 1) {
                 throw new Error('Invalid number of arguments');
             }
             if (typeof eventName !== 'string') {
