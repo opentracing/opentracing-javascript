@@ -15,21 +15,31 @@ var tracerFunctions = [
 ];
 
 var spanFunctions = [
-    'tracer',
     'context',
+    'tracer',
     'setOperationName',
+    'setBaggageItem',
+    'getBaggageItem',
     'setTag',
     'addTags',
     'log',
     'logEvent',
     'finish',
-    'setBaggageItem',
-    'getBaggageItem',
 ];
 
-// TODO(oibe) update documentation to address carrier factory map
-module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFactoryMap, checkBaggageValues) {
-    var createTracer = _createTracer || function() { return new opentracing.Tracer(); };
+/**
+ * A function that takes a tracer factory, and tests wheter the initialized tracer
+ * fulfills Opentracing's api requirements.
+ *
+ * @param {object} tracerFactory - a factory function that allocates a tracer.
+ * @param {object} [options] - the options to be set on api compatibility
+ * @param {boolean} [checkBaggageValues] - a boolean that controls whether or not to verify 
+ * baggage values.
+ * */
+module.exports = function apiCompatibilityChecks(tracerFactory, options) {
+    var createTracer = tracerFactory || function() { return new opentracing.Tracer(); };
+    var options = options || {};
+
 
     describe('OpenTracing API Compatibility', function() {
         var tracer;
@@ -47,13 +57,14 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
                 });
             });
 
-            describe('Tracer#startSpan', function() {
+            describe('startSpan', function() {
                 it('should handle Spans and SpanContexts', function() {
                     expect(function() { tracer.startSpan('child', { childOf : span }); }).to.not.throw(Error);
+                    expect(function() { tracer.startSpan('child', { childOf : span.context() }); }).to.not.throw(Error);
                 });
             });
 
-            describe('Tracer#inject', function() {
+            describe('inject', function() {
                 it('should not throw exception on required carrier types', function() {
                     var spanContext = span.context();
                     var textCarrier = {};
@@ -63,61 +74,23 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
                     expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, new Object); }).to.not.throw(Error);
                     expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
                     expect(function() { tracer.inject(spanContext, opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
-
-                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
-                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
                 });
 
                 it('should handle Spans and SpanContexts', function() {
                     var textCarrier = {};
                     expect(function() { tracer.inject(span, opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                });
-            });
-        });
-
-        describe('Span', function() {
-            _.each(spanFunctions, function(name) {
-                it(name + ' should be a method', function() {
-                    expect(span[name]).to.be.a('function');
+                    expect(function() { tracer.inject(span.context(), opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                 });
             });
 
-            describe('Span#finish', function() {
-                it('should not throw exceptions on valid arguments', function() {
-                    function f(arg) {
-                        return function() {
-                            span = tracer.startSpan('test-span');
-                            span.finish(arg);
-                        }
-                    }
-                    expect(f(10)).to.not.throw(Error);
-                    expect(f(Date.now())).to.not.throw(Error);
-                });
-            });
-        });
-
-        describe('Reference', function() {
-            it('should handle Spans and span.context()', function() {
-                expect(function() { new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
-            });
-        });
-    });
-
-    describe('Opentracing implementation compatibility', function() {
-        var tracer;
-        var span;
-
-        beforeEach(function() {
-            tracer = createTracer();
-            span = tracer.startSpan('test-span');
-        });
-
-        describe('Tracer', function() {
-            _.each(spanFunctions, function(name) {
-                it(name + ' should be a method', function() {
-                    var span = tracer.startSpan('test-span');
-                    expect(span[name]).to.be.a('function');
+            describe('extract', function() {
+                it('should not throw exception on required carrier types', function() {
+                    var textCarrier = {};
+                    var binCarrier = new opentracing.BinaryCarrier();
+                    expect(function() { tracer.extract(opentracing.FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, {}); }).to.not.throw(Error);
+                    expect(function() { tracer.extract(opentracing.FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
                 });
             });
         });
@@ -145,11 +118,11 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
                 {name: 'getBaggageItem', args: ['key'], chainable: false},
             ];
             _.each(spanExecutions, function(a) {
-                it(a.name + 'should not throw exceptions', function() {
-                    var newSpan = span[a.name].apply(span, a.args);
+                it(a.name + ' should not throw exceptions', function() {
+                    var maybeSpan = span[a.name].apply(span, a.args);
                     if (a['chainable']) {
                         _.each(spanFunctions, function(name) {
-                            assert.isOk(newSpan[name] instanceof Function);
+                            assert.isOk(maybeSpan[name] instanceof Function);
                         });
                     }
                 })
@@ -158,14 +131,29 @@ module.exports = function apiCompatibilityChecks(_createTracer, carrierFormatFac
             it('should set baggage and retrieve baggage', function() {
                 span.setBaggageItem('some-key', 'some-value');
                 var val = span.getBaggageItem('some-key');
-                if (checkBaggageValues) {
+                if (options.checkBaggageValues) {
                     assert.equal('some-value', val);
                 }
             });
 
-            it('setTag should be chainable', function() {
-                var newSpan = span.setTag('key', 'value');
-                expect(span['setTag']).to.be.a('function');
+            describe('finish', function() {
+                it('should not throw exceptions on valid arguments', function() {
+                    function f(arg) {
+                        return function() {
+                            span = tracer.startSpan('test-span');
+                            span.finish(arg);
+                        }
+                    }
+                    expect(f(10)).to.not.throw(Error);
+                    expect(f(Date.now())).to.not.throw(Error);
+                });
+            });
+        });
+
+        describe('Reference', function() {
+            it('should handle Spans and span.context()', function() {
+                expect(function() { new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span); }).to.not.throw(Error);
+                expect(function() { new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span.context()); }).to.not.throw(Error);
             });
         });
     });
