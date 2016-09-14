@@ -109,7 +109,11 @@ module.exports = function apiCompatibilityChecks(tracerFactory, options) {
                 {name: 'setTag', args: ['key', 'value'], chainable: true},
                 {name: 'addTags', args: [{'key': 'value'}], chainable: true},
                 {name: 'log', args: [
-                    {'event': 'event-name', 'payload': {'key': 'value'}}
+                    {'key1': 'val1', 'key2': {'nested': 'value'}}
+                ], chainable: false},
+                {name: 'log', args: [
+                    {'key1': 'val1', 'key2': {'nested': 'value'}},
+                    Date.now(),
                 ], chainable: false},
                 {name: 'logEvent', args: ['eventName', null], chainable: false},
                 {name: 'logEvent', args: ['eventName', {'key': 'value'}], chainable: false},

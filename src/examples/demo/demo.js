@@ -18,10 +18,12 @@ setTimeout(() => {
     const child = tracer.startSpan('child_span', { childOf: parent });
     child.setTag('alpha', '200');
     child.setTag('beta', '50');
+    child.log({state: "waiting"})
 
     console.log('Waiting...');
     setTimeout(() => {
         console.log('Finishing child and parent.')
+        child.log({state: "done"})
         child.finish();
         parent.finish();
 
