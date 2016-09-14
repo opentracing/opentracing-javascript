@@ -29,8 +29,11 @@ export default class MockSpan extends opentracing.Span {
         }
     }
 
-    _log(fields) {
-        this._logs.push(fields);
+    _log(fields, timestamp) {
+        this._logs.push({
+            fields    : fields,
+            timestamp : timestamp,
+        });
     }
 
     _finish(finishTime) {

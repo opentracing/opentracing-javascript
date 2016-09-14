@@ -213,42 +213,57 @@ var Span = function () {
         }
 
         /**
-         * Explicitly create a log record associated with the span.
+         * Add a log record to this Span, optionally at a user-provided timestamp.
          *
-         * @param {object} fields - object containing the log record properties
-         * @param {number} [fields.timestamp] - optional field specifying the
-         *        timestamp in milliseconds as a Unix timestamp. Fractional values
-         *        are allowed so that timestamps with sub-millisecond accuracy
-         *        can be represented. If not specified, the implementation is
-         *        expected to use it's notion of the current time of the call.
-         * @param {string} [fields.event] - the event name
-         * @param {object} [fields.payload] - an arbitrary structured payload. It is
-         *        implementation-dependent how this will be processed.
+         * For example:
+         *
+         *     span.log({
+         *         size: rpc.size(),  // numeric value
+         *         URI: rpc.URI(),  // string value
+         *         payload: rpc.payload(),  // Object value
+         *         "keys can be arbitrary strings": rpc.foo(),
+         *     });
+         *
+         *     span.log({
+         *         "error.description": error.description(),  // numeric value
+         *     }, error.timestampMillis());
+         *
+         * @param {object} keyValuePairs
+         *        An object mapping string keys to arbitrary value types. All
+         *        Tracer implementations should support bool, string, and numeric
+         *        value types, and some may also support Object values.
+         * @param {number} timestamp
+         *        An optional parameter specifying the timestamp in milliseconds
+         *        since the Unix epoch. Fractional values are allowed so that
+         *        timestamps with sub-millisecond accuracy can be represented. If
+         *        not specified, the implementation is expected to use its notion
+         *        of the current time of the call.
          */
 
     }, {
         key: 'log',
-        value: function log(fields) {
+        value: function log(keyValuePairs, timestamp) {
             // Debug-only runtime checks on the arguments
             if (process.env.NODE_ENV === 'debug') {
-                if (arguments.length !== 1) {
+                if (arguments.length > 2 || arguments.length === 0) {
                     throw new Error('Invalid number of arguments');
                 }
-                if ((typeof fields === 'undefined' ? 'undefined' : _typeof(fields)) !== 'object') {
-                    throw new Error('Expected fields to be an object');
+                if (arguments.length === 2) {
+                    if (typeof timestamp !== 'number') {
+                        throw new Error('Expected timestamp to be a number');
+                    }
+                }
+                if ((typeof keyValuePairs === 'undefined' ? 'undefined' : _typeof(keyValuePairs)) !== 'object') {
+                    throw new Error('Expected keyValuePairs to be an object');
                 }
             }
 
-            this._log(fields);
+            this._log(keyValuePairs, timestamp);
             return this;
         }
 
         /**
-         * Logs a event with an optional payload.
-         *
-         * @param  {string} eventName - string associated with the log record
-         * @param  {object} [payload] - arbitrary payload object associated with the
-         *         log record.
+         * DEPRECATED
          */
 
     }, {
@@ -280,7 +295,7 @@ var Span = function () {
          * finish() must be the last call made to any span instance, and to do
          * otherwise leads to undefined behavior.
          *
-         * @param  {Number} finishTime
+         * @param  {number} finishTime
          *         Optional finish time in milliseconds as a Unix timestamp. Decimal
          *         values are supported for timestamps with sub-millisecond accuracy.
          *         If not specified, the current time (as defined by the
@@ -358,13 +373,10 @@ var Span = function () {
         value: function _addTags(keyValuePairs) {}
 
         // By default does nothing
-        //
-        // NOTE: both log() and logEvent() map to this function. fields will always
-        // be an associative array.
 
     }, {
         key: '_log',
-        value: function _log(fields) {}
+        value: function _log(keyValuePairs, timestamp) {}
 
         // By default does nothing
         //
