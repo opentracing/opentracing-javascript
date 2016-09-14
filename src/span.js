@@ -183,8 +183,8 @@ export default class Span {
      *     });
      *
      *     span.log({
-     *         "error.description": error.description(),  // numeric value
-     *     }, error.timestampMillis());
+     *         "error.description": someError.description(),
+     *     }, someError.timestampMillis());
      *
      * @param {object} keyValuePairs
      *        An object mapping string keys to arbitrary value types. All
