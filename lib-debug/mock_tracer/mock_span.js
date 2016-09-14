@@ -59,8 +59,11 @@ var MockSpan = function (_opentracing$Span) {
         }
     }, {
         key: '_log',
-        value: function _log(fields) {
-            this._logs.push(fields);
+        value: function _log(fields, timestamp) {
+            this._logs.push({
+                fields: fields,
+                timestamp: timestamp
+            });
         }
     }, {
         key: '_finish',
