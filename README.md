@@ -7,7 +7,7 @@ This library is a JavaScript implementation of Open Tracing API. It is intended 
 ## Required Reading
 
 To fully understand this platform API, it's helpful to be familiar with the [OpenTracing project](http://opentracing.io) and
-[terminology](http://opentracing.io/spec/) more generally.
+[terminology](http://opentracing.io/documentation/pages/spec.html) more specifically.
 
 ## Quick Start
 
