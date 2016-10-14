@@ -3,6 +3,14 @@
 History
 -------
 
+0.13.0 (2016-10-14)
+-------------------
+
+ **Contains API breaking changes for both library users and tracing implementations**
+
+- Introduces key-value logging API
+
+
 0.12.1 (2016-08-23)
 -------------------
 

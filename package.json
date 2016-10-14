@@ -1,6 +1,7 @@
 {
   "name": "opentracing",
-  "version": "0.12.3",
+  "version": "0.13.0",
+  "licence": "MIT",
   "licenses": [
     {
       "type": "MIT",
