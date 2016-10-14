@@ -1,8 +1,8 @@
+[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![NPM Published Version][npm-img]][npm]
+
 # OpenTracing API for JavaScript
 
 This library is a JavaScript implementation of Open Tracing API. It is intended for use both on the server and in the browser.
-
-[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov]
 
 ## Required Reading
 
@@ -148,5 +148,8 @@ An minimal example tracer is provided in the `src/mock_tracer` directory of the 
 
   [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
   [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
+  [npm-img]: https://badge.fury.io/js/opentracing.svg
   [ci]: https://travis-ci.org/opentracing/opentracing-javascript
   [cov]: https://coveralls.io/github/opentracing/opentracing-javascript?branch=master
+  [npm]: https://www.npmjs.com/package/opentracing
+
