@@ -66,5 +66,14 @@ module.exports = function opentracingAPITests() {
                 expect(ref).to.be.an('object');
             });
         });
+
+
+        describe('BinaryCarrier', function() {
+            it('should set binary data as a field called "buffer"', function() {
+                var buffer = new Float64Array();
+                var ref = new opentracing.BinaryCarrier(buffer);
+                expect(ref.buffer).to.equal(buffer);
+            });
+        });
     });
 }
