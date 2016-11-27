@@ -6,7 +6,7 @@ History
 0.13.1 (unreleased)
 -------------------
 
-- No changes yet
+- `BinaryCarrier` now fulfills the API contract that binary carrier objects have a `buffer` property.
 
 
 0.13.0 (2016-10-14)
