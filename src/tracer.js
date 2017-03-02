@@ -34,6 +34,13 @@ export default class Tracer {
      *         childOf: parent.context(),
      *     });
      *
+     *     // Start a new async (FollowsFrom) Span:
+     *     var child = Tracer.startSpan('Subroutine', {
+     *         references: [
+     *             opentracing.followsFrom(parent.context())
+     *         ],
+     *     });
+     *
      * @param {string} name - the name of the operation.
      * @param {object} [fields] - the fields to set on the newly created span.
      * @param {string} [fields.operationName] - the name to use for the newly
