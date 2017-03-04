@@ -30,12 +30,12 @@ export default class Tracer {
      *     var parent = Tracer.startSpan('DoWork');
      *
      *     // Start a new (child) Span:
-     *     var child = Tracer.startSpan('Subroutine', {
+     *     var child = Tracer.startSpan('load-from-db', {
      *         childOf: parent.context(),
      *     });
      *
      *     // Start a new async (FollowsFrom) Span:
-     *     var child = Tracer.startSpan('Subroutine', {
+     *     var child = Tracer.startSpan('async-cache-write', {
      *         references: [
      *             opentracing.followsFrom(parent.context())
      *         ],
