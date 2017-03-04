@@ -59,14 +59,16 @@ var opts = {
 http.request(opts, function (res) {
     res.setEncoding('utf8');
     res.on('error', function (err) {
-        span.logEvent('request_error', err);
+        // assuming no retries, mark the span as failed
+        span.setTag(opentracing.Tags.ERROR, true);
+        span.log({'event': 'error', 'error.object': err);
         span.finish();
     });
     res.on('data', function (chunk) {
-        span.logEvent('data_received', chunk);
+        span.log({'event': 'data_received', 'data': chunk});
     });
-    res.on('end', function(err) {
-        span.logEvent('request_end', err);
+    res.on('end', function() {
+        span.log({'event': 'request_end'});
         span.finish();
     });
 }).end();
