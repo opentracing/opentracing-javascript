@@ -43,8 +43,8 @@ export default class Tracer {
      *
      * @param {string} name - the name of the operation.
      * @param {object} [fields] - the fields to set on the newly created span.
-     * @param {string} [fields.operationName] - the name to use for the newly
-     *        created span. Required if called with a single argument.
+     * @param {string} [fields.operationName] - DEPRECATED: the name to use for
+     *        the newly created span. Provided for backwards-compatibility.
      * @param {SpanContext} [fields.childOf] - a parent SpanContext (or Span,
      *        for convenience) that the newly-started span will be the child of
      *        (per REFERENCE_CHILD_OF). If specified, `fields.references` must
