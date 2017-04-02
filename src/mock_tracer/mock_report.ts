@@ -1,13 +1,20 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import _ from 'underscore';
+import * as _ from 'lodash';
+import { DebugInfo, MockSpan } from './mock_span';
 
 /**
  * Index a collection of reported MockSpans in a way that's easy to run unit
  * test assertions against.
  */
-export default class MockReport {
+export class MockReport {
 
-    constructor(spans) {
+    spans: MockSpan[];
+    private spansByUUID: { [uuid: string]: MockSpan };
+    private spansByTag: { [key: string]: { [value: string]: MockSpan[] } };
+    private debugSpans: DebugInfo[];
+    private unfinishedSpans: MockSpan[];
+
+    constructor(spans: MockSpan[]) {
         this.spans = spans;
         this.spansByUUID = {};
         this.spansByTag = {};
@@ -15,7 +22,7 @@ export default class MockReport {
 
         this.unfinishedSpans = [];
 
-        _.each(spans, (span) => {
+        _.each(spans, span => {
             if (span._finishMs === 0) {
                 this.unfinishedSpans.push(span);
             }
@@ -23,7 +30,7 @@ export default class MockReport {
             this.spansByUUID[span.uuid()] = span;
             this.debugSpans.push(span.debug());
 
-            _.each(span._tags, (val, key) => {
+            _.each(span.tags(), (val, key: string) => {
                 this.spansByTag[key] = this.spansByTag[key] || {};
                 this.spansByTag[key][val] = this.spansByTag[key][val] || [];
                 this.spansByTag[key][val].push(span);
@@ -31,15 +38,17 @@ export default class MockReport {
         });
     }
 
-    firstSpanWithTagValue(key, val) {
-        let m = this.spansByTag[key];
+    firstSpanWithTagValue(key: string, val: any): MockSpan | null {
+        const m = this.spansByTag[key];
         if (!m) {
             return null;
         }
-        let n = m[val];
+        const n = m[val];
         if (!n) {
             return null;
         }
         return n[0];
     }
 }
+
+export default MockReport;

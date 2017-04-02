@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * The FORMAT_BINARY format represents SpanContexts in an opaque binary
  * carrier.
@@ -13,7 +11,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * expected to be an Array-like object (Array, ArrayBuffer, or
  * TypedBuffer).
  */
-exports.FORMAT_BINARY = 'binary';
+export declare const FORMAT_BINARY = "binary";
 /**
  * The FORMAT_TEXT_MAP format represents SpanContexts using a
  * string->string map (backed by a Javascript Object) as a carrier.
@@ -27,7 +25,7 @@ exports.FORMAT_BINARY = 'binary';
  * a prefix or other convention to distinguish Tracer-specific key:value
  * pairs.
  */
-exports.FORMAT_TEXT_MAP = 'text_map';
+export declare const FORMAT_TEXT_MAP = "text_map";
 /**
  * The FORMAT_HTTP_HEADERS format represents SpanContexts using a
  * character-restricted string->string map (backed by a Javascript Object)
@@ -44,14 +42,14 @@ exports.FORMAT_TEXT_MAP = 'text_map';
  * prefix or other convention to distinguish Tracer-specific key:value
  * pairs.
  */
-exports.FORMAT_HTTP_HEADERS = 'http_headers';
+export declare const FORMAT_HTTP_HEADERS = "http_headers";
 /**
  * A Span may be the "child of" a parent Span. In a “child of” reference,
  * the parent Span depends on the child Span in some capacity.
  *
  * See more about reference types at http://opentracing.io/spec/
  */
-exports.REFERENCE_CHILD_OF = 'child_of';
+export declare const REFERENCE_CHILD_OF = "child_of";
 /**
  * Some parent Spans do not depend in any way on the result of their child
  * Spans. In these cases, we say merely that the child Span “follows from”
@@ -59,5 +57,4 @@ exports.REFERENCE_CHILD_OF = 'child_of';
  *
  * See more about reference types at http://opentracing.io/spec/
  */
-exports.REFERENCE_FOLLOWS_FROM = 'follows_from';
-//# sourceMappingURL=constants.js.map
+export declare const REFERENCE_FOLLOWS_FROM = "follows_from";

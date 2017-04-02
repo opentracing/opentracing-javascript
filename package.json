@@ -9,15 +9,19 @@
     }
   ],
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "prepublish": "npm run webpack",
+    "lint": "tslint -t msbuild -c tslint.json 'src/**/*.ts'",
     "test": "npm run test-cover",
     "cover": "npm run test-cover && istanbul check-coverage",
     "test-cover": "NODE_ENV=debug istanbul cover --report lcovonly --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
     "cover-html": "NODE_ENV=debug istanbul cover --report html --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
     "webpack": "npm run webpack-browser-debug && npm run webpack-browser-prod",
     "webpack-browser-debug": "BUILD_CONFIG=debug webpack --display-error-details",
-    "webpack-browser-prod": "BUILD_CONFIG=production webpack --display-error-details"
+    "webpack-browser-prod": "BUILD_CONFIG=production webpack --display-error-details",
+    "build": "tsc -p .",
+    "watch": "tsc -w -p ."
   },
   "repository": {
     "type": "git",
@@ -25,6 +29,10 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@types/chai": "3.4.35",
+    "@types/lodash": "4.14.61",
+    "@types/mocha": "2.2.40",
+    "@types/node": "7.0.12",
     "babel-cli": "^6.11.4",
     "babel-core": "^6.3.26",
     "babel-loader": "^6.2.0",
@@ -59,10 +67,12 @@
     "eslint-plugin-react": "^5.2.2",
     "istanbul": "^0.4.5",
     "json-loader": "^0.5.4",
+    "lodash": "^4.17.4",
     "mocha": "^2.4.5",
     "shelljs": "^0.5.3",
     "source-map-support": "^0.3.3",
-    "underscore": "^1.8.3",
+    "tslint": "^5.0.0",
+    "typescript": "^2.2.2",
     "webpack": "^1.12.9"
   }
 }

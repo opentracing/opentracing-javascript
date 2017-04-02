@@ -1,42 +1,65 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import opentracing from '../..';
+import * as _ from 'lodash';
+import * as opentracing from '../index';
+import Reference from '../reference';
 import MockContext from './mock_context';
-import _ from 'underscore';
+import MockTracer from './mock_tracer';
+
+interface Log {
+    fields: { [key: string]: any };
+    timestamp?: number;
+}
+
+export interface DebugInfo {
+    uuid: string;
+    operation: string;
+    millis: [number, number, number];
+    tags?: { [key: string]: any };
+}
 
 /**
  * OpenTracing Span implementation designed for use in unit tests.
  */
-export default class MockSpan extends opentracing.Span {
+export class MockSpan extends opentracing.Span {
+
+    private _operationName: string;
+    private _tags: { [key: string]: any };
+    private _logs: Log[];
+    _finishMs: number;
+    private _mockTracer: MockTracer;
+    private _uuid: string;
+    private _startMs: number;
+    _startStack?: string;
 
     //------------------------------------------------------------------------//
     // OpenTracing implementation
     //------------------------------------------------------------------------//
 
-    _context() {
+    protected _context(): MockContext {
         return new MockContext(this);
     }
 
-    _setOperationName(name) {
+    protected _setOperationName(name: string): void {
         this._operationName = name;
     }
 
-    _addTags(set) {
-        let keys = Object.keys(set);
+    protected _addTags(set: { [key: string]: any }): void {
+        const keys = Object.keys(set);
         for (let i = 0; i < keys.length; i++) {
-            let key = keys[i];
+            const key = keys[i];
             this._tags[key] = set[key];
         }
     }
 
-    _log(fields, timestamp) {
+    protected _log(fields: { [key: string]: any }, timestamp?: number): void {
         this._logs.push({
-            fields    : fields,
-            timestamp : timestamp,
+            fields,
+            timestamp
         });
     }
 
-    _finish(finishTime) {
+    protected _finish(finishTime?: number): void {
         this._finishMs = finishTime || Date.now();
     }
 
@@ -44,9 +67,9 @@ export default class MockSpan extends opentracing.Span {
     // MockSpan-specific
     //------------------------------------------------------------------------//
 
-    constructor(tracer) {
+    constructor(tracer: MockTracer) {
         super();
-        this._tracer = tracer;
+        this._mockTracer = tracer;
         this._uuid = this._generateUUID();
         this._startMs = Date.now();
         this._finishMs = 0;
@@ -55,39 +78,39 @@ export default class MockSpan extends opentracing.Span {
         this._logs = [];
     }
 
-    uuid() {
+    uuid(): string {
         return this._uuid;
     }
 
-    operationName() {
+    operationName(): string {
         return this._operationName;
     }
 
-    durationMs() {
+    durationMs(): number {
         return this._finishMs - this._startMs;
     }
 
-    tags() {
+    tags(): { [key: string]: any } {
         return this._tags;
     }
 
-    _generateUUID() {
+    private _generateUUID(): string {
         const p0 = `00000000${Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)}`.substr(-8);
         const p1 = `00000000${Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)}`.substr(-8);
         return `${p0}${p1}`;
     }
 
-    addReference(ref) {
+    addReference(ref: Reference): void {
     }
 
     /**
      * Returns a simplified object better for console.log()'ing.
      */
-    debug() {
-        let obj = {
+    debug(): DebugInfo {
+        const obj: DebugInfo = {
             uuid      : this._uuid,
             operation : this._operationName,
-            millis    : [this._finishMs - this._startMs, this._startMs, this._finishMs],
+            millis    : [this._finishMs - this._startMs, this._startMs, this._finishMs]
         };
         if (_.size(this._tags)) {
             obj.tags = this._tags;
@@ -95,3 +118,5 @@ export default class MockSpan extends opentracing.Span {
         return obj;
     }
 }
+
+export default MockSpan;

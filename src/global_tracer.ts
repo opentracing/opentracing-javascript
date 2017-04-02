@@ -1,7 +1,7 @@
 import Tracer from './tracer';
 
 const noopTracer = new Tracer();
-let _globalTracer = null;
+let _globalTracer: Tracer | null = null;
 
 // Allows direct importing/requiring of the global tracer:
 //
@@ -16,19 +16,19 @@ let _globalTracer = null;
 // case where
 class GlobalTracerDelegate extends Tracer {
 
-    startSpan(...args) {
+    startSpan(): any {
         const tracer = _globalTracer || noopTracer;
-        return tracer.startSpan(...args);
+        return tracer.startSpan.apply(this, arguments);
     }
 
-    inject(...args) {
+    inject(): any {
         const tracer = _globalTracer || noopTracer;
-        return tracer.inject(...args);
+        return tracer.inject.apply(this, arguments);
     }
 
-    extract(...args) {
+    extract(): any {
         const tracer = _globalTracer || noopTracer;
-        return tracer.extract(...args);
+        return tracer.extract.apply(this, arguments);
     }
 }
 
@@ -41,14 +41,14 @@ const globalTracerDelegate = new GlobalTracerDelegate();
  *
  * @param {Tracer} tracer - the Tracer implementation
  */
-export function initGlobalTracer(tracer) {
+export function initGlobalTracer(tracer: Tracer): void {
     _globalTracer = tracer;
 }
 
 /**
  * Returns the global tracer.
  */
-export function globalTracer() {
+export function globalTracer(): Tracer {
     // Return the delegate.  Since the global tracer is largely a convenience
     // (the user can always create their own tracers), the delegate is used to
     // give the added convenience of not needing to worry about initialization

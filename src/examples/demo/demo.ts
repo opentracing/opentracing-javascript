@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-import opentracing from '../../..';
+import '../../index';
 import { MockTracer } from '../../mock_tracer';
 
 console.log('\nRunning demo...\n');
@@ -18,12 +18,12 @@ setTimeout(() => {
     const child = tracer.startSpan('child_span', { childOf: parent });
     child.setTag('alpha', '200');
     child.setTag('beta', '50');
-    child.log({state: "waiting"})
+    child.log({state: 'waiting'});
 
     console.log('Waiting...');
     setTimeout(() => {
-        console.log('Finishing child and parent.')
-        child.log({state: "done"})
+        console.log('Finishing child and parent.');
+        child.log({state: 'done'});
         child.finish();
         parent.finish();
 
@@ -39,8 +39,8 @@ setTimeout(() => {
 
             console.log(`    ${span.operationName()} - ${span.durationMs()}ms`);
             for (let j = 0; j < tagKeys.length; j++) {
-                let key = tagKeys[j];
-                let value = tags[key];
+                const key = tagKeys[j];
+                const value = tags[key];
                 console.log(`        tag '${key}':'${value}'`);
             }
         }

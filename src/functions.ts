@@ -1,6 +1,7 @@
 import * as Constants from './constants';
-import Span from './span';
 import Reference from './reference';
+import Span from './span';
+import SpanContext from './span_context';
 
 /**
  * Return a new REFERENCE_CHILD_OF reference.
@@ -9,7 +10,7 @@ import Reference from './reference';
  *        reference.
  * @return a REFERENCE_CHILD_OF reference pointing to `spanContext`
  */
-export function childOf(spanContext) {
+export function childOf(spanContext: SpanContext | Span): Reference {
     // Allow the user to pass a Span instead of a SpanContext
     if (spanContext instanceof Span) {
         spanContext = spanContext.context();
@@ -24,7 +25,7 @@ export function childOf(spanContext) {
  *        reference.
  * @return a REFERENCE_FOLLOWS_FROM reference pointing to `spanContext`
  */
-export function followsFrom(spanContext) {
+export function followsFrom(spanContext: SpanContext): Reference {
     // Allow the user to pass a Span instead of a SpanContext
     if (spanContext instanceof Span) {
         spanContext = spanContext.context();

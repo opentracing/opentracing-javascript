@@ -1,5 +1,0 @@
-{
-  "source": "./src",
-  "destination": "./dist/apidoc",
-  "undocumentIdentifier": false
-}

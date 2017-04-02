@@ -1,4 +1,6 @@
 import * as noop from './noop';
+import SpanContext from './span_context';
+import Tracer from './tracer';
 
 /**
  * Span represents a logical unit of work as part of a broader Trace. Examples
@@ -6,7 +8,7 @@ import * as noop from './noop';
  * to sub-components. A Trace has a single, top-level "root" Span that in turn
  * may have zero or more child Spans, which in turn may have children.
  */
-export default class Span {
+export class Span {
 
     // ---------------------------------------------------------------------- //
     // OpenTracing API methods
@@ -17,7 +19,7 @@ export default class Span {
      *
      * @return {SpanContext}
      */
-    context() {
+    context(): SpanContext {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 0) {
@@ -28,13 +30,12 @@ export default class Span {
         return this._context();
     }
 
-
     /**
      * Returns the Tracer object used to create this Span.
      *
      * @return {Tracer}
      */
-    tracer() {
+    tracer(): Tracer {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 0) {
@@ -50,7 +51,7 @@ export default class Span {
      *
      * @param {string} name
      */
-    setOperationName(name) {
+    setOperationName(name: string): this {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
@@ -85,7 +86,7 @@ export default class Span {
      * @param {string} key
      * @param {string} value
      */
-    setBaggageItem(key, value) {
+    setBaggageItem(key: string, value: string): this {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
@@ -106,7 +107,7 @@ export default class Span {
      *         String value for the given key, or undefined if the key does not
      *         correspond to a set trace attribute.
      */
-    getBaggageItem(key) {
+    getBaggageItem(key: string): string | undefined {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
@@ -123,7 +124,7 @@ export default class Span {
      * @param {string} key
      * @param {any} value
      */
-    setTag(key, value) {
+    setTag(key: string, value: any): this {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
@@ -155,7 +156,7 @@ export default class Span {
      *
      * @return {[type]} [description]
      */
-    addTags(keyValueMap) {
+    addTags(keyValueMap: { [key: string]: any }): this {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 1) {
@@ -197,7 +198,7 @@ export default class Span {
      *        not specified, the implementation is expected to use its notion
      *        of the current time of the call.
      */
-    log(keyValuePairs, timestamp) {
+    log(keyValuePairs: { [key: string]: any }, timestamp?: number): this {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2 || arguments.length === 0) {
@@ -220,7 +221,7 @@ export default class Span {
     /**
      * DEPRECATED
      */
-    logEvent(eventName, payload) {
+    logEvent(eventName: string, payload: any): void {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2 || arguments.length < 1) {
@@ -234,10 +235,7 @@ export default class Span {
             }
         }
 
-        return this._log({
-            event   : eventName,
-            payload : payload,
-        });
+        return this._log({ event: eventName, payload });
     }
 
     /**
@@ -253,7 +251,7 @@ export default class Span {
      *         If not specified, the current time (as defined by the
      *         implementation) will be used.
      */
-    finish(finishTime) {
+    finish(finishTime?: number): void {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 1) {
@@ -270,14 +268,13 @@ export default class Span {
         // is finished so chaining is not desired in this context.
     }
 
-
     // ---------------------------------------------------------------------- //
     // Derived classes can choose to implement the below
     // ---------------------------------------------------------------------- //
 
     // By default returns a no-op SpanContext.
-    _context() {
-        return noop.spanContext;
+    protected _context(): SpanContext {
+        return noop.spanContext!;
     }
 
     // By default returns a no-op tracer.
@@ -285,36 +282,39 @@ export default class Span {
     // The base class could store the tracer that created it, but it does not
     // in order to ensure the no-op span implementation has zero members,
     // which allows V8 to aggressively optimize calls to such objects.
-    _tracer() {
-        return noop.tracer;
+    protected _tracer(): Tracer {
+        return noop.tracer!;
     }
 
     // By default does nothing
-    _setOperationName(name) {
+    protected _setOperationName(name: string): void {
     }
 
     // By default does nothing
-    _setBaggageItem(key, value) {
+    protected _setBaggageItem(key: string, value: string): void {
     }
 
     // By default does nothing
-    _getBaggageItem(key) {
+    protected _getBaggageItem(key: string): string | undefined {
+        return undefined;
     }
 
     // By default does nothing
     //
     // NOTE: both setTag() and addTags() map to this function. keyValuePairs
     // will always be an associative array.
-    _addTags(keyValuePairs) {
+    protected _addTags(keyValuePairs: { [key: string]: any }): void {
     }
 
     // By default does nothing
-    _log(keyValuePairs, timestamp) {
+    protected _log(keyValuePairs: { [key: string]: any }, timestamp?: number): void {
     }
 
     // By default does nothing
     //
     // finishTime is expected to be either a number or undefined.
-    _finish(finishTime) {
+    protected _finish(finishTime?: number): void {
     }
 }
+
+export default Span;

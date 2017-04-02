@@ -5,7 +5,10 @@
  * this class is only one such type of object that can be used.
  */
 export default class BinaryCarrier {
-    constructor(binaryData) {
+
+    public buffer: number[];
+
+    constructor(public binaryData: number[]) {
         this.buffer = binaryData;
     }
 }

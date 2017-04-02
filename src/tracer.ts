@@ -1,8 +1,48 @@
-import Span from './span';
-import SpanContext from './span_context';
 import * as Constants from './constants';
 import * as Functions from './functions';
 import * as Noop from './noop';
+import Reference from './reference';
+import Span from './span';
+import SpanContext from './span_context';
+
+export interface SpanFields {
+    /**
+     * DEPRECATED: the name to use for the newly created span. If provided,
+     * overrides the first argument to startSpan(). Provided for
+     * backwards-compatibility.
+     */
+    operationName?: string;
+
+    /**
+     * a parent SpanContext (or Span, for convenience) that the newly-started
+     * span will be the child of (per REFERENCE_CHILD_OF). If specified,
+     * `references` must be unspecified.
+     */
+    childOf?: Span | SpanContext;
+
+    /**
+     * an array of Reference instances, each pointing to a causal parent
+     * SpanContext. If specified, `fields.childOf` must be unspecified.
+     */
+    references?: Reference[];
+
+    /**
+     * set of key-value pairs which will be set as tags on the newly created
+     * Span. Ownership of the object is passed to the created span for
+     * efficiency reasons (the caller should not modify this object after
+     * calling startSpan).
+     */
+    tags?: { [key: string]: any };
+
+    /**
+     * a manually specified start time for the created Span object. The time
+     * should be specified in milliseconds as Unix timestamp. Decimal value are
+     * supported to represent time values with sub-millisecond accuracy.
+     */
+    startTime?: number;
+}
+
+export type Format = typeof Constants.FORMAT_BINARY | typeof Constants.FORMAT_TEXT_MAP | typeof Constants.FORMAT_HTTP_HEADERS;
 
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
@@ -15,7 +55,7 @@ import * as Noop from './noop';
  * underscore-prefixed methods to pick up the argument checking and handling
  * automatically from the base class.
  */
-export default class Tracer {
+export class Tracer {
 
     // ---------------------------------------------------------------------- //
     // OpenTracing API methods
@@ -42,28 +82,10 @@ export default class Tracer {
      *     });
      *
      * @param {string} name - the name of the operation (REQUIRED).
-     * @param {object} [fields] - the fields to set on the newly created span.
-     * @param {string} [fields.operationName] - DEPRECATED: the name to use for
-     *        the newly created span. If provided, overrides the first argument
-     *        to startSpan(). Provided for backwards-compatibility.
-     * @param {SpanContext} [fields.childOf] - a parent SpanContext (or Span,
-     *        for convenience) that the newly-started span will be the child of
-     *        (per REFERENCE_CHILD_OF). If specified, `fields.references` must
-     *        be unspecified.
-     * @param {array} [fields.references] - an array of Reference instances,
-     *        each pointing to a causal parent SpanContext. If specified,
-     *        `fields.childOf` must be unspecified.
-     * @param {object} [fields.tags] - set of key-value pairs which will be set
-     *        as tags on the newly created Span. Ownership of the object is
-     *        passed to the created span for efficiency reasons (the caller
-     *        should not modify this object after calling startSpan).
-     * @param {number} [fields.startTime] - a manually specified start time for
-     *        the created Span object. The time should be specified in
-     *        milliseconds as Unix timestamp. Decimal value are supported
-     *        to represent time values with sub-millisecond accuracy.
+     * @param {SpanFields} [fields] - the fields to set on the newly created span.
      * @return {Span} - a new Span object.
      */
-    startSpan(name, fields) {
+    startSpan(name: string, fields: SpanFields = {}): Span {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2) {
@@ -87,10 +109,9 @@ export default class Tracer {
         }
 
         // Convert fields.childOf to fields.references as needed.
-        fields = fields || {};
         if (fields.childOf) {
             // Convert from a Span or a SpanContext into a Reference.
-            let childOf = Functions.childOf(fields.childOf);
+            const childOf = Functions.childOf(fields.childOf);
             if (fields.references) {
                 fields.references.push(childOf);
             } else {
@@ -130,7 +151,10 @@ export default class Tracer {
      * @param  {any} carrier - see the documentation for the chosen `format`
      *         for a description of the carrier object.
      */
-    inject(spanContext, format, carrier) {
+    inject(spanContext: SpanContext | Span, format: typeof Constants.FORMAT_TEXT_MAP, carrier: { [key: string]: string }): void;
+    inject(spanContext: SpanContext | Span, format: typeof Constants.FORMAT_BINARY, carrier: { buffer: number[] }): void;
+    inject(spanContext: SpanContext | Span, format: typeof Constants.FORMAT_HTTP_HEADERS, carrier: { [key: string]: string }): void;
+    inject(spanContext: SpanContext | Span, format: Format, carrier: any): void {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 3) {
@@ -182,7 +206,10 @@ export default class Tracer {
      *         The extracted SpanContext, or null if no such SpanContext could
      *         be found in `carrier`
      */
-    extract(format, carrier) {
+    extract(format: typeof Constants.FORMAT_TEXT_MAP, carrier: { [key: string]: string }): void;
+    extract(format: typeof Constants.FORMAT_BINARY, carrier: { buffer: number[] }): void;
+    extract(format: typeof Constants.FORMAT_HTTP_HEADERS, carrier: { [key: string]: string }): void;
+    extract(format: Format, carrier: any): SpanContext | null {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length !== 2) {
@@ -216,16 +243,18 @@ export default class Tracer {
     // signature.
     //
     // The default behavior returns a no-op span.
-    _startSpan(name, fields) {
-        return Noop.span;
+    protected _startSpan(name: string, fields: SpanFields): Span {
+        return Noop.span!;
     }
 
     // The default behavior is a no-op.
-    _inject(spanContext, format, carrier) {
+    protected _inject(spanContext: SpanContext, format: Format, carrier: any): void {
     }
 
     // The default behavior is to return null.
-    _extract(format, carrier) {
-        return Noop.spanContext;
+    protected _extract(format: Format, carrier: any): SpanContext {
+        return Noop.spanContext!;
     }
 }
+
+export default Tracer;
