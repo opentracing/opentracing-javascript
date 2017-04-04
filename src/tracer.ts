@@ -5,7 +5,7 @@ import Reference from './reference';
 import Span from './span';
 import SpanContext from './span_context';
 
-export interface SpanFields {
+export interface SpanOptions {
     /**
      * DEPRECATED: the name to use for the newly created span. If provided,
      * overrides the first argument to startSpan(). Provided for
@@ -82,10 +82,10 @@ export class Tracer {
      *     });
      *
      * @param {string} name - the name of the operation (REQUIRED).
-     * @param {SpanFields} [fields] - the fields to set on the newly created span.
+     * @param {SpanOptions} [options] - options for the newly created span.
      * @return {Span} - a new Span object.
      */
-    startSpan(name: string, fields: SpanFields = {}): Span {
+    startSpan(name: string, options: SpanOptions = {}): Span {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
             if (arguments.length > 2) {
@@ -97,29 +97,29 @@ export class Tracer {
             if (name.length === 0) {
                 throw new Error('operation name cannot be length zero');
             }
-            if (fields && fields.childOf && fields.references) {
+            if (options && options.childOf && options.references) {
                 throw new Error('At most one of `childOf` and ' +
                         '`references` may be specified');
             }
-            if (fields && fields.childOf && !(
-                        fields.childOf instanceof Span ||
-                        fields.childOf instanceof SpanContext)) {
+            if (options && options.childOf && !(
+                        options.childOf instanceof Span ||
+                        options.childOf instanceof SpanContext)) {
                 throw new Error('childOf must be a Span or SpanContext instance');
             }
         }
 
         // Convert fields.childOf to fields.references as needed.
-        if (fields.childOf) {
+        if (options.childOf) {
             // Convert from a Span or a SpanContext into a Reference.
-            const childOf = Functions.childOf(fields.childOf);
-            if (fields.references) {
-                fields.references.push(childOf);
+            const childOf = Functions.childOf(options.childOf);
+            if (options.references) {
+                options.references.push(childOf);
             } else {
-                fields.references = [childOf];
+                options.references = [childOf];
             }
-            delete(fields.childOf);
+            delete(options.childOf);
         }
-        return this._startSpan(name, fields);
+        return this._startSpan(name, options);
     }
 
     /**
@@ -243,7 +243,7 @@ export class Tracer {
     // signature.
     //
     // The default behavior returns a no-op span.
-    protected _startSpan(name: string, fields: SpanFields): Span {
+    protected _startSpan(name: string, fields: SpanOptions): Span {
         return Noop.span!;
     }
 
