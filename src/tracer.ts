@@ -206,9 +206,9 @@ export class Tracer {
      *         The extracted SpanContext, or null if no such SpanContext could
      *         be found in `carrier`
      */
-    extract(format: typeof Constants.FORMAT_TEXT_MAP, carrier: { [key: string]: string }): void;
-    extract(format: typeof Constants.FORMAT_BINARY, carrier: { buffer: number[] }): void;
-    extract(format: typeof Constants.FORMAT_HTTP_HEADERS, carrier: { [key: string]: string }): void;
+    extract(format: typeof Constants.FORMAT_TEXT_MAP, carrier: { [key: string]: string }): SpanContext | null;
+    extract(format: typeof Constants.FORMAT_BINARY, carrier: { buffer: number[] }): SpanContext | null;
+    extract(format: typeof Constants.FORMAT_HTTP_HEADERS, carrier: { [key: string]: string }): SpanContext | null;
     extract(format: Format, carrier: any): SpanContext | null {
         // Debug-only runtime checks on the arguments
         if (process.env.NODE_ENV === 'debug') {
@@ -251,8 +251,8 @@ export class Tracer {
     protected _inject(spanContext: SpanContext, format: Format, carrier: any): void {
     }
 
-    // The default behavior is to return null.
-    protected _extract(format: Format, carrier: any): SpanContext {
+    // The default behavior is to return a no-op SpanContext.
+    protected _extract(format: Format, carrier: any): SpanContext | null {
         return Noop.spanContext!;
     }
 }
