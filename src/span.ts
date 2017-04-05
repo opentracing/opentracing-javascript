@@ -20,13 +20,6 @@ export class Span {
      * @return {SpanContext}
      */
     context(): SpanContext {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 0) {
-                throw new Error('Invalid number of arguments');
-            }
-        }
-
         return this._context();
     }
 
@@ -36,13 +29,6 @@ export class Span {
      * @return {Tracer}
      */
     tracer(): Tracer {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 0) {
-                throw new Error('Invalid number of arguments');
-            }
-        }
-
         return this._tracer();
     }
 
@@ -52,16 +38,6 @@ export class Span {
      * @param {string} name
      */
     setOperationName(name: string): this {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 1) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof name !== 'string' || name.length === 0) {
-                throw new Error('Name must be a string of length > 0');
-            }
-        }
-
         this._setOperationName(name);
         return this;
     }
@@ -87,13 +63,6 @@ export class Span {
      * @param {string} value
      */
     setBaggageItem(key: string, value: string): this {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 2) {
-                throw new Error('Invalid number of arguments');
-            }
-        }
-
         this._setBaggageItem(key, value);
         return this;
     }
@@ -108,13 +77,6 @@ export class Span {
      *         correspond to a set trace attribute.
      */
     getBaggageItem(key: string): string | undefined {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 1) {
-                throw new Error('Invalid number of arguments');
-            }
-        }
-
         return this._getBaggageItem(key);
     }
 
@@ -125,16 +87,6 @@ export class Span {
      * @param {any} value
      */
     setTag(key: string, value: any): this {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 2) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof key !== 'string') {
-                throw new Error('Tag key must be a string');
-            }
-        }
-
         // NOTE: the call is normalized to a call to _addTags()
         this._addTags({ [key] : value });
         return this;
@@ -157,16 +109,6 @@ export class Span {
      * @return {[type]} [description]
      */
     addTags(keyValueMap: { [key: string]: any }): this {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 1) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof keyValueMap !== 'object') {
-                throw new Error('Invalid argument type');
-            }
-        }
-
         this._addTags(keyValueMap);
         return this;
     }
@@ -199,21 +141,6 @@ export class Span {
      *        of the current time of the call.
      */
     log(keyValuePairs: { [key: string]: any }, timestamp?: number): this {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length > 2 || arguments.length === 0) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (arguments.length === 2) {
-                if (typeof timestamp !== 'number') {
-                    throw new Error('Expected timestamp to be a number');
-                }
-            }
-            if (typeof keyValuePairs !== 'object') {
-                throw new Error('Expected keyValuePairs to be an object');
-            }
-        }
-
         this._log(keyValuePairs, timestamp);
         return this;
     }
@@ -222,19 +149,6 @@ export class Span {
      * DEPRECATED
      */
     logEvent(eventName: string, payload: any): void {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length > 2 || arguments.length < 1) {
-                throw new Error('Invalid number of arguments');
-            }
-            if (typeof eventName !== 'string') {
-                throw new Error('Expected eventName to be a string');
-            }
-            if (payload !== undefined && typeof payload !== 'object') {
-                throw new Error('Expected payload to be an object');
-            }
-        }
-
         return this._log({ event: eventName, payload });
     }
 
@@ -252,16 +166,6 @@ export class Span {
      *         implementation) will be used.
      */
     finish(finishTime?: number): void {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length > 1) {
-                throw new Error('Invalid arguments');
-            }
-            if (arguments.length === 1 && typeof finishTime !== 'number') {
-                throw new Error('Unexpected argument type');
-            }
-        }
-
         this._finish(finishTime);
 
         // Do not return `this`. The Span generally should not be used after it

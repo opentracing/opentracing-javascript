@@ -1,4 +1,3 @@
-import * as Constants from './constants';
 import * as Functions from './functions';
 import * as Noop from './noop';
 import Reference from './reference';
@@ -84,27 +83,6 @@ export class Tracer {
      * @return {Span} - a new Span object.
      */
     startSpan(name: string, options: SpanOptions = {}): Span {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length > 2) {
-                throw new Error('Invalid number of arguments.');
-            }
-            if (typeof name !== 'string') {
-                throw new Error('argument expected to be a string');
-            }
-            if (name.length === 0) {
-                throw new Error('operation name cannot be length zero');
-            }
-            if (options && options.childOf && options.references) {
-                throw new Error('At most one of `childOf` and ' +
-                        '`references` may be specified');
-            }
-            if (options && options.childOf && !(
-                        options.childOf instanceof Span ||
-                        options.childOf instanceof SpanContext)) {
-                throw new Error('childOf must be a Span or SpanContext instance');
-            }
-        }
 
         // Convert fields.childOf to fields.references as needed.
         if (options.childOf) {
@@ -150,28 +128,6 @@ export class Tracer {
      *         for a description of the carrier object.
      */
     inject(spanContext: SpanContext | Span, format: string, carrier: any): void {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 3) {
-                throw new Error('Invalid number of arguments.');
-            }
-            if (!(spanContext instanceof SpanContext || spanContext instanceof Span)) {
-                throw new Error('first argument must be a SpanContext or Span instance');
-            }
-            if (typeof format !== 'string') {
-                throw new Error(`format expected to be a string. Found: ${typeof format}`);
-            }
-            if (format === Constants.FORMAT_TEXT_MAP && typeof carrier !== 'object') {
-                throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
-            }
-            if (format === Constants.FORMAT_HTTP_HEADERS && typeof carrier !== 'object') {
-                throw new Error('Unexpected carrier object for FORMAT_HTTP_HEADERS');
-            }
-            if (format === Constants.FORMAT_BINARY && typeof carrier !== 'object') {
-                throw new Error('Unexpected carrier object for FORMAT_BINARY');
-            }
-        }
-
         // Allow the user to pass a Span instead of a SpanContext
         if (spanContext instanceof Span) {
             spanContext = spanContext.context();
@@ -202,26 +158,6 @@ export class Tracer {
      *         be found in `carrier`
      */
     extract(format: string, carrier: any): SpanContext | null {
-        // Debug-only runtime checks on the arguments
-        if (process.env.NODE_ENV === 'debug') {
-            if (arguments.length !== 2) {
-                throw new Error('Invalid number of arguments.');
-            }
-            if (typeof format !== 'string' || !format.length) {
-                throw new Error('format is expected to be a string of non-zero length');
-            }
-            if (format === Constants.FORMAT_TEXT_MAP && !(typeof carrier === 'object')) {
-                throw new Error('Unexpected carrier object for FORMAT_TEXT_MAP');
-            }
-            if (format === Constants.FORMAT_HTTP_HEADERS && !(typeof carrier === 'object')) {
-                throw new Error('Unexpected carrier object for FORMAT_HTTP_HEADERS');
-            }
-            if (format === Constants.FORMAT_BINARY) {
-                if (carrier.buffer !== undefined && typeof carrier.buffer !== 'object') {
-                    throw new Error('Unexpected carrier object for FORMAT_BINARY');
-                }
-            }
-        }
         return this._extract(format, carrier);
     }
 

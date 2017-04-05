@@ -17,9 +17,7 @@
     "cover": "npm run test-cover && istanbul check-coverage",
     "test-cover": "istanbul cover --report lcovonly --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
     "cover-html": "istanbul cover --report html --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
-    "webpack": "npm run webpack-browser-debug && npm run webpack-browser-prod",
-    "webpack-browser-debug": "cross-env BUILD_CONFIG=debug webpack --display-error-details",
-    "webpack-browser-prod": "cross-env BUILD_CONFIG=production webpack --display-error-details",
+    "webpack": "webpack --display-error-details",
     "build": "tsc -p .",
     "watch": "tsc -w -p .",
     "typedoc": "typedoc --out typedoc --tsconfig tsconfig.json --mode file"
