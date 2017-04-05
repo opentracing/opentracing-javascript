@@ -1,8 +1,7 @@
-import * as Constants from './constants';
 import Reference from './reference';
 import Span from './span';
 import SpanContext from './span_context';
-export interface SpanFields {
+export interface SpanOptions {
     /**
      * DEPRECATED: the name to use for the newly created span. If provided,
      * overrides the first argument to startSpan(). Provided for
@@ -36,7 +35,6 @@ export interface SpanFields {
      */
     startTime?: number;
 }
-export declare type Format = typeof Constants.FORMAT_BINARY | typeof Constants.FORMAT_TEXT_MAP | typeof Constants.FORMAT_HTTP_HEADERS;
 /**
  * Tracer is the entry-point between the instrumentation API and the tracing
  * implementation.
@@ -70,10 +68,10 @@ export declare class Tracer {
      *     });
      *
      * @param {string} name - the name of the operation (REQUIRED).
-     * @param {SpanFields} [fields] - the fields to set on the newly created span.
+     * @param {SpanOptions} [options] - options for the newly created span.
      * @return {Span} - a new Span object.
      */
-    startSpan(name: string, fields?: SpanFields): Span;
+    startSpan(name: string, options?: SpanOptions): Span;
     /**
      * Injects the given SpanContext instance for cross-process propagation
      * within `carrier`. The expected type of `carrier` depends on the value of
@@ -103,15 +101,7 @@ export declare class Tracer {
      * @param  {any} carrier - see the documentation for the chosen `format`
      *         for a description of the carrier object.
      */
-    inject(spanContext: SpanContext | Span, format: typeof Constants.FORMAT_TEXT_MAP, carrier: {
-        [key: string]: string;
-    }): void;
-    inject(spanContext: SpanContext | Span, format: typeof Constants.FORMAT_BINARY, carrier: {
-        buffer: number[];
-    }): void;
-    inject(spanContext: SpanContext | Span, format: typeof Constants.FORMAT_HTTP_HEADERS, carrier: {
-        [key: string]: string;
-    }): void;
+    inject(spanContext: SpanContext | Span, format: string, carrier: any): void;
     /**
      * Returns a SpanContext instance extracted from `carrier` in the given
      * `format`.
@@ -134,17 +124,9 @@ export declare class Tracer {
      *         The extracted SpanContext, or null if no such SpanContext could
      *         be found in `carrier`
      */
-    extract(format: typeof Constants.FORMAT_TEXT_MAP, carrier: {
-        [key: string]: string;
-    }): void;
-    extract(format: typeof Constants.FORMAT_BINARY, carrier: {
-        buffer: number[];
-    }): void;
-    extract(format: typeof Constants.FORMAT_HTTP_HEADERS, carrier: {
-        [key: string]: string;
-    }): void;
-    protected _startSpan(name: string, fields: SpanFields): Span;
-    protected _inject(spanContext: SpanContext, format: Format, carrier: any): void;
-    protected _extract(format: Format, carrier: any): SpanContext;
+    extract(format: string, carrier: any): SpanContext | null;
+    protected _startSpan(name: string, fields: SpanOptions): Span;
+    protected _inject(spanContext: SpanContext, format: string, carrier: any): void;
+    protected _extract(format: string, carrier: any): SpanContext | null;
 }
 export default Tracer;

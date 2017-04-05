@@ -8,3 +8,4 @@ export { BinaryCarrier, Reference, SpanContext, Span, Tracer, Tags };
 export * from './global_tracer';
 export * from './constants';
 export * from './functions';
+export default exports;

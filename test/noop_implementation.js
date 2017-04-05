@@ -2,10 +2,9 @@
 var _      = require('underscore');
 var expect = require('chai').expect;
 
-// Unit testing is done against the debug version of the library as it has
-// additional conformance checks that are optimized out of the production
-// library.  Again, globals are used purely for convenience.
-var opentracing = require('../debug.js');
+// Enable additional conformance checks that are optimized out of the production library.
+process.env.NODE_ENV = 'debug';
+var opentracing = require('..');
 
 module.exports = function noopImplementationTests(_createTracer) {
     var createTracer = _createTracer || function() { return new opentracing.Tracer(); };
