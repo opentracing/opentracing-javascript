@@ -2,7 +2,8 @@
   "compilerOptions": {
     "target": "es5",
     "lib": [
-      "es5"
+      "es5",
+      "dom"
     ],
     "moduleResolution": "node",
     "declaration": true,

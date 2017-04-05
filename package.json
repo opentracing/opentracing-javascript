@@ -21,7 +21,8 @@
     "webpack-browser-debug": "cross-env BUILD_CONFIG=debug webpack --display-error-details",
     "webpack-browser-prod": "cross-env BUILD_CONFIG=production webpack --display-error-details",
     "build": "tsc -p .",
-    "watch": "tsc -w -p ."
+    "watch": "tsc -w -p .",
+    "typedoc": "typedoc --out typedoc --tsconfig tsconfig.json --mode file"
   },
   "repository": {
     "type": "git",
@@ -44,8 +45,10 @@
     "mocha": "^2.4.5",
     "shelljs": "^0.5.3",
     "source-map-support": "^0.3.3",
+    "surge": "^0.19.0",
     "ts-loader": "^2.0.3",
     "tslint": "^5.0.0",
+    "typedoc": "^0.5.10",
     "typescript": "^2.2.2",
     "webpack": "^2.3.3"
   }
