@@ -20,7 +20,8 @@
     "webpack": "webpack --display-error-details",
     "build": "tsc -p .",
     "watch": "tsc -w -p .",
-    "typedoc": "typedoc --out typedoc --tsconfig tsconfig.json --mode file"
+    "typedoc": "typedoc --out typedoc --tsconfig tsconfig.json --mode file",
+    "example": "node ./lib-debug/examples/demo/demo.js"
   },
   "repository": {
     "type": "git",

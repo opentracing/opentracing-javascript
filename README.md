@@ -22,7 +22,7 @@ npm install --save opentracing
 The package contains a example using a naive `MockTracer` implementation. To run the example:
 
 ```bash
-make example
+npm run example
 ```
 
 The output should look something like:
