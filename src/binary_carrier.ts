@@ -6,9 +6,9 @@
  */
 export default class BinaryCarrier {
 
-    public buffer: number[];
+    public buffer?: ArrayLike<number>;
 
-    constructor(public binaryData: number[]) {
+    constructor(public binaryData?: ArrayLike<number>) {
         this.buffer = binaryData;
     }
 }

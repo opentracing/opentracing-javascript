@@ -32,6 +32,7 @@
     "no-console": [false],
     "no-bitwise": false,
     "no-empty": false,
-    "unified-signatures": true
+    "unified-signatures": true,
+    "no-unused-expression": false
   }
 }

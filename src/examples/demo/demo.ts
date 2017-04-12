@@ -32,14 +32,12 @@ setTimeout(() => {
         // OpenTracing API.
         console.log('\nSpans:');
         const report = tracer.report();
-        for (let i = 0; i < report.spans.length; i++) {
-            const span = report.spans[i];
+        for (const span of report.spans) {
             const tags = span.tags();
             const tagKeys = Object.keys(tags);
 
             console.log(`    ${span.operationName()} - ${span.durationMs()}ms`);
-            for (let j = 0; j < tagKeys.length; j++) {
-                const key = tagKeys[j];
+            for (const key of tagKeys) {
                 const value = tags[key];
                 console.log(`        tag '${key}':'${value}'`);
             }

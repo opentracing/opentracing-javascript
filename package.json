@@ -13,15 +13,15 @@
   "scripts": {
     "prepublish": "npm run build",
     "lint": "tslint -t msbuild -c tslint.json 'src/**/*.ts'",
-    "test": "mocha test/unittest.js --check-leaks --color",
+    "test": "mocha lib/test/unittest.js --check-leaks --color",
     "cover": "npm run test-cover && istanbul check-coverage",
-    "test-cover": "istanbul cover --report lcovonly --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
-    "cover-html": "istanbul cover --report html --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
+    "test-cover": "istanbul cover --report lcovonly --print none ./node_modules/.bin/_mocha lib/test/unittest.js -- --check-leaks --color && istanbul report text",
+    "cover-html": "istanbul cover --report html --print none ./node_modules/.bin/_mocha lib/test/unittest.js -- --check-leaks --color && istanbul report text",
     "webpack": "webpack --display-error-details",
     "build": "tsc -p .",
     "watch": "tsc -w -p .",
     "typedoc": "typedoc --out typedoc --tsconfig tsconfig.json --mode file",
-    "example": "node ./lib-debug/examples/demo/demo.js"
+    "example": "node lib/examples/demo/demo.js"
   },
   "repository": {
     "type": "git",

@@ -46,8 +46,7 @@ export class MockSpan extends opentracing.Span {
 
     protected _addTags(set: { [key: string]: any }): void {
         const keys = Object.keys(set);
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
+        for (const key of keys) {
             this._tags[key] = set[key];
         }
     }

@@ -1,9 +1,9 @@
 // Ensure the stack trace lines numbers are correct on errors
 require('source-map-support').install();
 
-var apiCompatibilityChecks = require('./api_compatibility.js');
-var noopImplementationTests = require('./noop_implementation.js');
-var opentracingAPITests = require('./opentracing_api.js');
+import apiCompatibilityChecks from './api_compatibility';
+import noopImplementationTests from './noop_implementation';
+import opentracingAPITests from './opentracing_api';
 
 // Run the tests on the default OpenTracing no-op Tracer.
 noopImplementationTests();
