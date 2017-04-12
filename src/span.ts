@@ -88,7 +88,7 @@ export class Span {
      */
     setTag(key: string, value: any): this {
         // NOTE: the call is normalized to a call to _addTags()
-        this._addTags({ [key] : value });
+        this._addTags({ [key]: value });
         return this;
     }
 
