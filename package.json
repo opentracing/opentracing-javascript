@@ -13,7 +13,7 @@
   "scripts": {
     "prepublish": "npm run build",
     "lint": "tslint -t msbuild -c tslint.json 'src/**/*.ts'",
-    "test": "npm run test-cover",
+    "test": "mocha test/unittest.js --check-leaks --color",
     "cover": "npm run test-cover && istanbul check-coverage",
     "test-cover": "istanbul cover --report lcovonly --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
     "cover-html": "istanbul cover --report html --print none ./node_modules/.bin/_mocha test/unittest.js -- --check-leaks --color && istanbul report text",
