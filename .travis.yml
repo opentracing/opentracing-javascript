@@ -19,11 +19,11 @@ before_script:
 
 script:
 
-  # Build and lint against Node 4
+  # Build and lint with a newer node version
   - npm run lint
   - npm run build
 
-  # Run the tests against $NODE_VERSION
+  # Run the tests against all node versions
   - nvm use $TEST_NODE_VERSION
   - node --version
   - npm run test-cover
