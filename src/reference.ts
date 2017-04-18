@@ -1,8 +1,5 @@
-import { REFERENCE_CHILD_OF, REFERENCE_FOLLOWS_FROM } from './constants';
 import Span from './span';
 import SpanContext from './span_context';
-
-export type ReferenceType = typeof REFERENCE_CHILD_OF | typeof REFERENCE_FOLLOWS_FROM;
 
 /**
  * Reference pairs a reference type constant (e.g., REFERENCE_CHILD_OF or
@@ -12,14 +9,14 @@ export type ReferenceType = typeof REFERENCE_CHILD_OF | typeof REFERENCE_FOLLOWS
  */
 export default class Reference {
 
-    protected _type: ReferenceType;
+    protected _type: string;
     protected _referencedContext: SpanContext;
 
     /**
      * @return {string} The Reference type (e.g., REFERENCE_CHILD_OF or
      *         REFERENCE_FOLLOWS_FROM).
      */
-    type(): ReferenceType {
+    type(): string {
         return this._type;
     }
 
@@ -40,7 +37,7 @@ export default class Reference {
      *        to. As a convenience, a Span instance may be passed in instead
      *        (in which case its .context() is used here).
      */
-    constructor(type: ReferenceType, referencedContext: SpanContext | Span) {
+    constructor(type: string, referencedContext: SpanContext | Span) {
         this._type = type;
         this._referencedContext = (
                 referencedContext instanceof Span ?
