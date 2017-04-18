@@ -6,19 +6,27 @@ node_js:
 
 env:
   matrix:
-    - NODE_VERSION=0.10
-    - NODE_VERSION=0.12
-    - NODE_VERSION=4
-    - NODE_VERSION=6
-    - NODE_VERSION=node
+    - TEST_NODE_VERSION=0.10
+    - TEST_NODE_VERSION=0.12
+    - TEST_NODE_VERSION=4
+    - TEST_NODE_VERSION=6
+    - TEST_NODE_VERSION=node
 
 before_script:
-  - nvm install $NODE_VERSION
+  # Install the Node version to test against
+  - nvm install $TEST_NODE_VERSION
+  - nvm use $TRAVIS_NODE_VERSION
 
 script:
+
+  # Build and lint against Node 4
   - npm run lint
   - npm run build
-  - nvm exec $NODE_VERSION npm run test-cover
+
+  # Run the tests against $NODE_VERSION
+  - nvm use $TEST_NODE_VERSION
+  - npm run test-cover
+  - nvm use $TRAVIS_NODE_VERSION
 
 after_script:
   - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
