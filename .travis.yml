@@ -12,6 +12,9 @@ env:
     - NODE_VERSION=6
     - NODE_VERSION=node
 
+before_script:
+  - nvm install $NODE_VERSION
+
 script:
   - npm run lint
   - npm run build
