@@ -25,6 +25,7 @@ script:
 
   # Run the tests against $NODE_VERSION
   - nvm use $TEST_NODE_VERSION
+  - node --version
   - npm run test-cover
   - nvm use $TRAVIS_NODE_VERSION
 
