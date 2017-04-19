@@ -65,7 +65,7 @@ http.request(opts, res => {
         span.finish();
     });
     res.on('data', chunk => {
-        span.log({'event': 'data_received', 'data': chunk});
+        span.log({'event': 'data_received', 'chunk_length': chunk.length});
     });
     res.on('end', () {
         span.log({'event': 'request_end'});
