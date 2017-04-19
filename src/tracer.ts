@@ -5,12 +5,6 @@ import Span from './span';
 import SpanContext from './span_context';
 
 export interface SpanOptions {
-    /**
-     * DEPRECATED: the name to use for the newly created span. If provided,
-     * overrides the first argument to startSpan(). Provided for
-     * backwards-compatibility.
-     */
-    operationName?: string;
 
     /**
      * a parent SpanContext (or Span, for convenience) that the newly-started
