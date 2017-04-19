@@ -84,7 +84,7 @@ export class Tracer {
      */
     startSpan(name: string, options: SpanOptions = {}): Span {
 
-        // Convert fields.childOf to fields.references as needed.
+        // Convert options.childOf to fields.references as needed.
         if (options.childOf) {
             // Convert from a Span or a SpanContext into a Reference.
             const childOf = Functions.childOf(options.childOf);
