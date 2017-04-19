@@ -38,7 +38,7 @@ export function apiCompatibilityChecks(createTracer = () => new Tracer(), option
                 it('should not throw exception on required carrier types', () => {
                     const spanContext = span.context();
                     const textCarrier = {};
-                    const binCarrier = new BinaryCarrier();
+                    const binCarrier = new BinaryCarrier([1, 2, 3]);
                     expect(() => { tracer.inject(spanContext, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.inject(spanContext, FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.inject(spanContext, FORMAT_BINARY, {}); }).to.not.throw(Error);
@@ -54,7 +54,7 @@ export function apiCompatibilityChecks(createTracer = () => new Tracer(), option
             describe('extract', () => {
                 it('should not throw exception on required carrier types', () => {
                     const textCarrier = {};
-                    const binCarrier = new BinaryCarrier();
+                    const binCarrier = new BinaryCarrier([1, 2, 3]);
                     expect(() => { tracer.extract(FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.extract(FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.extract(FORMAT_BINARY, {}); }).to.not.throw(Error);
