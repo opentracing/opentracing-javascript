@@ -8,6 +8,8 @@
  * identify or otherwise contextualize the associated Span instance (e.g., a
  * <trace_id, span_id, sampled> tuple).
  */
-export default class SpanContext {
+export class SpanContext {
     // The SpanContext is entirely implementation dependent
 }
+
+export default SpanContext;
