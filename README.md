@@ -116,7 +116,7 @@ See the [OpenTracing website](http://opentracing.io) for general information on 
 The project is written in TypeScript and built using a npm scripts. Run:
 
 * `npm run build` creates the compiled, distributable JavaScript code in `./lib`
-* `npm run watch` incrementally sompiles on file changes
+* `npm run watch` incrementally compiles on file changes
 * `npm run webpack` creates the bundles for the browser in `./dist`
 * `npm test` runs the tests
 * `npm run typedoc` generates the documentation in `./typedoc`
