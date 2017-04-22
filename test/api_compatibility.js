@@ -1,5 +1,4 @@
 // For the convenience of unit testing, add these to the global namespace
-var _      = require('underscore');
 var assert = require('chai').assert;
 var expect = require('chai').expect;
 
@@ -51,7 +50,7 @@ module.exports = function apiCompatibilityChecks(tracerFactory, options) {
         });
 
         describe('Tracer', function() {
-            _.each(tracerFunctions, function(name) {
+            tracerFunctions.forEach(function(name) {
                 it(name + ' should be a method', function() {
                     expect(tracer[name]).to.be.a('function');
                 });
@@ -96,7 +95,7 @@ module.exports = function apiCompatibilityChecks(tracerFactory, options) {
         });
 
         describe('Span', function() {
-            _.each(spanFunctions, function(name) {
+            spanFunctions.forEach(function(name) {
                 it(name + ' should be a method', function() {
                     expect(span[name]).to.be.a('function');
                 });
@@ -121,11 +120,11 @@ module.exports = function apiCompatibilityChecks(tracerFactory, options) {
                 {name: 'setBaggageItem', args: ['key', 'value'], chainable: true},
                 {name: 'getBaggageItem', args: ['key'], chainable: false},
             ];
-            _.each(spanExecutions, function(a) {
+            spanExecutions.forEach(function(a) {
                 it(a.name + ' should not throw exceptions', function() {
                     var maybeSpan = span[a.name].apply(span, a.args);
                     if (a['chainable']) {
-                        _.each(spanFunctions, function(name) {
+                        spanFunctions.forEach(function(name) {
                             assert.isOk(maybeSpan[name] instanceof Function);
                         });
                     }
