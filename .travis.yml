@@ -1,43 +1,42 @@
-
 language: node_js
 
 node_js:
-  - 4
+- 4
 
 env:
   matrix:
-    - TEST_NODE_VERSION=0.10
-    - TEST_NODE_VERSION=0.12
-    - TEST_NODE_VERSION=4
-    - TEST_NODE_VERSION=6
-    - TEST_NODE_VERSION=node
-  secure: "FCeBJvIYZBDcbCKsE5mWPPK06CPEcQ0G1RJPx5pmQzALVBdjtxQJcrzQGW/MYap7Ma4ebfW+b/jLMSv5+Lvsv0+1lvtNLqG6QcAj4SqZRvwm2iYFDnlDFUh4FV9W9cpcNHK9tCIvKEfTue+69HzbBK6fLFgYT8WiM6rVCO1/zoD47heqeUI+lbhcAY02Isw4Usk6ybMfQ8iZbtbRTxEbTVpT5NZe+AVEgPG+DHtJDpQdsEPKCICT0I/0f+I+6VlVipZR/FsUYQNL5vU1fn/KMqNs/2grL2HYd4sKxAM/Z922GHPHsasKllGkMGM20sBtzQVX7pv9irg7MYAvANpDQiDlE+7ce9cwR7bSYBzDmRPZQUpkzKAaLEpeolCzzRx2FSq/1Dq3K5Y8iSuGDuoglh5feK52FbBEUWKsZHgz6sR9v/0c78sZWGldaIj27iMdWRluDzGrUXZ5sa53VqxzlLdz2caFa2FCHX/U8Uaa1CCyfMdd1d5GGsKKplU7J28wrd1wAu1XXRENmY4CziYlNWFaVbCXgnvUDWkzyvZJJWfOCmLRL+gdOnDVwVB+YyT99g+ENxChD0Oqk55AFGyYSCFjsr3PBrT3yl9rxKvp1VXyifVKCAKxeL4hGhmv9r5CVPvxEfypLdamklg1kEjR+qyusEvSvS4SZf41GAjhSxA="
-  secure: "RfJlm+puatkZhRx7oPhckDhfGQ+3SozOMEVeL1sRU3+Z3xZkKc5D9sYH5aLutvSkFEtkQc/4tY2lPqpwk5CFnDjRzrlnq6ulGOeuMHmvzboydVVqUME3Vk2X8dMM1ZVXMzkQAdObpe5weAvcc1r3mwdNrXQna08AhuhJqUTKzPtqoiLZ68AWEWqJ5msTc28DbhEjsriA2Kq5YlTvRQQzKOFmoKSaYgT1qYoYhEShWEMQRecalN5HpBC4ck9Cqs+doqH+eP2kWMEWKLIredkDquSO/yIfjUcCGSOlxZh0CY5z5hZx+FES2LKr0tNnqGqepvnZe6N5Ril3+EA5idIehmXBMlf4xdcmww9l5SxaFQmI7a+DaCgRg5+HQLEY2t86nOwVeBatvZ2BWzRf2uqeHlqhpt9A8cgCofj8+NTJ98bIrJfq22eVoZ7w8n3OvN+VynZ1jxgkyCCyY9F7avrcjUVVjZH6yGzUb4t1TtNS72gt0+7dlEvvIXKoUeDCYnF8za0I4UpL5x8HoAvUmwXefOFtgtrDurv6FCbpX+sTJeGBp58Uc1cMKZc0WTnQjvwU4aZs+f22H3YU7fFAVBVAmY3Lo6Hx6I9xWMSbo+fGzX9O7/RTiAGS5oypdDOElkSPaOscSTXzY5mYVx9nsK7vpMTae88u6KhLVYFeuHKUylg="
+  - TEST_NODE_VERSION=0.10
+  - TEST_NODE_VERSION=0.12
+  - TEST_NODE_VERSION=4
+  - TEST_NODE_VERSION=6
+  - TEST_NODE_VERSION=node
+  global:
+  - secure: CV7Q6AHwuTCg2yi5iHC9mNexD7dgPoroZ1qdV8h+AAMUHFjO9GvCDy295l0zpqqJSb+b24GxPjx2gzK2klWMm0B55HORTBAbqJB8O7Y3dDtjycHZK23n5ph/JqhCGm4/XhxTmgDngF+0C98uWLvFKILYpTadWuOudLCc/NP4p4xykHeL2XgNA4TMg+FMYCy0k0/Xy5GNsjeHeQCJm3G1caX8jbQCRsoOiFol7Md/m5llXvY6KQzbmpis2LbPTM2mla8Ixn7bAdBX65xzcBjoWJ0dIrOghTh0z0AnEThYZHBWSvOwAkiVM3el3a4sfyUlvUfLn1ZPCK8u20uD3FQLL/q3aijmqiDORa0a6nJ67D6glRDjW1IgOyJ1iXL9GUzKBnrfdR2S78kSYGEyYDqd5Mro7InnkQ+5wgOUka0VHsJAv79tFe4ylOy3FNWzgXLmao7X/SsmV6LTXg99OpNB3zWPyFm48e5XCfWk2XR2jbeFAXc7u9W6WHWySUMpoB11FzdvNwldkE87Px8TK1guGriNSkrPk3/Abp0S+/Ka43pf+WAG2OA8DgQ2WIvCIr0ZmosS73Seg+s+MGQH9V78iFaSByEquPMbVE+3vxtl04KkRLJ1zhJ6R9CRGYKb7xiHEwCAFNMw2J8Wi5VjvvuhbkZz2D0Hn/qoEKJDkIFvzkA=
+  - secure: zrC64PU+T1nPdmTOCXcm+zb/f009yobySOB5YOxtlRakceIoWplJrMxlS03Z4cNCq6F3NHfPhrB8kTgNny7jSa6zP4nud2zBgWBPefgDRyR/QHaE69drcrklWM4QQz/ApUvoT2/X9e02cvDqaeENNIQlw3nJwprqeizZkbjta0+zzF2SQOSFXpjSzHSprQWaAeYBEd9KzACEL2LbejXzYPJUDGxhCBwTafRw48Ur5bp5pEazU3Tv3uRKqW6TAuZx0W5JiWoY7PVx6AlKDiTvtp6ayrCheIwzaOiHStXtn0V7+J5EKfrux30TNVeEvcXrerkdW5LJAPxKbQfj8FMat8GM7Qil35o2/KT6TFjxjiyXgMAJJg+fBlfzmcTpeI9VR/akrCmHon36w9Asgsmjuj5HEG/wbw2jRHH4C3S+J3BwAdWXW9iNkubZyLnyTlGPCm/79xdmqOx5mV0+9xc6Cfr74Gi53mE2XDpC5WD5iAGdS8xLfJNK8J6l5GAPw34gOENt40c7xXYMRx7luHZmV7BDyGW0VcA6dg33sJ2B0nd9tSvwvQpz+d/Nm6R4zRf4JQRS8VS8WYMXTW3/bPt3HbvWdsBICBMs5BcKUxszscgMJW0Ut0/Jsz3o1JEWZy3Gn8y3HJ3zcSke1GFqFNHPWGe2jQ0Rh/ainC+wCXDKkAI=
 
 before_script:
-  # Install the Node version to test against
-  - nvm install $TEST_NODE_VERSION
-  - nvm use $TRAVIS_NODE_VERSION
+# Install the Node version to test against
+- nvm install $TEST_NODE_VERSION
+- nvm use $TRAVIS_NODE_VERSION
 
 script:
-  # Build and lint with a newer node version
-  - npm run lint
-  - npm run build
+# Build and lint with a newer node version
+- npm run lint
+- npm run build
 
-  # Run the tests against all node versions
-  - nvm use $TEST_NODE_VERSION
-  - node --version
-  - npm run test-cover
-  - nvm use $TRAVIS_NODE_VERSION
-
+# Run the tests against all node versions
+- nvm use $TEST_NODE_VERSION
+- node --version
+- npm run test-cover
+- nvm use $TRAVIS_NODE_VERSION
 after_script:
-  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+- cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
 
 before_deploy:
-  - npm run typedoc
+- npm run typedoc
+
 deploy:
   provider: surge
-  project: ./typedoc/
+  project: "./typedoc/"
   domain: opentracing-javascript.surge.sh
   skip_cleanup: true
-
