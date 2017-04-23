@@ -11,6 +11,8 @@ env:
     - TEST_NODE_VERSION=4
     - TEST_NODE_VERSION=6
     - TEST_NODE_VERSION=node
+  secure: "FCeBJvIYZBDcbCKsE5mWPPK06CPEcQ0G1RJPx5pmQzALVBdjtxQJcrzQGW/MYap7Ma4ebfW+b/jLMSv5+Lvsv0+1lvtNLqG6QcAj4SqZRvwm2iYFDnlDFUh4FV9W9cpcNHK9tCIvKEfTue+69HzbBK6fLFgYT8WiM6rVCO1/zoD47heqeUI+lbhcAY02Isw4Usk6ybMfQ8iZbtbRTxEbTVpT5NZe+AVEgPG+DHtJDpQdsEPKCICT0I/0f+I+6VlVipZR/FsUYQNL5vU1fn/KMqNs/2grL2HYd4sKxAM/Z922GHPHsasKllGkMGM20sBtzQVX7pv9irg7MYAvANpDQiDlE+7ce9cwR7bSYBzDmRPZQUpkzKAaLEpeolCzzRx2FSq/1Dq3K5Y8iSuGDuoglh5feK52FbBEUWKsZHgz6sR9v/0c78sZWGldaIj27iMdWRluDzGrUXZ5sa53VqxzlLdz2caFa2FCHX/U8Uaa1CCyfMdd1d5GGsKKplU7J28wrd1wAu1XXRENmY4CziYlNWFaVbCXgnvUDWkzyvZJJWfOCmLRL+gdOnDVwVB+YyT99g+ENxChD0Oqk55AFGyYSCFjsr3PBrT3yl9rxKvp1VXyifVKCAKxeL4hGhmv9r5CVPvxEfypLdamklg1kEjR+qyusEvSvS4SZf41GAjhSxA="
+  secure: "RfJlm+puatkZhRx7oPhckDhfGQ+3SozOMEVeL1sRU3+Z3xZkKc5D9sYH5aLutvSkFEtkQc/4tY2lPqpwk5CFnDjRzrlnq6ulGOeuMHmvzboydVVqUME3Vk2X8dMM1ZVXMzkQAdObpe5weAvcc1r3mwdNrXQna08AhuhJqUTKzPtqoiLZ68AWEWqJ5msTc28DbhEjsriA2Kq5YlTvRQQzKOFmoKSaYgT1qYoYhEShWEMQRecalN5HpBC4ck9Cqs+doqH+eP2kWMEWKLIredkDquSO/yIfjUcCGSOlxZh0CY5z5hZx+FES2LKr0tNnqGqepvnZe6N5Ril3+EA5idIehmXBMlf4xdcmww9l5SxaFQmI7a+DaCgRg5+HQLEY2t86nOwVeBatvZ2BWzRf2uqeHlqhpt9A8cgCofj8+NTJ98bIrJfq22eVoZ7w8n3OvN+VynZ1jxgkyCCyY9F7avrcjUVVjZH6yGzUb4t1TtNS72gt0+7dlEvvIXKoUeDCYnF8za0I4UpL5x8HoAvUmwXefOFtgtrDurv6FCbpX+sTJeGBp58Uc1cMKZc0WTnQjvwU4aZs+f22H3YU7fFAVBVAmY3Lo6Hx6I9xWMSbo+fGzX9O7/RTiAGS5oypdDOElkSPaOscSTXzY5mYVx9nsK7vpMTae88u6KhLVYFeuHKUylg="
 
 before_script:
   # Install the Node version to test against
@@ -18,7 +20,6 @@ before_script:
   - nvm use $TRAVIS_NODE_VERSION
 
 script:
-
   # Build and lint with a newer node version
   - npm run lint
   - npm run build
@@ -39,3 +40,4 @@ deploy:
   project: ./typedoc/
   domain: opentracing-javascript.surge.sh
   skip_cleanup: true
+
