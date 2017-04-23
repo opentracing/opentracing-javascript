@@ -1,4 +1,41 @@
+
 language: node_js
+
 node_js:
-  - 0.12
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  - 4
+
+env:
+  matrix:
+    - TEST_NODE_VERSION=0.10
+    - TEST_NODE_VERSION=0.12
+    - TEST_NODE_VERSION=4
+    - TEST_NODE_VERSION=6
+    - TEST_NODE_VERSION=node
+
+before_script:
+  # Install the Node version to test against
+  - nvm install $TEST_NODE_VERSION
+  - nvm use $TRAVIS_NODE_VERSION
+
+script:
+
+  # Build and lint with a newer node version
+  - npm run lint
+  - npm run build
+
+  # Run the tests against all node versions
+  - nvm use $TEST_NODE_VERSION
+  - node --version
+  - npm run test-cover
+  - nvm use $TRAVIS_NODE_VERSION
+
+after_script:
+  - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+before_deploy:
+  - npm run typedoc
+deploy:
+  provider: surge
+  project: ./typedoc/
+  domain: opentracing-javascript.surge.sh
+  skip_cleanup: true

@@ -3,7 +3,15 @@
 History
 -------
 
-0.13.1 (unreleased)
+0.14.0
+-------------------
+
+- TypeScript rewrite: Now brings TypeScript typings out of the box
+- Removed `lib-debug` and runtime type checks
+- Removed `spanOptions.operationName`
+- The main entry point can no longer be imported with a default import
+
+0.13.1
 -------------------
 
 - `BinaryCarrier` now fulfills the API contract that binary carrier objects have a `buffer` property.

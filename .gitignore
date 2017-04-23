@@ -1,4 +1,7 @@
 node_modules/
 npm-debug.log
-dist/*
-coverage/*
+coverage/
+typedoc/
+dist/
+lib/
+.DS_Store
