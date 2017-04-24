@@ -11,6 +11,18 @@ History
 - Removed `spanOptions.operationName`
 - The main entry point can no longer be imported with a default import
 
+If you previously used a default import like this:
+
+::
+
+    import opentracing from 'opentracing'
+
+change it to
+
+::
+
+    import * as opentracing from 'opentracing'
+
 0.13.1
 -------------------
 
