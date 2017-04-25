@@ -1,4 +1,4 @@
-[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![NPM Published Version][npm-img]][npm]
+[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![NPM Published Version][npm-img]][npm] ![Node Version][node-img]
 
 # OpenTracing API for JavaScript
 
@@ -145,6 +145,7 @@ An minimal example tracer is provided in the `src/mock_tracer` directory of the 
   [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
   [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
   [npm-img]: https://badge.fury.io/js/opentracing.svg
+  [node-img]: http://img.shields.io/node/v/opentracing.svg
   [ci]: https://travis-ci.org/opentracing/opentracing-javascript
   [cov]: https://coveralls.io/github/opentracing/opentracing-javascript?branch=master
   [npm]: https://www.npmjs.com/package/opentracing

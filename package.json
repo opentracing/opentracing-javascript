@@ -1,6 +1,9 @@
 {
   "name": "opentracing",
   "version": "0.14.0",
+  "engines": {
+    "node": ">=0.10"
+  },
   "licence": "MIT",
   "licenses": [
     {
