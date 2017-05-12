@@ -18,17 +18,17 @@ class GlobalTracerDelegate extends Tracer {
 
     startSpan(): any {
         const tracer = _globalTracer || noopTracer;
-        return tracer.startSpan.apply(this, arguments);
+        return tracer.startSpan.apply(tracer, arguments);
     }
 
     inject(): any {
         const tracer = _globalTracer || noopTracer;
-        return tracer.inject.apply(this, arguments);
+        return tracer.inject.apply(tracer, arguments);
     }
 
     extract(): any {
         const tracer = _globalTracer || noopTracer;
-        return tracer.extract.apply(this, arguments);
+        return tracer.extract.apply(tracer, arguments);
     }
 }
 
