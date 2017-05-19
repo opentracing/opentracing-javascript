@@ -6,6 +6,10 @@ History
 Unreleased
 -------------------
 
+
+0.14.1
+-------------------
+
 - The `globalTracer` delegate will now correctly call `startSpan`, `inject` and `extract` with the configured global tracer as `this`.
 
 
