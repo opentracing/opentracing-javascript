@@ -134,7 +134,7 @@ Implementations can subclass `opentracing.Trace`, `opentracing.Span`, and the ot
 If `mocha` is being used for unit testing, `test/api_compatibility` can be used to test the custom tracer. The file exports a single function that expects as an argument a function that will return a new instance of the tracer.
 
 ```javascript
-const { apiCompatibilityChecks } = require('opentracing/lib/test/api_compatibility.js');
+const apiCompatibilityChecks = require('opentracing/lib/test/api_compatibility.js').default;
 apiCompatibilityChecks(() => new CustomTracer());
 ```
 
@@ -149,4 +149,3 @@ An minimal example tracer is provided in the `src/mock_tracer` directory of the 
   [ci]: https://travis-ci.org/opentracing/opentracing-javascript
   [cov]: https://coveralls.io/github/opentracing/opentracing-javascript?branch=master
   [npm]: https://www.npmjs.com/package/opentracing
-
