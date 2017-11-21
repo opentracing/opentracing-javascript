@@ -50,7 +50,7 @@ export const FORMAT_HTTP_HEADERS = 'http_headers';
  * A Span may be the "child of" a parent Span. In a “child of” reference,
  * the parent Span depends on the child Span in some capacity.
  *
- * See more about reference types at http://opentracing.io/spec/
+ * See more about reference types at https://github.com/opentracing/specification
  */
 export const REFERENCE_CHILD_OF = 'child_of';
 
@@ -59,6 +59,6 @@ export const REFERENCE_CHILD_OF = 'child_of';
  * Spans. In these cases, we say merely that the child Span “follows from”
  * the parent Span in a causal sense.
  *
- * See more about reference types at http://opentracing.io/spec/
+ * See more about reference types at https://github.com/opentracing/specification
  */
 export const REFERENCE_FOLLOWS_FROM = 'follows_from';
