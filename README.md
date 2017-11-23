@@ -19,7 +19,7 @@ npm install --save opentracing
 
 ### Example
 
-The package contains a example using a naive `MockTracer` implementation. To run the example:
+The package contains an example using a naive `MockTracer` implementation. To run the example:
 
 ```bash
 npm run example
