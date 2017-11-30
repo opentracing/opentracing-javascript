@@ -1,5 +1,6 @@
 import BinaryCarrier from './binary_carrier';
 import * as Tags from './ext/tags';
+import * as Testing from './mock_tracer/index';
 import * as Noop from './noop';
 import Reference from './reference';
 import Span from './span';
@@ -12,7 +13,8 @@ export {
     SpanContext,
     Span,
     Tracer,
-    Tags
+    Tags,
+    Testing
 };
 
 export * from './global_tracer';
