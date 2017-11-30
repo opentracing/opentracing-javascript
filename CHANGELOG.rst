@@ -6,6 +6,8 @@ History
 Unreleased
 -------------------
 
+- The mock_tracer is now exported by the default opentracing import. It's contained by the `Testing` export.
+
 
 0.14.1
 -------------------
