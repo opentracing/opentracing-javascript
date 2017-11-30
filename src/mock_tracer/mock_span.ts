@@ -93,6 +93,10 @@ export class MockSpan extends opentracing.Span {
         return this._tags;
     }
 
+    tracer(): opentracing.Tracer {
+        return this._mockTracer;
+    }
+
     private _generateUUID(): string {
         const p0 = `00000000${Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)}`.substr(-8);
         const p1 = `00000000${Math.abs((Math.random() * 0xFFFFFFFF) | 0).toString(16)}`.substr(-8);
