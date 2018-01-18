@@ -4,7 +4,7 @@ import * as Noop from './noop';
 import Reference from './reference';
 import Span from './span';
 import SpanContext from './span_context';
-import Tracer from './tracer';
+import {SpanOptions, Tracer} from './tracer';
 
 export {
     BinaryCarrier,
@@ -12,6 +12,7 @@ export {
     SpanContext,
     Span,
     Tracer,
+    SpanOptions,
     Tags
 };
 
