@@ -1,8 +1,6 @@
 
 import { expect } from 'chai';
 import * as opentracing from '../index';
-import Span from '../span';
-import { SpanOptions, Tracer } from '../tracer';
 
 export function opentracingAPITests(): void {
     describe('Opentracing API', () => {
@@ -42,10 +40,10 @@ export function opentracingAPITests(): void {
             }
 
             describe('global tracer', () => {
-                const dummySpan = new Span();
+                const dummySpan = new opentracing.Span();
 
                 afterEach(() => {
-                  opentracing.initGlobalTracer(new Tracer());
+                  opentracing.initGlobalTracer(new opentracing.Tracer());
                 });
 
                 it('should use the global tracer', () => {
@@ -55,8 +53,8 @@ export function opentracingAPITests(): void {
                     expect(span).to.equal(dummySpan);
                 });
 
-                class TestTracer extends Tracer {
-                  protected _startSpan(name: string, fields: SpanOptions): Span {
+                class TestTracer extends opentracing.Tracer {
+                  protected _startSpan(name: string, fields: opentracing.SpanOptions): opentracing.Span {
                       return dummySpan;
                   }
                 }

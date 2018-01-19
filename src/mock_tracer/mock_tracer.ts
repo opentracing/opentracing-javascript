@@ -15,7 +15,7 @@ export class MockTracer extends opentracing.Tracer {
     // OpenTracing implementation
     //------------------------------------------------------------------------//
 
-    protected _startSpan(name: string, fields: { [key: string]: any }): MockSpan {
+    protected _startSpan(name: string, fields: opentracing.SpanOptions): MockSpan {
         // _allocSpan is given it's own method so that derived classes can
         // allocate any type of object they want, but not have to duplicate
         // the other common logic in startSpan().
@@ -24,8 +24,8 @@ export class MockTracer extends opentracing.Tracer {
         this._spans.push(span);
 
         if (fields.references) {
-            for (let i = 0; i < fields.references; i++) {
-                span.addReference(fields.references[i]);
+            for (const ref of fields.references) {
+                span.addReference(ref);
             }
         }
 
