@@ -6,15 +6,14 @@ import { MockSpan } from '../mock_tracer';
 export function mockTracerimplementationTests(createTracer = () => new MockTracer()): void {
 
     describe('Mock Tracer Implementation', () => {
-        describe('Tracer#inject', () => {
+        describe('Tracer#api', () => {
 
             it('should handle Spans, SpanContexts and tags and logs ', () => {
                 const tracer = createTracer();
                 const span = tracer.startSpan('test_operation') as MockSpan;
                 span.setTag('tag name', 'tag value');
                 span.log({state: 'test'});
-                expect(() => {span.debug(); }).to.not.throw (Error);
-                expect(() => {span.finish(); }).to.not.throw (Error);
+                expect(() => { span.finish(); }).to.not.throw (Error);
                 // currently injection is not implemented
                 // const textCarrier = {};
                 // expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
