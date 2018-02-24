@@ -6,8 +6,11 @@ import mocktracerImplementationTests from './mocktracer_implemenation';
 import noopImplementationTests from './noop_implementation';
 import opentracingAPITests from './opentracing_api';
 
+import {MockTracer} from '../index.js';
+
 // basic tests for the mock tracer
-mocktracerImplementationTests ();
+// mocktracerImplementationTests ();
+apiCompatibilityChecks( () =>  new MockTracer () );
 
 // Run the tests on the default OpenTracing no-op Tracer.
 noopImplementationTests();
