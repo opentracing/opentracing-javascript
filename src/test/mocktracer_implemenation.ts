@@ -1,6 +1,6 @@
 
 import { expect } from 'chai';
-import { FORMAT_TEXT_MAP, initGlobalTracer, MockTracer } from '../index';
+import {initGlobalTracer, MockTracer } from '../index';
 
 export function mockTracerimplementationTests(createTracer = () => new MockTracer()): void {
 
