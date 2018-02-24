@@ -14,7 +14,7 @@ export function mockTracerimplementationTests(createTracer = () => new MockTrace
                 span.setTag('tag name', 'tag value');
                 span.log({state: 'test'});
                 const mockSpan = span as MockSpan;
-                span.debug();
+                mockSpan.debug();
                 expect(() => { span.finish(); }).to.not.throw (Error);
                 // currently injection is not implemented
                 // const textCarrier = {};
