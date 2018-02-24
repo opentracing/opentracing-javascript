@@ -4,7 +4,7 @@ import { FORMAT_TEXT_MAP, initGlobalTracer, MockTracer } from '../index';
 
 export function mockTracerimplementationTests(createTracer = () => new MockTracer()): void {
 
-    describe('Noop Tracer Implementation', () => {
+    describe('Mock Tracer Implementation', () => {
         describe('Tracer#inject', () => {
 
             it('should handle Spans, SpanContexts and tags and logs ', () => {
