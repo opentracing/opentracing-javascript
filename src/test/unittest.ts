@@ -17,4 +17,3 @@ apiCompatibilityChecks();
 
 // Basic unittests for opentracing
 opentracingAPITests();
-
