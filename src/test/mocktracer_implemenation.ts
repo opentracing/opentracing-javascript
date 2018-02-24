@@ -1,6 +1,7 @@
 
 import { expect } from 'chai';
 import {initGlobalTracer, MockTracer } from '../index';
+import { MockSpan } from '../mock_tracer';
 
 export function mockTracerimplementationTests(createTracer = () => new MockTracer()): void {
 
@@ -9,9 +10,10 @@ export function mockTracerimplementationTests(createTracer = () => new MockTrace
 
             it('should handle Spans, SpanContexts and tags and logs ', () => {
                 const tracer = createTracer();
-                const span = tracer.startSpan('test_operation');
+                const span = tracer.startSpan('test_operation') as MockSpan;
                 span.setTag('tag name', 'tag value');
                 span.log({state: 'test'});
+                expect(span.debug()).to.not.throw (Error);
                 expect(span.finish()).to.not.throw (Error);
                 // currently injection is not implemented
                 // const textCarrier = {};
