@@ -7,9 +7,11 @@ export function mockTracerimplementationTests(createTracer = () => new MockTrace
     describe('Noop Tracer Implementation', () => {
         describe('Tracer#inject', () => {
 
-            it('should handle Spans and SpanContexts', () => {
+            it('should handle Spans, SpanContexts and tags and logs ', () => {
                 const tracer = createTracer();
                 const span = tracer.startSpan('test_operation');
+                span.setTag('tag name', 'tag value');
+                span.log({state: 'test'});
                 const textCarrier = {};
                 expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
             });
