@@ -24,7 +24,13 @@ export function mockTracerimplementationTests(createTracer = () => new MockTrace
                 const tracer = createTracer();
                 const span = tracer.startSpan('test_operation');
                 span.finish ();
-                expect (() => { tracer.report (); }).to.not.throw (Error);
+                expect (() => { 
+                    const report = tracer.report();
+                    for (const span of report.spans) {
+                        const tags = span.tags();
+                        const tagKeys = Object.keys(tags);
+                    }
+                }).to.not.throw (Error);
             });
         });
 
