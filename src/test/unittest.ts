@@ -2,7 +2,7 @@
 require('source-map-support').install();
 
 import apiCompatibilityChecks from './api_compatibility';
-import mocktracerImplementationTests from './mocktracer_implemenation';
+// import mocktracerImplementationTests from './mocktracer_implemenation';
 import noopImplementationTests from './noop_implementation';
 import opentracingAPITests from './opentracing_api';
 
