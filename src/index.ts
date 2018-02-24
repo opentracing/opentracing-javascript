@@ -5,6 +5,7 @@ import Reference from './reference';
 import Span from './span';
 import SpanContext from './span_context';
 import Tracer from './tracer';
+
 import {MockTracer} from './mock_tracer';
 
 export {
