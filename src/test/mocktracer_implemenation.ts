@@ -24,11 +24,10 @@ export function mockTracerimplementationTests(createTracer = () => new MockTrace
                 const tracer = createTracer();
                 const span = tracer.startSpan('test_operation');
                 span.finish ();
-                expect (() => { 
+                expect (() => {
                     const report = tracer.report();
                     for (const span of report.spans) {
-                        const tags = span.tags();
-                        const tagKeys = Object.keys(tags);
+                        span.tags();
                     }
                 }).to.not.throw (Error);
             });
