@@ -17,6 +17,16 @@ export function mockTracerimplementationTests(createTracer = () => new MockTrace
             });
         });
 
+        describe ('Tracer#report', () => {
+
+            it ('should not throw exceptions when running report', () => {
+                const tracer = createTracer();
+                const span = tracer.startSpan('test_operation');
+                span.finish ();
+                expect (() => { tracer.report (); }).to.not.throw (Error);
+            });
+        });
+
         describe('Span#finish', () => {
             it('should return undefined', () => {
                 const tracer = createTracer();
