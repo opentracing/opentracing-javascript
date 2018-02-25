@@ -10,7 +10,7 @@ import {MockTracer} from '../index.js';
 
 // basic tests for the mock tracer
 // mocktracerImplementationTests ();
-apiCompatibilityChecks( () =>  new MockTracer () );
+apiCompatibilityChecks( () =>  new MockTracer (), {checkInjectBehaviour: false} );
 
 // Run the tests on the default OpenTracing no-op Tracer.
 noopImplementationTests();
