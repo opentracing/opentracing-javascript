@@ -48,7 +48,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
                 options.checkInjectBehaviour ? it : it.skip('should handle Spans and SpanContexts',  () => {
                     const textCarrier = {};
                     expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                    expect(() => { tracer.inject(span.context(), FORMAT_TEXT_MAP, textCarrier); });
+                    expect(() => { tracer.inject(span.context(), FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                 });
             });
 
@@ -59,7 +59,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
                     expect(() => { tracer.extract(FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.extract(FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.extract(FORMAT_BINARY, {}); }).to.not.throw(Error);
-                    expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); });
+                    expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
                 });
             });
         });
