@@ -36,42 +36,30 @@ export function apiCompatibilityChecks(createTracer = () => new Tracer(), option
             });
 
             describe('inject', () => {
-                it('should not throw exception on required carrier types', function () {
-                    if (options.checkInjectBehaviour) {
-                        const spanContext = span.context();
-                        const textCarrier = {};
-                        const binCarrier = new BinaryCarrier([1, 2, 3]);
-                        expect(() => { tracer.inject(spanContext, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                        expect(() => { tracer.inject(spanContext, FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-                        expect(() => { tracer.inject(spanContext, FORMAT_BINARY, {}); }).to.not.throw(Error);
-                    } else {
-                        this.skip ();
-                    }
+                options.checkInjectBehaviour ? it : it.skip('should not throw exception on required carrier types', () => {
+                    const spanContext = span.context();
+                    const textCarrier = {};
+                    const binCarrier = new BinaryCarrier([1, 2, 3]);
+                    expect(() => { tracer.inject(spanContext, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                    expect(() => { tracer.inject(spanContext, FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                    expect(() => { tracer.inject(spanContext, FORMAT_BINARY, {}); }).to.not.throw(Error);
                 });
 
-                it('should handle Spans and SpanContexts', function () {
+                options.checkInjectBehaviour ? it : it.skip('should handle Spans and SpanContexts',  () => {
                     const textCarrier = {};
-                    if (options.checkInjectBehaviour) {
-                        expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                        expect(() => { tracer.inject(span.context(), FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                    } else {
-                      this.skip ();
-                    }
+                    expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                    expect(() => { tracer.inject(span.context(), FORMAT_TEXT_MAP, textCarrier); });
                 });
             });
 
             describe('extract', () => {
-                it('should not throw exception on required carrier types', function () {
-                    if (options.checkInjectBehaviour) {
-                        const textCarrier = {};
-                        const binCarrier = new BinaryCarrier([1, 2, 3]);
-                        expect(() => { tracer.extract(FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
-                        expect(() => { tracer.extract(FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
-                        expect(() => { tracer.extract(FORMAT_BINARY, {}); }).to.not.throw(Error);
-                        expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
-                    } else {
-                        this.skip ();
-                    }
+                options.checkInjectBehaviour ? it : it.skip('should not throw exception on required carrier types', () => {
+                    const textCarrier = {};
+                    const binCarrier = new BinaryCarrier([1, 2, 3]);
+                    expect(() => { tracer.extract(FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                    expect(() => { tracer.extract(FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
+                    expect(() => { tracer.extract(FORMAT_BINARY, {}); }).to.not.throw(Error);
+                    expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); });
                 });
             });
         });
