@@ -6,17 +6,17 @@ import mocktracerImplementationTests from './mocktracer_implemenation';
 import noopImplementationTests from './noop_implementation';
 import opentracingAPITests from './opentracing_api';
 
-import {MockTracer} from '../index.js';
+import {MockTracer, Tracer} from '../index.js';
 
-mocktracerImplementationTests ();
+// mocktracerImplementationTests ();
 
-apiCompatibilityChecks( () =>  new MockTracer (), {checkInjectBehaviour: false} );
+apiCompatibilityChecks( () =>  new MockTracer (), {skipCheckInjectBehaviour: true, skipCheckBaggageValues: true} );
 
 // Run the tests on the default OpenTracing no-op Tracer.
 noopImplementationTests();
 
 // Run the api conformance tests on the default Opentracing no-op Tracer.
-apiCompatibilityChecks();
+apiCompatibilityChecks( () => new Tracer (), {skipCheckBaggageValues: true});
 
 // Basic unittests for opentracing
 opentracingAPITests();
