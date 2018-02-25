@@ -8,7 +8,7 @@ import opentracingAPITests from './opentracing_api';
 
 import {MockTracer, Tracer} from '../index.js';
 
-// mocktracerImplementationTests ();
+mocktracerImplementationTests ();
 
 apiCompatibilityChecks( () =>  new MockTracer (), {skipCheckInjectBehaviour: true, skipCheckBaggageValues: true} );
 
