@@ -36,7 +36,7 @@ export function apiCompatibilityChecks(createTracer = () => new Tracer(), option
             });
 
             describe('inject', () => {
-                it('should not throw exception on required carrier types', () => {
+                it('should not throw exception on required carrier types', function () {
                     if (options.checkInjectBehaviour) {
                         const spanContext = span.context();
                         const textCarrier = {};
@@ -44,20 +44,24 @@ export function apiCompatibilityChecks(createTracer = () => new Tracer(), option
                         expect(() => { tracer.inject(spanContext, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                         expect(() => { tracer.inject(spanContext, FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
                         expect(() => { tracer.inject(spanContext, FORMAT_BINARY, {}); }).to.not.throw(Error);
+                    } else {
+                        this.skip ();
                     }
                 });
 
-                it('should handle Spans and SpanContexts', () => {
+                it('should handle Spans and SpanContexts', function () {
                     const textCarrier = {};
                     if (options.checkInjectBehaviour) {
                         expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                         expect(() => { tracer.inject(span.context(), FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
+                    } else {
+                      this.skip ();
                     }
                 });
             });
 
             describe('extract', () => {
-                it('should not throw exception on required carrier types', () => {
+                it('should not throw exception on required carrier types', function () {
                     if (options.checkInjectBehaviour) {
                         const textCarrier = {};
                         const binCarrier = new BinaryCarrier([1, 2, 3]);
@@ -65,6 +69,8 @@ export function apiCompatibilityChecks(createTracer = () => new Tracer(), option
                         expect(() => { tracer.extract(FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
                         expect(() => { tracer.extract(FORMAT_BINARY, {}); }).to.not.throw(Error);
                         expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+                    } else {
+                        this.skip ();
                     }
                 });
             });
