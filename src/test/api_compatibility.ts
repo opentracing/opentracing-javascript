@@ -3,7 +3,7 @@ import { assert, expect } from 'chai';
 import { BinaryCarrier, FORMAT_BINARY, FORMAT_TEXT_MAP, Reference, REFERENCE_CHILD_OF, Span, Tracer } from '../index';
 
 export interface ApiCompatibilityChecksOptions {
-    /** a boolean that controls whether or not to verify baggage values */
+    /** a boolean that controls whether or not to verify certain API functionality */
     checkBaggageValues?: boolean;
     checkInjectBehaviour?: boolean;
 }
@@ -15,7 +15,7 @@ export interface ApiCompatibilityChecksOptions {
  * @param {object} createTracer - a factory function that allocates a tracer.
  * @param {object} [options] - the options to be set on api compatibility
  */
-export function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiCompatibilityChecksOptions = {}): void {
+export function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiCompatibilityChecksOptions = {checkInjectBehaviour: true}): void {
 
     describe('OpenTracing API Compatibility', () => {
         let tracer: Tracer;
