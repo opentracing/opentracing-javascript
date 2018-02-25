@@ -2,7 +2,7 @@
 import { expect } from 'chai';
 import {MockTracer } from '../index';
 
-export function mockTracerimplementationTests(): void {
+function mockTracerimplementationTests(): void {
 
     describe('Mock Tracer API tests', () => {
 

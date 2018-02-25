@@ -15,7 +15,7 @@ export interface ApiCompatibilityChecksOptions {
  * @param {object} createTracer - a factory function that allocates a tracer.
  * @param {object} [options] - the options to be set on api compatibility
  */
-export function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiCompatibilityChecksOptions = {checkInjectBehaviour: true}): void {
+function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiCompatibilityChecksOptions = {checkInjectBehaviour: true}): void {
 
     describe('OpenTracing API Compatibility', () => {
         let tracer: Tracer;
