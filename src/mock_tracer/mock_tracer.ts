@@ -34,15 +34,12 @@ export class MockTracer extends opentracing.Tracer {
         return span;
     }
 
-    protected _inject(span: MockSpan, format: any, carrier: any): void {
-        // throw new Error('NOT YET IMPLEMENTED');
+    protected _inject(span: MockSpan, format: any, carrier: any): never {
+        throw new Error('NOT YET IMPLEMENTED');
     }
 
-    protected _extract(format: any, carrier: any): opentracing.SpanContext {
-        // throw new Error('NOT YET IMPLEMENTED');
-        let context: opentracing.SpanContext;
-        context = new opentracing.SpanContext ();
-        return context;
+    protected _extract(format: any, carrier: any): never {
+        throw new Error('NOT YET IMPLEMENTED');
     }
 
     //------------------------------------------------------------------------//
