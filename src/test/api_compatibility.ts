@@ -4,8 +4,8 @@ import { BinaryCarrier, FORMAT_BINARY, FORMAT_TEXT_MAP, Reference, REFERENCE_CHI
 
 export interface ApiCompatibilityChecksOptions {
     /** a boolean that controls whether or not to verify certain API functionality */
-    skipCheckBaggageValues?: boolean;
-    skipCheckInjectBehaviour?: boolean;
+    skipBaggageChecks?: boolean;
+    skipInjectExtractChecks?: boolean;
 }
 
 /**
@@ -15,7 +15,7 @@ export interface ApiCompatibilityChecksOptions {
  * @param {object} createTracer - a factory function that allocates a tracer.
  * @param {object} [options] - the options to be set on api compatibility
  */
-function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiCompatibilityChecksOptions = {skipCheckBaggageValues: false, skipCheckInjectBehaviour: false}): void {
+function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiCompatibilityChecksOptions = {skipBaggageChecks: false, skipInjectExtractChecks: false}): void {
 
     describe('OpenTracing API Compatibility', () => {
         let tracer: Tracer;
@@ -36,7 +36,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
             });
 
             describe('inject', () => {
-                (options.skipCheckInjectBehaviour ? it.skip : it)('should not throw exception on required carrier types', () => {
+                (options.skipInjectExtractChecks ? it.skip : it)('should not throw exception on required carrier types', () => {
                     const spanContext = span.context();
                     const textCarrier = {};
                     const binCarrier = new BinaryCarrier([1, 2, 3]);
@@ -45,7 +45,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
                     expect(() => { tracer.inject(spanContext, FORMAT_BINARY, {}); }).to.not.throw(Error);
                 });
 
-                (options.skipCheckInjectBehaviour ? it.skip : it)('should handle Spans and SpanContexts',  () => {
+                (options.skipInjectExtractChecks ? it.skip : it)('should handle Spans and SpanContexts',  () => {
                     const textCarrier = {};
                     expect(() => { tracer.inject(span, FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.inject(span.context(), FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
@@ -53,7 +53,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
             });
 
             describe('extract', () => {
-                (options.skipCheckInjectBehaviour ? it.skip : it)('should not throw exception on required carrier types', () => {
+                (options.skipInjectExtractChecks ? it.skip : it)('should not throw exception on required carrier types', () => {
                     const textCarrier = {};
                     const binCarrier = new BinaryCarrier([1, 2, 3]);
                     expect(() => { tracer.extract(FORMAT_TEXT_MAP, textCarrier); }).to.not.throw(Error);
@@ -66,7 +66,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
 
         describe('Span', () => {
 
-            (options.skipCheckBaggageValues ? it.skip : it)('should set baggage and retrieve baggage', () => {
+            (options.skipBaggageChecks ? it.skip : it)('should set baggage and retrieve baggage', () => {
                 span.setBaggageItem('some-key', 'some-value');
                 const val = span.getBaggageItem('some-key');
                 assert.equal('some-value', val);

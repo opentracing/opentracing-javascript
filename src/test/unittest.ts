@@ -10,13 +10,13 @@ import {MockTracer, Tracer} from '../index.js';
 
 mocktracerImplementationTests ();
 
-apiCompatibilityChecks( () =>  new MockTracer (), {skipCheckInjectBehaviour: true, skipCheckBaggageValues: true} );
+apiCompatibilityChecks( () =>  new MockTracer (), {skipInjectExtractChecks: true, skipBaggageChecks: true} );
 
 // Run the tests on the default OpenTracing no-op Tracer.
 noopImplementationTests();
 
 // Run the api conformance tests on the default Opentracing no-op Tracer.
-apiCompatibilityChecks( () => new Tracer (), {skipCheckBaggageValues: true});
+apiCompatibilityChecks( () => new Tracer (), {skipBaggageChecks: true});
 
 // Basic unittests for opentracing
 opentracingAPITests();
