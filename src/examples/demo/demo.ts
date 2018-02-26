@@ -1,7 +1,6 @@
 /* eslint-disable */
 
-import '../../index';
-import { MockTracer } from '../../mock_tracer';
+import {MockTracer} from '../../index';
 
 console.log('\nRunning demo...\n');
 
