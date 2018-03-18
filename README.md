@@ -91,7 +91,7 @@ The package contains two bundles built with webpack that can be included using a
 ### Usage with TypeScript
 
 Since the source is written in TypeScript, if you are using TypeScript, you can just `npm install` the package and it will work out of the box.
-This is especially useful for implementators who want to typecheck their implementation with the base interface.
+This is especially useful for implementors who want to type check their implementation with the base interface.
 
 ### Global tracer
 
@@ -103,7 +103,7 @@ opentracing.initGlobalTracer(new CustomTracer());
 const tracer = opentracing.globalTracer();
 ```
 
-Note: `globalTracer()` returns a wrapper on the actual tracer object. This is done for convenience of use as it ensures that the function will always return a non-null object.  This can be helpful in cases where it is difficult or impossible to know precisely when `initGlobalTracer` is called (for example, when writing a utility library that does not control the initialization process).  For more precise control, individual `Tracer` objects can be used instead of the global tracer.
+Note: `globalTracer()` returns a wrapper on the actual tracer object. This is done for the convenience of use as it ensures that the function will always return a non-null object.  This can be helpful in cases where it is difficult or impossible to know precisely when `initGlobalTracer` is called (for example, when writing a utility library that does not control the initialization process).  For more precise control, individual `Tracer` objects can be used instead of the global tracer.
 
 ## API Documentation
 
@@ -127,7 +127,7 @@ The project is written in TypeScript and built using a npm scripts. Run:
 
 ### Custom tracer implementation
 
-Implementations can subclass `opentracing.Trace`, `opentracing.Span`, and the other API classes to build a OpenTracing tracer and implement the underscore prefixed methods such as `_addTag` to pick up a bit of common code implemented in the base classes.
+Implementations can subclass `opentracing.Trace`, `opentracing.Span`, and the other API classes to build an OpenTracing tracer and implement the underscore prefixed methods such as `_addTag` to pick up a bit of common code implemented in the base classes.
 
 ### API compatibility testing
 
@@ -140,7 +140,7 @@ apiCompatibilityChecks(() => new CustomTracer());
 
 ### MockTracer
 
-An minimal example tracer is provided in the `src/mock_tracer` directory of the source code.
+A minimal example tracer is provided in the `src/mock_tracer` directory of the source code.
 
   [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
   [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
