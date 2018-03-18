@@ -149,3 +149,7 @@ A minimal example tracer is provided in the `src/mock_tracer` directory of the s
   [ci]: https://travis-ci.org/opentracing/opentracing-javascript
   [cov]: https://coveralls.io/github/opentracing/opentracing-javascript?branch=master
   [npm]: https://www.npmjs.com/package/opentracing
+
+##LICENSE 
+
+Copyright (c) 2016 Resonance Labs, Inc
