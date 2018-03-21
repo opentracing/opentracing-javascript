@@ -4,7 +4,7 @@
   "engines": {
     "node": ">=0.10"
   },
-  "licence": "MIT",
+  "license": "MIT",
   "licenses": [
     {
       "type": "MIT",
