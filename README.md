@@ -137,7 +137,7 @@ If `mocha` is being used for unit testing, `test/api_compatibility` can be used 
 const apiCompatibilityChecks = require('opentracing/lib/test/api_compatibility.js').default;
 apiCompatibilityChecks(() => new CustomTracer());
 ```
-##LICENSE 
+## LICENSE 
 
 Apache License 2.0
 
