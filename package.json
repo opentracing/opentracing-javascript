@@ -33,7 +33,6 @@
   "dependencies": {},
   "devDependencies": {
     "@types/chai": "3.4.35",
-    "@types/lodash": "4.14.61",
     "@types/mocha": "2.2.40",
     "@types/node": "7.0.12",
     "chai": "^3.4.1",
@@ -43,7 +42,6 @@
     "cross-env": "^4.0.0",
     "istanbul": "^0.4.5",
     "json-loader": "^0.5.4",
-    "lodash": "^4.17.4",
     "mocha": "^2.4.5",
     "shelljs": "^0.5.3",
     "source-map-support": "^0.3.3",

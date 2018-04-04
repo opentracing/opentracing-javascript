@@ -1,5 +1,4 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import * as _ from 'lodash';
 import { DebugInfo, MockSpan } from './mock_span';
 
 /**
@@ -22,7 +21,7 @@ export class MockReport {
 
         this.unfinishedSpans = [];
 
-        _.each(spans, span => {
+        spans.forEach(span => {
             if (span._finishMs === 0) {
                 this.unfinishedSpans.push(span);
             }
@@ -30,7 +29,10 @@ export class MockReport {
             this.spansByUUID[span.uuid()] = span;
             this.debugSpans.push(span.debug());
 
-            _.each(span.tags(), (val, key: string) => {
+            const tags = span.tags();
+
+            Object.keys(tags).forEach((key: string) => {
+                const val = tags[key];
                 this.spansByTag[key] = this.spansByTag[key] || {};
                 this.spansByTag[key][val] = this.spansByTag[key][val] || [];
                 this.spansByTag[key][val].push(span);
