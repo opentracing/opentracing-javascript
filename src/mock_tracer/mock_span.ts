@@ -1,6 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import * as _ from 'lodash';
 import * as opentracing from '../index';
 import Reference from '../reference';
 import MockContext from './mock_context';
@@ -115,7 +114,7 @@ export class MockSpan extends opentracing.Span {
             operation : this._operationName,
             millis    : [this._finishMs - this._startMs, this._startMs, this._finishMs]
         };
-        if (_.size(this._tags)) {
+        if (Object.keys(this._tags).length) {
             obj.tags = this._tags;
         }
         return obj;
