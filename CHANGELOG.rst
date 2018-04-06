@@ -7,6 +7,20 @@ Unreleased
 -------------------
 
 
+0.14.3
+-------------------
+
+- Removed the dependency on `lodash` in the API compatibility checks as it was causing errors when the tests were run if `lodash` was not explicitly installed.
+
+
+0.14.2
+-------------------
+
+- `SpanOptions` is now exported from the library.
+- `MockTracer` is now exported from the library.
+- The `checkBaggageValues` option has been replaced with `skipBaggageChecks` and the `skipInjectExtractChecks` option has been added in the API compatibility checks.
+
+
 0.14.1
 -------------------
 
