@@ -121,6 +121,8 @@ The project is written in TypeScript and built using a npm scripts. Run:
 * `npm test` runs the tests
 * `npm run typedoc` generates the documentation in `./typedoc`
 
+**Note:** The minimum supported Node version for development is `>=6`. Tests can however be run on any version that this project supports (`>=0.10`).
+
 ## OpenTracing tracer implementations
 
 *This section is intended for developers wishing to* ***implement their own tracers***. *Developers who simply wish to* ***use OpenTracing*** *can safely ignore this information.*
