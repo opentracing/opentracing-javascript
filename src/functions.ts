@@ -25,7 +25,7 @@ export function childOf(spanContext: SpanContext | Span): Reference {
  *        reference.
  * @return a REFERENCE_FOLLOWS_FROM reference pointing to `spanContext`
  */
-export function followsFrom(spanContext: SpanContext): Reference {
+export function followsFrom(spanContext: SpanContext | Span): Reference {
     // Allow the user to pass a Span instead of a SpanContext
     if (spanContext instanceof Span) {
         spanContext = spanContext.context();
