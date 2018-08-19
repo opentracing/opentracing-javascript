@@ -27,6 +27,11 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
         });
 
         describe('Tracer', () => {
+            describe('activeSpan', () => {
+                it('should get active span', () => {
+                    expect(tracer.activeSpan()).to.be.null;
+                });
+            });
 
             describe('startSpan', () => {
                 it('should handle Spans and SpanContexts', () => {
@@ -60,6 +65,24 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
                     expect(() => { tracer.extract(FORMAT_BINARY, binCarrier); }).to.not.throw(Error);
                     expect(() => { tracer.extract(FORMAT_BINARY, {}); }).to.not.throw(Error);
                     expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
+                });
+            });
+
+            describe('runSpan', () => {
+                it('should return the result', () => {
+                    expect(tracer.runSpan('test', {}, () => 1)).to.equal(1);
+                });
+            });
+
+            describe('runSpanAsync', () => {
+                it('should return the result', async () => {
+                    expect(await tracer.runSpanAsync('test', {}, async () => 1)).to.equal(1);
+                });
+            });
+
+            describe('spanManager', () => {
+                it('should get SpanManager', () => {
+                    expect(tracer.spanManager()).to.not.be.null;
                 });
             });
         });

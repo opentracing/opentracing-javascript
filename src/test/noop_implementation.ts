@@ -5,6 +5,13 @@ import { FORMAT_TEXT_MAP, initGlobalTracer, Tracer } from '../index';
 export function noopImplementationTests(createTracer = () => new Tracer()): void {
 
     describe('Noop Tracer Implementation', () => {
+        describe('Tracer#activeSpan', () => {
+            it('should return null', () => {
+                const tracer = createTracer();
+                expect(tracer.activeSpan()).to.be.null;
+            });
+        });
+
         describe('Tracer#inject', () => {
 
             it('should handle Spans and SpanContexts', () => {

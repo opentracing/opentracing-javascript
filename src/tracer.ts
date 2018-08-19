@@ -3,13 +3,16 @@ import * as Noop from './noop';
 import Reference from './reference';
 import Span from './span';
 import SpanContext from './span_context';
+import { SpanManager } from './span_manager';
 
 export interface SpanOptions {
-
     /**
      * a parent SpanContext (or Span, for convenience) that the newly-started
      * span will be the child of (per REFERENCE_CHILD_OF). If specified,
      * `references` must be unspecified.
+     *
+     * If childOf and references are both unspecified, the span is a child of
+     * the currently active span.
      */
     childOf?: Span | SpanContext;
 
@@ -53,6 +56,60 @@ export class Tracer {
     // ---------------------------------------------------------------------- //
 
     /**
+     * Gets the currently active span.
+     *
+     * @return the active Span. This is a shorthand for tracer.spanManager().active().
+     */
+    activeSpan(): Span | null {
+        return this.spanManager().active();
+    }
+
+    /**
+     * Starts a span, activates the span, executes the function, and finishes the span.
+     *
+     * @param {string} name the name of the operation.
+     * @param {SpanOptions} options options for the newly created span.
+     * @param {Function} f the function to execute during span activation.
+     * @return {A} the return value of the executed function.
+     * @template A
+     */
+    runSpan<A>(name: string, options: SpanOptions, f: () => A): A {
+        const span = this.startSpan(name, options);
+        try {
+            return this.spanManager().activate(span, f);
+        } finally {
+            span.finish();
+        }
+    }
+
+    /**
+     * Starts a span, activates the span, executes the async function, and finishes the span.
+     *
+     * @param {string} name the name of the operation.
+     * @param {SpanOptions} options options for the newly created span.
+     * @param {Function} f the function to execute during span activation.
+     * @return {A} the return value of the executed function.
+     * @template A
+     */
+    async runSpanAsync<A>(name: string, options: SpanOptions, f: () => Promise<A>): Promise<A> {
+        const span = this.startSpan(name, options);
+        try {
+            return await this.spanManager().activate(span, f);
+        } finally {
+            span.finish();
+        }
+    }
+
+    /**
+     * Gets the span manager.
+     *
+     * @return {SpanManager} - the span manager, which may be a noop.
+     */
+    spanManager(): SpanManager {
+        return Noop.spanManager!;
+    }
+
+    /**
      * Starts and returns a new Span representing a logical unit of work.
      *
      * For example:
@@ -77,7 +134,6 @@ export class Tracer {
      * @return {Span} - a new Span object.
      */
     startSpan(name: string, options: SpanOptions = {}): Span {
-
         // Convert options.childOf to fields.references as needed.
         if (options.childOf) {
             // Convert from a Span or a SpanContext into a Reference.
@@ -88,6 +144,11 @@ export class Tracer {
                 options.references = [childOf];
             }
             delete(options.childOf);
+        } else if (!options.references) {
+            const active = this.activeSpan();
+            if (active) {
+                options.references = [Functions.childOf(active)];
+            }
         }
         return this._startSpan(name, options);
     }

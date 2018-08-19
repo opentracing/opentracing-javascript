@@ -30,11 +30,11 @@
     "type": "git",
     "url": "https://github.com/opentracing/opentracing-javascript"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/chai": "3.4.35",
     "@types/mocha": "2.2.40",
-    "@types/node": "7.0.12",
+    "@types/node": "^8.0.0",
+    "@types/semver": "~5.5.0",
     "chai": "^3.4.1",
     "clone": "^1.0.2",
     "colors": "^1.1.2",
@@ -44,6 +44,7 @@
     "json-loader": "^0.5.4",
     "mocha": "^2.4.5",
     "shelljs": "^0.5.3",
+    "semver": "~5.5.0",
     "source-map-support": "^0.3.3",
     "surge": "^0.19.0",
     "ts-loader": "^2.0.3",
@@ -51,5 +52,9 @@
     "typedoc": "^0.5.10",
     "typescript": "~2.7.1",
     "webpack": "^2.3.3"
+  },
+  "optionalDependencies": {
+    "async-hook-jl": "~1.7.0",
+    "zone.js": "^0.8.0"
   }
 }

@@ -22,6 +22,7 @@ export {
 export * from './global_tracer';
 export * from './constants';
 export * from './functions';
+export * from './span_manager';
 
 // Initialize the noops last to avoid a dependecy cycle between the classes.
 Noop.initialize();

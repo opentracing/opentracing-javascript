@@ -2,11 +2,12 @@
   "compilerOptions": {
     "target": "es5",
     "lib": [
-      "es5",
+      "es2015",
       "dom"
     ],
     "moduleResolution": "node",
     "declaration": true,
+    "skipLibCheck": true,
     "sourceMap": true,
     "outDir": "lib",
     "noImplicitAny": true,
