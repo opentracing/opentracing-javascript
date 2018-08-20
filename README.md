@@ -1,4 +1,5 @@
-[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![NPM Published Version][npm-img]][npm] ![Node Version][node-img]
+[![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![NPM Published Version][npm-img]][npm] ![Node Version][node-img] [![Join the chat at https://gitter.im/opentracing/opentracing-javascript](https://badges.gitter.im/opentracing/opentracing-javascript.svg)](https://gitter.im/opentracing/opentracing-javascript?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 # OpenTracing API for JavaScript
 
