@@ -106,6 +106,64 @@ const tracer = opentracing.globalTracer();
 
 Note: `globalTracer()` returns a wrapper on the actual tracer object. This is done for the convenience of use as it ensures that the function will always return a non-null object.  This can be helpful in cases where it is difficult or impossible to know precisely when `initGlobalTracer` is called (for example, when writing a utility library that does not control the initialization process).  For more precise control, individual `Tracer` objects can be used instead of the global tracer.
 
+### Span manager (experimental)
+
+This library supports span activation in the spirit of the [Scope Manager](https://github.com/opentracing/specification/blob/f7ca62c9/rfc/scope_manager.md) draft RFC.
+
+If neither `childOf` nor `references` is specified, create spans are children of the activated span.
+
+The intent of `SpanManager` is that it remains active within the executed function and its transitive call graph. Ideally, this applies to both synchronous and asynchronous calls.
+
+```js
+tracer.activeSpan() // null
+tracer.activate(span, () => {
+    tracer.activeSpan() // span
+    setTimeout(() => {
+        tracer.activeSpan() // span
+    }, 0);
+    (async () => {
+        tracer.activeSpan() // span
+    })();
+});
+tracer.activeSpan() // null
+```
+
+JavaScript support for continuation local storage is a patchwork.
+This library includes simple wrappers around a few common APIs for continuation contexts.
+
+**ZoneSpanManger**
+
+This uses [Zone.js](https://github.com/angular/zone.js). (See the associated [Zone](https://github.com/domenic/zones) ES TC39 proposal.)
+It includes support for most common APIs: Web, Node.js, Electron, RxJS. Async syntax (async/await) is not supported.
+I.e. you should target ES 2015 or earlier syntax.
+
+```js
+import 'zone.js';
+import { ZoneSpanManager } from 'opentracing/zone_span_manager';
+
+new ZoneSpanManager();
+```
+
+**AsyncHookSpanManager**
+
+This uses the Node.js [async_hooks](https://nodejs.org/api/async_hooks.html) API, available in Node.js 8.1.x+.
+
+```js
+import { AsyncHookSpanManager } from 'opentracing/async_hook_span_manager';
+
+new AsyncHookSpanManager();
+```
+
+**AsyncWrapSpanManager**
+
+This uses [async-hook-jl](https://github.com/Jeff-Lewis/async-hook-jl) which patches the Node.js AsyncWrap API, available in Node.js 0.11.x - 7.x.x. Though without futher transpilation async-hook-jl requires Node.js 4.x.x+.
+
+```js
+import { AsyncWrapSpanManager } from 'opentracing/async_wrap_span_manager';
+
+new AsyncWrapSpanManager();
+```
+
 ## API Documentation
 
 There is a hosted copy of the current generated [ESDoc API Documentation here](https://opentracing-javascript.surge.sh).
