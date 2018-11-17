@@ -130,7 +130,7 @@ The project is written in TypeScript and built using a npm scripts. Run:
 
 ### Custom tracer implementation
 
-Implementations can subclass `opentracing.Trace`, `opentracing.Span`, and the other API classes to build an OpenTracing tracer and implement the underscore prefixed methods such as `_addTag` to pick up a bit of common code implemented in the base classes.
+Implementations can subclass `opentracing.Tracer`, `opentracing.Span`, and the other API classes to build an OpenTracing tracer and implement the underscore prefixed methods such as `_addTag` to pick up a bit of common code implemented in the base classes.
 
 ### API compatibility testing
 
