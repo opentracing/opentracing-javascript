@@ -2,6 +2,7 @@ import Tracer from './tracer';
 
 const noopTracer = new Tracer();
 let _globalTracer: Tracer | null = null;
+let _isRegistered: boolean = false;
 
 // Allows direct importing/requiring of the global tracer:
 //
@@ -43,6 +44,7 @@ const globalTracerDelegate = new GlobalTracerDelegate();
  */
 export function initGlobalTracer(tracer: Tracer): void {
     _globalTracer = tracer;
+    _isRegistered = true;
 }
 
 /**
@@ -54,4 +56,11 @@ export function globalTracer(): Tracer {
     // give the added convenience of not needing to worry about initialization
     // order.
     return globalTracerDelegate;
+}
+
+/**
+ * Returns true if a global tracer has been registered, otherwise false.
+ */
+export function isGlobalTracerRegistered(): boolean {
+    return _isRegistered;
 }
