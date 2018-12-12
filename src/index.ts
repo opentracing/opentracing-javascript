@@ -2,6 +2,7 @@ import BinaryCarrier from './binary_carrier';
 import * as Tags from './ext/tags';
 import * as Noop from './noop';
 import Reference from './reference';
+import {Scope, ScopeCallback} from './scope';
 import Span from './span';
 import SpanContext from './span_context';
 import {SpanOptions, Tracer} from './tracer';
@@ -16,7 +17,9 @@ export {
     Tracer,
     SpanOptions,
     Tags,
-    MockTracer
+    MockTracer,
+    Scope,
+    ScopeCallback
 };
 
 export * from './global_tracer';

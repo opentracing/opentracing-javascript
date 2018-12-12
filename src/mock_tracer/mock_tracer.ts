@@ -46,8 +46,8 @@ export class MockTracer extends opentracing.Tracer {
     // MockTracer-specific
     //------------------------------------------------------------------------//
 
-    constructor() {
-        super();
+    constructor(scope?: opentracing.Scope) {
+        super(scope);
         this._spans = [];
     }
 
