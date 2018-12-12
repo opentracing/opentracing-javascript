@@ -1,0 +1,7 @@
+--require ts-node/register
+--require source-map-support/register
+--check-leaks
+--colors
+--watch-extensions ts
+--watch
+src/test/unittest.ts

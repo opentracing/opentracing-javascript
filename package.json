@@ -17,7 +17,7 @@
     "prepare": "npm run build",
     "lint": "tslint -t msbuild -c tslint.json 'src/**/*.ts'",
     "test": "mocha",
-    "tdd": "mocha --watch-extensions ts --watch",
+    "tdd": "mocha --opts test/mocha.tdd.opts",
     "cover": "nyc --check-coverage mocha",
     "test-cover": "nyc mocha",
     "webpack": "webpack --display-error-details",
