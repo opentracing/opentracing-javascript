@@ -1,7 +1,9 @@
 {
   "name": "opentracing",
-  "private": true,
   "version": "0.14.2",
+  "engines": {	
+    "node": ">=0.10"	
+  },
   "license": "Apache-2.0",
   "licenses": [
     {
