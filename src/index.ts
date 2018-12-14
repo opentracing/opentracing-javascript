@@ -7,7 +7,7 @@ import Span from './span';
 import SpanContext from './span_context';
 import {SpanOptions, Tracer} from './tracer';
 
-import {MockTracer} from './mock_tracer';
+import {MockScope, MockTracer} from './mock_tracer';
 
 export {
     BinaryCarrier,
@@ -18,6 +18,7 @@ export {
     SpanOptions,
     Tags,
     MockTracer,
+    MockScope,
     Scope,
     ScopeCallback
 };

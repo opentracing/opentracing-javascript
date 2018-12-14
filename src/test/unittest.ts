@@ -7,7 +7,7 @@ import noopImplementationTests from './noop_implementation';
 import opentracingAPITests from './opentracing_api';
 import scopeTests from './scope';
 
-import {MockTracer, Scope, Tracer} from '..';
+import {MockScope, MockTracer, Scope, Tracer} from '..';
 
 mocktracerImplementationTests ();
 
@@ -22,4 +22,6 @@ apiCompatibilityChecks( () => new Tracer (), {skipBaggageChecks: true});
 // Basic unittests for opentracing
 opentracingAPITests();
 
-scopeTests(() => new Scope(), { skipPropagationTests: true });
+scopeTests(() => new MockScope(), { skipPropagationTests: true });
+
+scopeTests(() => new Scope(), { skipPropagationTests: true, skipBindTests: true });

@@ -15,7 +15,11 @@
     "noImplicitReturns": true,
     "strictNullChecks": true,
     "allowUnreachableCode": false,
-    "module": "commonjs"
+    "module": "commonjs",
+    "baseUrl": ".",
+    "paths": {
+        "*": ["src/@types/*"]
+    }
   },
   "include": [
     "src/**/*.ts"

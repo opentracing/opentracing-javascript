@@ -31,19 +31,22 @@
     "url": "https://github.com/opentracing/opentracing-javascript"
   },
   "dependencies": {
-    "@types/shimmer": "^1.0.1",
     "emitter-listener": "^1.1.2",
     "shimmer": "^1.2.0"
   },
   "devDependencies": {
+    "@types/bluebird": "^3.5.25",
     "@types/chai": "4.1.4",
     "@types/mocha": "2.2.40",
     "@types/node": "10.3.5",
+    "@types/shimmer": "^1.0.1",
+    "bluebird": "^3.5.3",
     "chai": "^4.1.2",
     "clone": "^2.1.1",
     "colors": "^1.1.2",
     "coveralls": "^3.0.1",
     "cross-env": "^5.2.0",
+    "events": "^3.0.0",
     "json-loader": "^0.5.4",
     "mocha": "^2.4.5",
     "nyc": "^10.3.2",

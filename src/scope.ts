@@ -1,6 +1,7 @@
-import wrapEmitter from 'emitter-listener';
 import * as shimmer from 'shimmer';
 import Span from './span';
+
+const wrapEmitter = require('emitter-listener');
 
 export type ScopeCallback<T> = (...args: any[]) => T | void;
 
