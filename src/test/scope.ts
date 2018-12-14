@@ -192,8 +192,8 @@ function scopeTests(
                     let emitter: EventEmitter;
 
                     beforeEach(() => {
-                        const EventEmitter = require('events'); // tslint:disable-line
-                        emitter = new EventEmitter();
+                        const events = require('events');
+                        emitter = new events.EventEmitter();
                     });
 
                     it('should bind listeners to the active span', done => {
