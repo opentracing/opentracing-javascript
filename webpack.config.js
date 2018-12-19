@@ -1,3 +1,5 @@
+// @ts-check
+
 const webpack = require("webpack");
 
 // Pass in the build configuration as environment variables
@@ -12,31 +14,26 @@ if (CONFIG === 'debug') {
     devtool = "source-map";
 } else {
     bundleSuffix = ".min";
-    plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            minimize: true,
-            compress: {
-                dead_code: true,
-                unused: true,
-                // Hide the dead code warnings. The defines intentionally create
-                // dead code paths.
-                warnings: false,
-            },
-        })
-    );
 }
 
 //
 // Webpack configuration
 //
+
+/** @type {import('webpack').Configuration} */
 module.exports = {
     entry: './src/index.ts',
     target: 'web',
+    devtool,
+    mode: CONFIG === 'debug' ? 'development' : 'production',
     output: {
         path: __dirname + '/dist/',
         filename: 'opentracing-browser' + bundleSuffix + '.js',
         library: 'opentracing',
         libraryTarget: 'umd',
+    },
+    optimization: {
+        minimize: CONFIG !== 'debug',
     },
     plugins,
     module: {
@@ -47,7 +44,8 @@ module.exports = {
                 exclude: /node_modules/,
                 options: {
                     compilerOptions: {
-                        declaration: false
+                        declaration: false,
+                        declarationMap: false,
                     }
                 }
             }
