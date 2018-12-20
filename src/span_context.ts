@@ -10,6 +10,24 @@
  */
 export class SpanContext {
     // The SpanContext is entirely implementation dependent
+
+    /**
+     * Returns a string representation of the internal vendor trace ID.
+     * 
+     * @returns {string}
+     */
+    toTraceId(): string {
+        return '';
+    }
+
+    /**
+     * Returns a string representation of the internal vendor span ID.
+     * 
+     * @returns {string}
+     */
+    toSpanId(): string {
+        return '';
+    }
 }
 
 export default SpanContext;
