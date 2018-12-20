@@ -91,7 +91,7 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
             describe('toTraceId', () => {
                 it('should return a string', () => {
                     span = tracer.startSpan('test-span');
-                    console.log(span.context().toTraceId())
+                    console.log(span.context().toTraceId());
                     expect(() => span.context().toTraceId()).to.not.throw(Error);
                     expect(span.context().toTraceId()).to.be.a('string');
                 });

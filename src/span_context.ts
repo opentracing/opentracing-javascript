@@ -13,7 +13,7 @@ export class SpanContext {
 
     /**
      * Returns a string representation of the internal vendor trace ID.
-     * 
+     *
      * @returns {string}
      */
     toTraceId(): string {
@@ -22,7 +22,7 @@ export class SpanContext {
 
     /**
      * Returns a string representation of the internal vendor span ID.
-     * 
+     *
      * @returns {string}
      */
     toSpanId(): string {
