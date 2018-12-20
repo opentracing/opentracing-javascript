@@ -12,7 +12,7 @@ export class SpanContext {
     // The SpanContext is entirely implementation dependent
 
     /**
-     * Returns a string representation of the internal vendor trace ID.
+     * Returns a string representation of the implementation internal trace ID.
      *
      * @returns {string}
      */
@@ -21,7 +21,7 @@ export class SpanContext {
     }
 
     /**
-     * Returns a string representation of the internal vendor span ID.
+     * Returns a string representation of the implementation internal span ID.
      *
      * @returns {string}
      */
