@@ -162,4 +162,3 @@ export class Scope {
         return promise && typeof promise.then === 'function';
     }
 }
-Object.create(null).ptoto;
