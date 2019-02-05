@@ -86,6 +86,25 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
                 expect(() => new Reference(REFERENCE_CHILD_OF, span.context())).to.not.throw(Error);
             });
         });
+
+        describe('SpanContext', () => {
+            describe('toTraceId', () => {
+                it('should return a string', () => {
+                    span = tracer.startSpan('test-span');
+                    console.log(span.context().toTraceId());
+                    expect(() => span.context().toTraceId()).to.not.throw(Error);
+                    expect(span.context().toTraceId()).to.be.a('string');
+                });
+            });
+
+            describe('toSpanId', () => {
+                it('should return a string', () => {
+                    span = tracer.startSpan('test-span');
+                    expect(() => span.context().toSpanId()).to.not.throw(Error);
+                    expect(span.context().toSpanId()).to.be.a('string');
+                });
+            });
+        });
     });
 }
 
