@@ -24,4 +24,4 @@ opentracingAPITests();
 
 scopeTests(() => new MockScope(), { skipPropagationTests: true });
 
-scopeTests(() => new Scope(), { skipPropagationTests: true, skipBindTests: true });
+scopeTests(() => new Scope(), { skipPropagationTests: true });

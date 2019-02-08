@@ -30,10 +30,7 @@
     "type": "git",
     "url": "https://github.com/opentracing/opentracing-javascript"
   },
-  "dependencies": {
-    "emitter-listener": "^1.1.2",
-    "shimmer": "^1.2.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/bluebird": "^3.5.25",
     "@types/chai": "4.1.4",
