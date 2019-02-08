@@ -1,6 +1,7 @@
 import * as Functions from './functions';
 import * as Noop from './noop';
 import Reference from './reference';
+import { Scope, ScopeCallback } from './scope';
 import Span from './span';
 import SpanContext from './span_context';
 
@@ -33,6 +34,12 @@ export interface SpanOptions {
      * supported to represent time values with sub-millisecond accuracy.
      */
     startTime?: number;
+
+    /**
+     * boolean to indicate that the childOf option should not implicitly be set
+     * to the currently active span.
+     */
+    ignoreActiveSpan?: boolean;
 }
 
 /**
@@ -47,6 +54,12 @@ export interface SpanOptions {
  * automatically from the base class.
  */
 export class Tracer {
+
+    private _scope: Scope;
+
+    constructor (scope?: Scope) {
+        this._scope = scope || new Scope();
+    }
 
     // ---------------------------------------------------------------------- //
     // OpenTracing API methods
@@ -76,7 +89,7 @@ export class Tracer {
      * @param {SpanOptions} [options] - options for the newly created span.
      * @return {Span} - a new Span object.
      */
-    startSpan(name: string, options: SpanOptions = {}): Span {
+    startSpan<T>(name: string, options: SpanOptions = {}, callback?: ScopeCallback<T>): Span {
 
         // Convert options.childOf to fields.references as needed.
         if (options.childOf) {
@@ -88,8 +101,22 @@ export class Tracer {
                 options.references = [childOf];
             }
             delete(options.childOf);
+        } else if (!options.references && !options.ignoreActiveSpan) {
+            const activeSpan = this._scope.active();
+
+            if (activeSpan) {
+                const childOf = Functions.childOf(activeSpan);
+                options.references = [childOf];
+            }
         }
-        return this._startSpan(name, options);
+
+        const span = this._startSpan(name, options);
+
+        if (callback) {
+            this._scope.activate(span, callback);
+        }
+
+        return span;
     }
 
     /**
@@ -153,6 +180,15 @@ export class Tracer {
      */
     extract(format: string, carrier: any): SpanContext | null {
         return this._extract(format, carrier);
+    }
+
+    /**
+     * Returns the current scope.
+     *
+     * @return {Scope}
+     */
+    scope(): Scope {
+        return this._scope;
     }
 
     // ---------------------------------------------------------------------- //

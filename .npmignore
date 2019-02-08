@@ -3,3 +3,4 @@ npm-debug.log
 src/
 typedoc/
 coverage/
+.nyc_output

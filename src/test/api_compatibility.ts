@@ -62,6 +62,18 @@ function apiCompatibilityChecks(createTracer = () => new Tracer(), options: ApiC
                     expect(() => { tracer.extract(FORMAT_BINARY, { buffer : null }); }).to.not.throw(Error);
                 });
             });
+
+            describe('scope', () => {
+                it('should return the active scope', () => {
+                    expect(() => tracer.scope()).to.not.throw(Error);
+                    expect(() => tracer.scope().active()).to.not.throw(Error);
+                    expect(() => tracer.scope().activate(span, () => {})).to.not.throw(Error);
+                    expect(() => tracer.scope().bind(() => {})).to.not.throw(Error);
+                    expect(tracer.scope().active()).to.be.null;
+                    expect(tracer.scope().activate(span, () => 'test')).to.equal('test');
+                    expect(tracer.scope().active()).to.be.null;
+                });
+            });
         });
 
         describe('Span', () => {
