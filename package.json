@@ -29,7 +29,7 @@
     "build": "tsc -p .",
     "watch": "tsc -w -p .",
     "typedoc": "typedoc --out typedoc --tsconfig tsconfig.json --mode file",
-    "example": "node lib/examples/demo/demo.js"
+    "example": "ts-node src/examples/demo/demo.ts"
   },
   "repository": {
     "type": "git",
