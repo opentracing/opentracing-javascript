@@ -52,7 +52,7 @@ export class MockTracer extends opentracing.Tracer {
         this._spans = [];
     }
 
-    private _allocSpan(): MockSpan {
+    protected _allocSpan(): MockSpan {
         return new MockSpan(this);
     }
 
