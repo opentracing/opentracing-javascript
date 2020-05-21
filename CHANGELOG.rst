@@ -3,6 +3,10 @@
 History
 -------
 
+0.14.5
+-------------------
+- Add trace close interface
+
 0.14.4
 -------------------
 - Add trace identifiers to the `SpanContext`

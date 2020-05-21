@@ -87,7 +87,7 @@ export class Tracer {
             } else {
                 options.references = [childOf];
             }
-            delete(options.childOf);
+            delete (options.childOf);
         }
         return this._startSpan(name, options);
     }
@@ -176,6 +176,12 @@ export class Tracer {
     // The default behavior is to return a no-op SpanContext.
     protected _extract(format: string, carrier: any): SpanContext | null {
         return Noop.spanContext!;
+    }
+
+    // close the tracer,flushes spans, and executes any callbacks if necessary
+
+    protected close(callback?: void): void {
+
     }
 }
 
