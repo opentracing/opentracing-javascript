@@ -16,17 +16,17 @@ let _globalTracer: Tracer | null = null;
 // case where
 class GlobalTracerDelegate extends Tracer {
 
-    startSpan(): any {
+    _startSpan(): any {
         const tracer = _globalTracer || noopTracer;
         return tracer.startSpan.apply(tracer, arguments);
     }
 
-    inject(): any {
+    _inject(): any {
         const tracer = _globalTracer || noopTracer;
         return tracer.inject.apply(tracer, arguments);
     }
 
-    extract(): any {
+    _extract(): any {
         const tracer = _globalTracer || noopTracer;
         return tracer.extract.apply(tracer, arguments);
     }
