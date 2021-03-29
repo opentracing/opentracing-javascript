@@ -1,7 +1,7 @@
 import Span from './span';
 import SpanContext from './span_context';
 
-const getContext = (contextOrSpan: SpanContext | Span): SpanContext => {
+const toContext = (contextOrSpan: SpanContext | Span): SpanContext => {
     if (contextOrSpan instanceof SpanContext) {
       return contextOrSpan;
     }
@@ -56,6 +56,6 @@ export default class Reference {
      */
     constructor(type: string, referencedContext: SpanContext | Span) {
         this._type = type;
-        this._referencedContext = getContext(referencedContext);
+        this._referencedContext = toContext(referencedContext);
     }
 }
