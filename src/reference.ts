@@ -1,6 +1,23 @@
 import Span from './span';
 import SpanContext from './span_context';
 
+const toContext = (contextOrSpan: SpanContext | Span): SpanContext => {
+    if (contextOrSpan instanceof SpanContext) {
+      return contextOrSpan;
+    }
+
+    // Second check is for cases when a Span implementation does not extend
+    // opentracing.Span class directly (like Jaeger), just implements the same interface.
+    // The only false-positive case here is a non-extending SpanContext class,
+    // which has a method called "context".
+    // But that's too much of a specification violation to take care of.
+    if (contextOrSpan instanceof Span || 'context' in contextOrSpan) {
+      return contextOrSpan.context();
+    }
+
+    return contextOrSpan;
+};
+
 /**
  * Reference pairs a reference type constant (e.g., REFERENCE_CHILD_OF or
  * REFERENCE_FOLLOWS_FROM) with the SpanContext it points to.
@@ -39,9 +56,6 @@ export default class Reference {
      */
     constructor(type: string, referencedContext: SpanContext | Span) {
         this._type = type;
-        this._referencedContext = (
-                referencedContext instanceof Span ?
-                referencedContext.context() :
-                referencedContext);
+        this._referencedContext = toContext(referencedContext);
     }
 }

@@ -1,6 +1,11 @@
 
 import { expect } from 'chai';
 import * as opentracing from '../index';
+import MockContext from '../mock_tracer/mock_context';
+import MockSpan from '../mock_tracer/mock_span';
+import MockTracer from '../mock_tracer/mock_tracer';
+import Span from '../span';
+import SpanContext from '../span_context';
 
 export function opentracingAPITests(): void {
     describe('Opentracing API', () => {
@@ -84,6 +89,36 @@ export function opentracingAPITests(): void {
             it('should be a class', () => {
                 const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span.context());
                 expect(ref).to.be.an('object');
+            });
+
+            it('should get context from custom extending span classes', () => {
+                const span = new MockSpan(new MockTracer());
+                const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, span);
+                expect(ref.referencedContext() instanceof SpanContext).to.equal(true);
+            });
+
+            it('should get context from custom non-extending span classes', () => {
+                const ctx = new SpanContext();
+                const pseudoSpan = {
+                    context: () => ctx
+                } as Span;
+                const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, pseudoSpan);
+                expect(ref.referencedContext()).to.equal(ctx);
+            });
+
+            it('should use extending contexts', () => {
+                const ctx = new MockContext({} as MockSpan);
+                const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, ctx);
+                expect(ref.referencedContext()).to.equal(ctx);
+            });
+
+            it('should use non-extending contexts', () => {
+                const ctx = {
+                    toTraceId: () => '',
+                    toSpanId: () => ''
+                };
+                const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, ctx);
+                expect(ref.referencedContext()).to.equal(ctx);
             });
         });
 
