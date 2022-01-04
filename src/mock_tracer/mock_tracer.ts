@@ -1,6 +1,6 @@
 
 // TODO: Move mock-tracer to its own NPM package once it is complete and tested.
-import * as opentracing from '../index';
+import {SpanOptions, Tracer} from '../tracer';
 import MockContext from './mock_context';
 import MockReport from './mock_report';
 import MockSpan from './mock_span';
@@ -8,7 +8,7 @@ import MockSpan from './mock_span';
 /**
  * OpenTracing Tracer implementation designed for use in unit tests.
  */
-export class MockTracer extends opentracing.Tracer {
+export class MockTracer extends Tracer {
 
     private _spans: MockSpan[];
 
@@ -16,7 +16,7 @@ export class MockTracer extends opentracing.Tracer {
     // OpenTracing implementation
     //------------------------------------------------------------------------//
 
-    protected _startSpan(name: string, fields: opentracing.SpanOptions): MockSpan {
+    protected _startSpan(name: string, fields: SpanOptions): MockSpan {
         // _allocSpan is given it's own method so that derived classes can
         // allocate any type of object they want, but not have to duplicate
         // the other common logic in startSpan().
