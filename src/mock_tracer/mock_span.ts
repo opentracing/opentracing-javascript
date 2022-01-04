@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import * as opentracing from '../index';
+import Span from '../span';
+import Tracer from '../tracer'
 import Reference from '../reference';
 import MockContext from './mock_context';
 import MockTracer from './mock_tracer';
@@ -20,7 +21,7 @@ export interface DebugInfo {
 /**
  * OpenTracing Span implementation designed for use in unit tests.
  */
-export class MockSpan extends opentracing.Span {
+export class MockSpan extends Span {
 
     private _operationName: string;
     private _tags: { [key: string]: any };
@@ -92,7 +93,7 @@ export class MockSpan extends opentracing.Span {
         return this._tags;
     }
 
-    tracer(): opentracing.Tracer {
+    tracer(): Tracer {
         return this._mockTracer;
     }
 
