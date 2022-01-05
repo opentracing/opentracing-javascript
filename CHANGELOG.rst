@@ -3,6 +3,11 @@
 History
 -------
 
+0.14.6
+-------------------
+- Fix remaining circular dependencies in mock_tracer submodule (#154) -- thanks Minh Nguyen
+
+
 0.14.5
 -------------------
 - Fix circular dependency in mock_context (#154) -- thanks Jonathan Moody
