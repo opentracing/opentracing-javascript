@@ -56,6 +56,13 @@ export default class Reference {
      */
     constructor(type: string, referencedContext: SpanContext | Span) {
         this._type = type;
-        this._referencedContext = toContext(referencedContext);
+        // See https://github.com/opentracing/opentracing-javascript/issues/172.
+        // Even though the constructor signature does not allow null args in Typescript,
+        // when compiled to Javascript the code would previously still work with nulls.
+        // This check ensures backwards compatibility (i.e. no exception) by constructing
+        // an invalid reference where _referencedContext is undefined.
+        if (referencedContext != null) {
+            this._referencedContext = toContext(referencedContext);
+        }
     }
 }
