@@ -24,6 +24,7 @@
     "member-access": [false],
     "max-classes-per-file": [false],
     "object-literal-sort-keys": false,
+    "ordered-imports": false,
     "no-shadowed-variable": false,
     "member-ordering": [false],
     "trailing-comma": [true, {"singleline": "never", "multiline": "never"}],
