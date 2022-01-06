@@ -1,0 +1,65 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    env:
+      # Current Active LTS is 14: https://nodejs.org/en/about/releases/.
+      # It is used to perform the build, whereas the tests are run with TEST_NODE_VERSION.
+      NODE_LTS: "14"
+    strategy:
+      matrix:
+        env:
+          - TEST_NODE_VERSION: "10"
+          - TEST_NODE_VERSION: "12"
+          - TEST_NODE_VERSION: "14"
+            COVER: "1"
+          - TEST_NODE_VERSION: "16"
+    name: unit-tests - node ${{ matrix.env.TEST_NODE_VERSION }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 2
+
+    - name: Configure Node Version (LTS)
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_LTS }}
+
+    - name: Build from Typescript
+      run: |
+        npm run lint
+        npm run build
+        rm -rf ${{ github.workspace }}/node_modules/ ${{ github.workspace }}/package-lock.json
+
+    - name: Configure Test Node Version
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.env.TEST_NODE_VERSION }}
+      if: ${{ env.NODE_LTS != matrix.env.TEST_NODE_VERSION}}
+
+    - name: Re-Install Dependencies using Test Node Version
+      run: |
+        sudo sh -c 'echo 0 > /proc/sys/net/ipv6/conf/all/disable_ipv6'
+        node --version
+        npm install
+
+    - name: Run Tests
+      run: npm run test
+
+    - name: Run Code Coverage
+      id: run-coverage
+      run: npm run test-cover
+      if: ${{ matrix.env.COVER == '1' }}
+
+    - uses: codecov/codecov-action@v2.1.0
+      with:
+        verbose: true
+      if: steps.run-coverage.outcome == 'success'
