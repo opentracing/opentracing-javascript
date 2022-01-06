@@ -148,11 +148,11 @@ Apache License 2.0
 
 A minimal example tracer is provided in the `src/mock_tracer` directory of the source code.
 
-  [ci-img]: https://travis-ci.org/opentracing/opentracing-javascript.svg?branch=master
-  [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
+  [ci-img]: https://github.com/opentracing/opentracing-javascript/workflows/Unit%20Tests/badge.svg?branch=master
+  [ci]: https://github.com/opentracing/opentracing-javascript/actions?query=branch%3Amaster
   [npm-img]: https://badge.fury.io/js/opentracing.svg
   [node-img]: http://img.shields.io/node/v/opentracing.svg
-  [ci]: https://travis-ci.org/opentracing/opentracing-javascript
+  [cov-img]: https://coveralls.io/repos/github/opentracing/opentracing-javascript/badge.svg?branch=master
   [cov]: https://coveralls.io/github/opentracing/opentracing-javascript?branch=master
   [npm]: https://www.npmjs.com/package/opentracing
 
