@@ -3,6 +3,12 @@
 History
 -------
 
+0.14.7
+-------------------
+Rollback v0.14.6 due to issue https://github.com/opentracing/opentracing-javascript/issues/172
+v0.14.7 is equivalent to v0.14.5, published from the branch rollback-v0.14 6
+
+
 0.14.6
 -------------------
 - Fix remaining circular dependencies in mock_tracer submodule (#154) -- thanks Minh Nguyen
