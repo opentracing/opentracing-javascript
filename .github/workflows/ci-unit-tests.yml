@@ -35,6 +35,8 @@ jobs:
 
     - name: Build from Typescript
       run: |
+        node --version
+        npm install
         npm run lint
         npm run build
         rm -rf ${{ github.workspace }}/node_modules/ ${{ github.workspace }}/package-lock.json

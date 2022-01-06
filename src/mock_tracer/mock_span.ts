@@ -1,10 +1,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
-import Span from '../span';
-import Tracer from '../tracer'
-import Reference from '../reference';
 import MockContext from './mock_context';
 import MockTracer from './mock_tracer';
+import Reference from '../reference';
+import Span from '../span';
+import Tracer from '../tracer';
 
 interface Log {
     fields: { [key: string]: any };
