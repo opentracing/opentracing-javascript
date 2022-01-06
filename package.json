@@ -1,6 +1,6 @@
 {
   "name": "opentracing",
-  "version": "0.14.5",
+  "version": "0.14.7",
   "engines": {
     "node": ">=0.10"
   },

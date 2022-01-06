@@ -3,6 +3,11 @@
 History
 -------
 
+0.14.7
+-------------------
+- rollback v0.14.6 back to v0.14.6, see https://github.com/opentracing/opentracing-javascript/issues/172
+
+
 0.14.5
 -------------------
 - Fix circular dependency in mock_context (#154) -- thanks Jonathan Moody
