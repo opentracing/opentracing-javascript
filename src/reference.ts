@@ -61,8 +61,6 @@ export default class Reference {
         // when compiled to Javascript the code would previously still work with nulls.
         // This check ensures backwards compatibility (i.e. no exception) by constructing
         // an invalid reference where _referencedContext is undefined.
-        if (referencedContext != null) {
-            this._referencedContext = toContext(referencedContext);
-        }
+        this._referencedContext = referencedContext ? toContext(referencedContext) : referencedContext;
     }
 }

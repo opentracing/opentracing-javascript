@@ -125,10 +125,13 @@ export function opentracingAPITests(): void {
             // Even though the constructor signature does not allow null args in Typescript,
             // when compiled to Javascript the code would previously still work with nulls.
             // This test ensures that such behavior is maintained for backwards compatibility.
-            it('should allow null span context', () => {
-                const spanCtx: any = null;
-                const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, spanCtx);
-                expect(ref.referencedContext()).to.equal(undefined);
+            it('should allow null and undefined span context', () => {
+                const spanCtx1: any = null;
+                const ref1 = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, spanCtx1);
+                expect(ref1.referencedContext()).to.equal(null);
+                const spanCtx2: any = undefined;
+                const ref2 = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, spanCtx2);
+                expect(ref2.referencedContext()).to.equal(undefined);
             });
         });
 
