@@ -126,7 +126,7 @@ export function opentracingAPITests(): void {
             // when compiled to Javascript the code would previously still work with nulls.
             // This test ensures that such behavior is maintained for backwards compatibility.
             it('should allow null span context', () => {
-                let spanCtx: any = null;
+                const spanCtx: any = null;
                 const ref = new opentracing.Reference(opentracing.REFERENCE_CHILD_OF, spanCtx);
                 expect(ref.referencedContext()).to.equal(undefined);
             });
