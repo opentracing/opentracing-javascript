@@ -36,7 +36,8 @@ export function opentracingAPITests(): void {
                 'childOf',
                 'followsFrom',
                 'initGlobalTracer',
-                'globalTracer'
+                'globalTracer',
+                'isGlobalTracerRegistered'
             ];
             for (const name of funcs) {
                 it(name + ' should be a function', () => {
@@ -52,7 +53,9 @@ export function opentracingAPITests(): void {
                 });
 
                 it('should use the global tracer', () => {
+                    expect(opentracing.isGlobalTracerRegistered()).to.equal(false);
                     opentracing.initGlobalTracer(new TestTracer());
+                    expect(opentracing.isGlobalTracerRegistered()).to.equal(true);
                     const tracer = opentracing.globalTracer();
                     const span = tracer.startSpan('test');
                     expect(span).to.equal(dummySpan);
